@@ -56,17 +56,29 @@ export const EVENT_OVERVIEW = [
 ] as const;
 
 export const LOCATION = {
-  venueName: "코엑스 컨퍼런스룸 401, 402, 403호 및 로비",
-  address: "서울특별시 강남구 영동대로 513",
-  addressDetail: "(우) 06164 · 컨퍼런스룸 401·402·403호 및 로비",
-  // 지정 시 지도 임베드(카카오/네이버 지도 등)로 전환. 비워두면 플레이스홀더가 표시됨.
-  mapEmbedUrl: "",
-  subway: {
-    line: "수도권 지하철 2호선 · 9호선",
-    detail: "삼성역 5·6번 출구 → 도보 5분",
-  },
-  bus: ["146", "301", "342", "401", "740", "3411"],
-  parking: "aT센터 및 코엑스 지하주차장 이용 (2시간 무료, 이후 유료)",
+  venueName: "서울 강남 코엑스 컨퍼런스룸 401, 402",
+  address: "서울특별시 강남구 영동대로 513 4층",
+  // 안내 약도 이미지
+  mapImage: "/images/location-map.png",
+  // color: 실제 노선/버스 유형 색상 (2호선=초록, 9호선=골드, 버스 유형별 서울시 색상 계열)
+  subwayRoutes: [
+    {
+      line: "2호선 삼성역 방면",
+      color: "#22C55E",
+      detail: ["삼성역 5·6번 출구와 직접 연결된 통로로 진입,", "밀레니엄 광장을 통해 스타필드 코엑스몰로 진입"],
+    },
+    {
+      line: "9호선 봉은사역 방면",
+      color: "#D4AF37",
+      detail: ["봉은사역 7번 출구 직접 연결된 통로로 진입,", "아셈플라자를 통해 스타필드 코엑스몰로 진입"],
+    },
+  ],
+  busRoutes: [
+    { type: "간선버스", numbers: "143, 343" },
+    { type: "지선버스", numbers: "2413" },
+    { type: "마을버스", numbers: "강남01, 강남06, 강남08" },
+    { type: "직행버스", numbers: "500-2, 9407, 9507, 9607, G3202" },
+  ],
 } as const;
 
 /** A single track's content within a time slot (title + optional speaker/org) */
@@ -180,28 +192,70 @@ export const PROGRAM: ProgramDay[] = [
   },
 ];
 
-export const REGISTRATION_NOTE =
-  "* 등록 항목은 추후 확정될 예정이며, 아래 양식은 임시 구성입니다.";
+// 등록 폼 "참여세션" 체크박스 — PROGRAM에서 두 트랙이 동시 진행되는 슬롯만 뽑아
+// 자동 생성 (개회식/폐회식/점심/휴식 등 단일 항목은 제외). 총 12개.
+export type RegistrationSessionOption = {
+  id: string;
+  dayId: string;
+  dayLabel: string;
+  time: string;
+  trackLabel: string;
+  title: string;
+};
 
-export const ATTENDANCE_DAY_OPTIONS = [
-  { id: "day1", label: "1일차 (9. 10 목)" },
-  { id: "day2", label: "2일차 (9. 11 금)" },
-  { id: "both", label: "전체 참석" },
-] as const;
+export const REGISTRATION_SESSIONS: RegistrationSessionOption[] = PROGRAM.flatMap((day) =>
+  day.slots.flatMap((slot): RegistrationSessionOption[] => {
+    if (!slot.track1 || !slot.track2) return [];
+    return [
+      {
+        id: `${day.id}-${slot.time}-t1`,
+        dayId: day.id,
+        dayLabel: day.dayLabel,
+        time: slot.time,
+        trackLabel: TRACK_LABELS.track1,
+        title: slot.track1.title,
+      },
+      {
+        id: `${day.id}-${slot.time}-t2`,
+        dayId: day.id,
+        dayLabel: day.dayLabel,
+        time: slot.time,
+        trackLabel: TRACK_LABELS.track2,
+        title: slot.track2.title,
+      },
+    ];
+  })
+);
 
-export const REFERRAL_OPTIONS = [
-  "한국보건의료정보원 홈페이지",
-  "이메일 안내",
-  "유관기관 공문",
-  "지인 소개",
+export const AFFILIATION_TYPES = [
+  "정보부처",
+  "공공기관",
+  "의료기관",
+  "협회·학계",
+  "산업계",
+  "언론",
   "기타",
 ] as const;
 
+export const PRIVACY_NOTICE = {
+  items: "성명, 소속분류, 소속명, 직위, 연락처, 이메일, 참여세션",
+  purpose: "심포지엄 등록·운영 서비스 제공, 만족도 조사 포함",
+  retention: "행사 종료 후 관련 법령에 따라 파기",
+} as const;
+
+// Google Sheets 연동 — Apps Script 웹앱 배포 URL을 넣으면 제출 데이터가 시트에
+// 저장됩니다. 비워두면(기본값) 제출은 시연용으로만 동작합니다.
+// 설정 방법:
+//   1. 응답을 받을 Google Sheet를 새로 만든다.
+//   2. 확장 프로그램 > Apps Script 에서 POST를 받아 행을 추가하는 스크립트를 배포한다.
+//   3. 배포된 웹앱 URL을 아래에 붙여넣는다.
+export const GOOGLE_SHEET_ENDPOINT =
+  "https://script.google.com/macros/s/AKfycby72qpHD-W_MDHyHS2PInhoLmtkOGYnuO-4rhvE996vkIz5vQ21ihYETyOf-1O1-2KG/exec";
+
 export const FOOTER = {
   orgName: "한국보건의료정보원",
-  address: "서울특별시 마포구 마포대로 155 프론트원 (placeholder 주소)",
-  tel: "1577-0000",
-  email: "symposium@k-his.or.kr",
+  logoImage: "/images/khis-logo.png",
+  websiteUrl: "https://www.khis.kr/",
   links: [
     { label: "이용약관", href: "#" },
     { label: "개인정보처리방침", href: "#" },

@@ -1,32 +1,133 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { CheckCircle, CircleNotch } from "@phosphor-icons/react/dist/ssr";
+import { CaretDown, CheckCircle, CircleNotch, WarningCircle } from "@phosphor-icons/react/dist/ssr";
 import { Container } from "./ui/Container";
 import { Reveal } from "./ui/Reveal";
 import {
-  ATTENDANCE_DAY_OPTIONS,
-  REFERRAL_OPTIONS,
-  REGISTRATION_NOTE,
+  AFFILIATION_TYPES,
+  GOOGLE_SHEET_ENDPOINT,
+  PRIVACY_NOTICE,
+  REGISTRATION_SESSIONS,
 } from "@/lib/constants";
 
 type Status = "idle" | "submitting" | "success" | "error";
-
-const fieldBase =
-  "w-full min-h-[44px] rounded-xl border border-white/15 bg-white/[0.06] px-4 py-2.5 text-[16px] text-white outline-none transition-colors duration-200 placeholder:text-white/35 focus:border-[var(--color-cyan)]";
+type Errors = Record<string, string>;
 
 const labelBase = "text-[16px] font-medium text-white/70";
 
+function fieldClass(hasError: boolean) {
+  return `w-full min-h-[44px] rounded-xl border ${
+    hasError ? "border-red-500 focus:border-red-500" : "border-white/15 focus:border-[var(--color-cyan)]"
+  } bg-white/[0.06] px-4 py-2.5 text-[16px] text-white outline-none transition-colors duration-200 placeholder:text-white/35`;
+}
+
+function ErrorText({ message }: { message?: string }) {
+  if (!message) return null;
+  return (
+    <p className="flex items-center gap-1.5 text-[13px] text-red-400" role="alert">
+      <WarningCircle size={14} weight="fill" />
+      {message}
+    </p>
+  );
+}
+
+const PHONE_PATTERN = /^0\d{1,2}-\d{3,4}-\d{4}$/;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function validate(formData: FormData): Errors {
+  const errors: Errors = {};
+
+  if (!String(formData.get("name") ?? "").trim()) {
+    errors.name = "성명을 입력해 주세요.";
+  }
+  if (!String(formData.get("affiliationType") ?? "").trim()) {
+    errors.affiliationType = "소속분류를 선택해 주세요.";
+  }
+  if (!String(formData.get("orgName") ?? "").trim()) {
+    errors.orgName = "소속명을 입력해 주세요.";
+  }
+
+  const phone = String(formData.get("phone") ?? "").trim();
+  if (!phone) {
+    errors.phone = "연락처를 입력해 주세요.";
+  } else if (!PHONE_PATTERN.test(phone)) {
+    errors.phone = "올바른 연락처 형식이 아닙니다. (예: 010-1234-0000)";
+  }
+
+  const email = String(formData.get("email") ?? "").trim();
+  if (!email) {
+    errors.email = "이메일을 입력해 주세요.";
+  } else if (!EMAIL_PATTERN.test(email)) {
+    errors.email = "올바른 이메일 형식이 아닙니다.";
+  }
+
+  if (formData.getAll("sessions").length === 0) {
+    errors.sessions = "참여하실 세션을 1개 이상 선택해 주세요.";
+  }
+  if (formData.get("consent") !== "agree") {
+    errors.consent = "개인정보 수집·이용에 동의해 주세요.";
+  }
+
+  return errors;
+}
+
 export function Registration() {
   const [status, setStatus] = useState<Status>("idle");
+  const [errors, setErrors] = useState<Errors>({});
+
+  const day1Sessions = REGISTRATION_SESSIONS.filter((s) => s.dayId === "day1");
+  const day2Sessions = REGISTRATION_SESSIONS.filter((s) => s.dayId === "day2");
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    const validationErrors = validate(formData);
+    setErrors(validationErrors);
+    if (Object.keys(validationErrors).length > 0) {
+      const firstField = form.querySelector<HTMLElement>(`[name="${Object.keys(validationErrors)[0]}"]`);
+      firstField?.focus();
+      return;
+    }
+
     setStatus("submitting");
-    // NOTE: 실제 등록 처리(백엔드 연동)는 폼 필드 확정 후 연결 예정입니다.
-    // 지금은 제출 흐름과 상태 피드백만 시연합니다.
-    await new Promise((resolve) => setTimeout(resolve, 900));
-    setStatus("success");
+    try {
+      if (GOOGLE_SHEET_ENDPOINT) {
+        // Build a plain JSON payload (sessions collected as an array) —
+        // the Apps Script endpoint parses the body via JSON.parse(e.postData.contents).
+        const payload: Record<string, string | string[]> = {};
+        formData.forEach((value, key) => {
+          if (key === "sessions") {
+            const existing = payload.sessions;
+            const list = Array.isArray(existing) ? existing : [];
+            list.push(String(value));
+            payload.sessions = list;
+          } else {
+            payload[key] = String(value);
+          }
+        });
+        // Content-Type: text/plain keeps this a CORS "simple request" (no
+        // preflight) — Apps Script doesn't handle OPTIONS preflights, so
+        // application/json here would silently fail. Apps Script web apps
+        // also don't send CORS headers back for simple POSTs, so the
+        // response is opaque under no-cors — a resolved fetch (no
+        // network/HTTP error) is treated as success.
+        await fetch(GOOGLE_SHEET_ENDPOINT, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload),
+        });
+      } else {
+        // GOOGLE_SHEET_ENDPOINT not configured yet — demo the submit flow only.
+        await new Promise((resolve) => setTimeout(resolve, 900));
+      }
+      setStatus("success");
+    } catch {
+      setStatus("error");
+    }
   }
 
   return (
@@ -36,28 +137,36 @@ export function Registration() {
           <Reveal className="flex flex-col gap-4 lg:sticky lg:top-28 lg:self-start">
             <span className="eyebrow">REGISTRATION</span>
             <h2 className="text-[clamp(1.75rem,3.2vw,2.5rem)] font-extrabold leading-[1.3] tracking-tight">
-              사전등록
+              사전 등록
             </h2>
             <div className="rule-accent" />
             <p className="max-w-md text-[16px] leading-[1.9] text-white/70">
-              심포지엄은 참가비 없이 사전등록을 통해 참여하실 수 있습니다. 등록 마감 전
-              신청해 주시기 바랍니다.
+              사전 등록을 통해 심포지엄을 참여하실 수 있습니다.
+              <br />
+              등록 마감 전 신청해 주시기 바랍니다.
             </p>
-            <p className="mt-2 text-[16px] text-white/40">{REGISTRATION_NOTE}</p>
           </Reveal>
 
           <Reveal delay={100}>
             {status === "success" ? (
               <div className="flex flex-col items-start gap-4 rounded-[12px] border border-[var(--color-cyan)]/25 bg-white/[0.04] p-10">
                 <CheckCircle size={36} weight="fill" className="text-[var(--color-cyan)]" />
-                <h3 className="text-xl font-bold">사전등록이 접수되었습니다</h3>
+                <h3 className="text-xl font-bold">사전 등록이 접수되었습니다</h3>
                 <p className="text-[16px] leading-[1.8] text-white/70">
-                  입력하신 이메일로 확인 안내를 보내드릴 예정입니다. 심포지엄에서 뵙기를
-                  기대합니다.
+                  입력하신 이메일로 확인 안내를 보내드릴 예정입니다.
+                  <br />
+                  심포지엄에서 뵙기를 기대합니다.
                 </p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="flex flex-col gap-7" noValidate>
+                {status === "error" ? (
+                  <div className="flex items-center gap-2.5 rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-[14px] text-red-300">
+                    <WarningCircle size={18} weight="fill" />
+                    제출 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.
+                  </div>
+                ) : null}
+
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                   <div className="flex flex-col gap-2">
                     <label htmlFor="name" className={labelBase}>
@@ -67,58 +176,90 @@ export function Registration() {
                       id="name"
                       name="name"
                       type="text"
-                      required
                       autoComplete="name"
                       placeholder="홍길동"
-                      className={fieldBase}
+                      className={fieldClass(!!errors.name)}
                     />
+                    <ErrorText message={errors.name} />
                   </div>
 
                   <div className="flex flex-col gap-2">
-                    <label htmlFor="org" className={labelBase}>
-                      소속기관 <span className="text-[var(--color-cyan)]">*</span>
+                    <label htmlFor="affiliationType" className={labelBase}>
+                      소속분류 <span className="text-[var(--color-cyan)]">*</span>
+                    </label>
+                    <div className="relative">
+                      <select
+                        id="affiliationType"
+                        name="affiliationType"
+                        required
+                        defaultValue=""
+                        className={`${fieldClass(
+                          !!errors.affiliationType
+                        )} cursor-pointer appearance-none pr-10 invalid:text-white/35`}
+                      >
+                        <option value="" disabled hidden>
+                          선택해 주세요
+                        </option>
+                        {AFFILIATION_TYPES.map((opt) => (
+                          <option key={opt} value={opt} className="bg-[#0b1330] text-white">
+                            {opt}
+                          </option>
+                        ))}
+                      </select>
+                      <CaretDown
+                        size={16}
+                        weight="bold"
+                        className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-white/40"
+                      />
+                    </div>
+                    <ErrorText message={errors.affiliationType} />
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="orgName" className={labelBase}>
+                      소속명 <span className="text-[var(--color-cyan)]">*</span>
                     </label>
                     <input
-                      id="org"
-                      name="org"
+                      id="orgName"
+                      name="orgName"
                       type="text"
-                      required
                       autoComplete="organization"
                       placeholder="예) 한국보건의료정보원"
-                      className={fieldBase}
+                      className={fieldClass(!!errors.orgName)}
                     />
+                    <ErrorText message={errors.orgName} />
                   </div>
 
                   <div className="flex flex-col gap-2">
                     <label htmlFor="position" className={labelBase}>
-                      부서 / 직위
+                      직위
                     </label>
                     <input
                       id="position"
                       name="position"
                       type="text"
                       autoComplete="organization-title"
-                      placeholder="예) 데이터정책팀 · 팀장"
-                      className={fieldBase}
+                      placeholder="예) 팀장"
+                      className={fieldClass(false)}
                     />
                   </div>
 
                   <div className="flex flex-col gap-2">
                     <label htmlFor="phone" className={labelBase}>
-                      휴대전화 <span className="text-[var(--color-cyan)]">*</span>
+                      연락처 <span className="text-[var(--color-cyan)]">*</span>
                     </label>
                     <input
                       id="phone"
                       name="phone"
                       type="tel"
-                      required
                       autoComplete="tel"
-                      placeholder="010-0000-0000"
-                      className={fieldBase}
+                      placeholder="010-1234-0000"
+                      className={fieldClass(!!errors.phone)}
                     />
+                    <ErrorText message={errors.phone} />
                   </div>
 
-                  <div className="flex flex-col gap-2 sm:col-span-2">
+                  <div className="flex flex-col gap-2">
                     <label htmlFor="email" className={labelBase}>
                       이메일 <span className="text-[var(--color-cyan)]">*</span>
                     </label>
@@ -126,67 +267,108 @@ export function Registration() {
                       id="email"
                       name="email"
                       type="email"
-                      required
                       autoComplete="email"
                       placeholder="name@example.com"
-                      className={fieldBase}
+                      className={fieldClass(!!errors.email)}
                     />
+                    <ErrorText message={errors.email} />
                   </div>
                 </div>
 
                 <fieldset className="flex flex-col gap-3">
                   <legend className={labelBase}>
-                    참석일자 <span className="text-[var(--color-cyan)]">*</span>
+                    참여세션{" "}
+                    <span className="text-[13px] font-normal text-white/45">
+                      (총 {REGISTRATION_SESSIONS.length}개 중 복수 선택 가능)
+                    </span>{" "}
+                    <span className="text-[var(--color-cyan)]">*</span>
                   </legend>
-                  <div className="flex flex-wrap gap-3">
-                    {ATTENDANCE_DAY_OPTIONS.map((opt, i) => (
+                  <div
+                    className={`grid grid-cols-1 gap-4 rounded-xl border p-4 sm:grid-cols-2 ${
+                      errors.sessions ? "border-red-500" : "border-white/15"
+                    }`}
+                  >
+                    {[
+                      { label: "1일차", items: day1Sessions },
+                      { label: "2일차", items: day2Sessions },
+                    ].map((group) => (
+                      <div key={group.label} className="flex flex-col gap-2">
+                        <p className="text-[13px] font-semibold tracking-wide text-white/50">
+                          {group.label}
+                        </p>
+                        {group.items.map((session) => (
+                          <label
+                            key={session.id}
+                            className="flex cursor-pointer items-start gap-2.5 rounded-lg border border-white/10 p-2.5 transition-colors duration-200 has-[:checked]:border-[var(--color-cyan)] has-[:checked]:bg-[var(--color-cyan)]/10"
+                          >
+                            <input
+                              type="checkbox"
+                              name="sessions"
+                              value={session.id}
+                              className="mt-1 h-4 w-4 shrink-0 accent-[var(--color-cyan)]"
+                            />
+                            <span>
+                              <span className="block text-[12px] text-white/45">
+                                {session.time} · {session.trackLabel}
+                              </span>
+                              <span className="block text-[14px] font-medium leading-snug text-white [word-break:keep-all]">
+                                {session.title}
+                              </span>
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                  <ErrorText message={errors.sessions} />
+                </fieldset>
+
+                <div className="flex flex-col gap-3 border-t border-[var(--color-line-dark)] pt-6">
+                  <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4 text-[13px] leading-[1.8] text-white/55">
+                    <p>
+                      <span className="font-semibold text-white/75">수집 항목</span> ·{" "}
+                      {PRIVACY_NOTICE.items}
+                    </p>
+                    <p>
+                      <span className="font-semibold text-white/75">수집 목적</span> ·{" "}
+                      {PRIVACY_NOTICE.purpose}
+                    </p>
+                    <p>
+                      <span className="font-semibold text-white/75">보유 기간</span> ·{" "}
+                      {PRIVACY_NOTICE.retention}
+                    </p>
+                  </div>
+
+                  <fieldset className="flex flex-col gap-2">
+                    <legend className="mb-3 text-[16px] text-white/70">
+                      개인정보 수집 및 이용 동의 <span className="text-[var(--color-cyan)]">*</span>
+                    </legend>
+                    <div className="flex gap-3">
                       <label
-                        key={opt.id}
-                        className="flex min-h-[44px] cursor-pointer items-center gap-2.5 rounded-full border border-white/15 px-4 py-2 text-[16px] text-white/85 transition-colors duration-200 has-[:checked]:border-[var(--color-cyan)] has-[:checked]:bg-[var(--color-cyan)]/10"
+                        className={`flex min-h-[44px] flex-1 cursor-pointer items-center justify-center gap-2 rounded-full border text-[16px] transition-colors duration-200 has-[:checked]:border-[var(--color-cyan)] has-[:checked]:bg-[var(--color-cyan)]/10 ${
+                          errors.consent ? "border-red-500" : "border-white/15"
+                        }`}
+                      >
+                        <input type="radio" name="consent" value="agree" className="h-4 w-4 accent-[var(--color-cyan)]" />
+                        동의
+                      </label>
+                      <label
+                        className={`flex min-h-[44px] flex-1 cursor-pointer items-center justify-center gap-2 rounded-full border text-[16px] transition-colors duration-200 has-[:checked]:border-[var(--color-cyan)] has-[:checked]:bg-[var(--color-cyan)]/10 ${
+                          errors.consent ? "border-red-500" : "border-white/15"
+                        }`}
                       >
                         <input
                           type="radio"
-                          name="attendanceDay"
-                          value={opt.id}
-                          required
-                          defaultChecked={i === 0}
+                          name="consent"
+                          value="disagree"
                           className="h-4 w-4 accent-[var(--color-cyan)]"
                         />
-                        {opt.label}
+                        미동의
                       </label>
-                    ))}
-                  </div>
-                </fieldset>
-
-                <div className="flex flex-col gap-2">
-                  <label htmlFor="referral" className={labelBase}>
-                    참가경로
-                  </label>
-                  <select id="referral" name="referral" className={`${fieldBase} appearance-none`}>
-                    {REFERRAL_OPTIONS.map((opt) => (
-                      // Native <option> popups render on the OS's own (usually light)
-                      // surface regardless of page theme — force a dark, fixed color
-                      // here rather than the (now white) --color-ink token.
-                      <option key={opt} value={opt} className="text-slate-900">
-                        {opt}
-                      </option>
-                    ))}
-                  </select>
+                    </div>
+                    <ErrorText message={errors.consent} />
+                  </fieldset>
                 </div>
-
-                <label className="flex items-start gap-3 text-[16px] leading-[1.7] text-white/70">
-                  <input
-                    type="checkbox"
-                    name="consent"
-                    required
-                    className="mt-0.5 h-4 w-4 shrink-0 accent-[var(--color-cyan)]"
-                  />
-                  <span>
-                    개인정보 수집 및 이용에 동의합니다. 수집된 정보는 심포지엄 등록 및
-                    안내 목적으로만 사용되며, 행사 종료 후 관련 법령에 따라 파기됩니다.
-                    <span className="text-[var(--color-cyan)]"> *</span>
-                  </span>
-                </label>
 
                 <button
                   type="submit"
