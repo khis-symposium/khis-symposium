@@ -1,0 +1,235 @@
+@import "tailwindcss";
+
+/*
+  ============================================================
+  KHIS Symposium — Design Tokens
+  ------------------------------------------------------------
+  Colors sampled directly from the official key visual
+  (의정원 키비.png): near-black navy base, vivid blue/cyan glow,
+  a mid-navy gradient stop. Purple is a restrained "highlight
+  only" color — buttons, hover states, and title accents — not
+  a background color. The whole site now runs on dark navy
+  surfaces; there is no white/light-gray section background.
+  ============================================================
+*/
+:root {
+  /* --- Core palette (sampled from the key visual) --- */
+  --color-void: #04081c;       /* deepest bg — hero, footer, featured dark panels */
+  --color-bg-deep: #071233;    /* primary section background */
+  --color-bg-sub: #0b2d6b;     /* mid-navy — gradients, poster-matched panel tone */
+  --color-blue: #0870bc;       /* structural blue — default buttons/links/icons */
+  --color-cyan: #16a6f0;       /* vivid glow accent — eyebrows, icons, highlights */
+  --color-purple: #8f6ceb;     /* highlight-only accent — buttons, hover, title accents */
+  --color-white: #ffffff;
+
+  /* --- Dark surfaces (blue-family, no white/gray sections) --- */
+  --color-surface: #102a63;      /* elevated panel — cards, alternating sections */
+  --color-surface-2: #0a1c48;    /* recessed panel — alternating section background */
+  --color-ink: #ffffff;          /* headings on dark surfaces */
+  --color-ink-soft: #c3ceec;     /* body text on dark surfaces */
+  --color-muted: #92a2cf;        /* captions / tertiary text on dark surfaces */
+  --color-line: rgba(255, 255, 255, 0.12);       /* hairline border on dark surfaces */
+  --color-line-dark: rgba(255, 255, 255, 0.16);  /* hairline border on the deepest surfaces */
+
+  --color-error: #ff6b6b;
+
+  /* --- Radius / shadow --- */
+  --radius-sm: 2px;
+  --radius-md: 6px;
+  --radius-lg: 12px;
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.2), 0 8px 24px -12px rgba(0, 0, 0, 0.45);
+  --shadow-card-hover: 0 4px 8px rgba(0, 0, 0, 0.25), 0 20px 44px -16px rgba(0, 0, 0, 0.55);
+  --shadow-glow-cyan: 0 0 0 1px rgba(22, 166, 240, 0.3), 0 8px 32px -8px rgba(22, 166, 240, 0.4);
+  --shadow-glow-purple: 0 0 0 1px rgba(143, 108, 235, 0.35), 0 8px 32px -8px rgba(143, 108, 235, 0.45);
+
+  /* --- Motion --- */
+  --ease-elegant: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 200ms;
+  --duration-base: 300ms;
+  --duration-slow: 500ms;
+}
+
+@theme inline {
+  --color-void: var(--color-void);
+  --color-bg-deep: var(--color-bg-deep);
+  --color-bg-sub: var(--color-bg-sub);
+  --color-blue: var(--color-blue);
+  --color-cyan: var(--color-cyan);
+  --color-purple: var(--color-purple);
+  --color-surface: var(--color-surface);
+  --color-surface-2: var(--color-surface-2);
+  --color-ink: var(--color-ink);
+  --color-ink-soft: var(--color-ink-soft);
+  --color-muted: var(--color-muted);
+  --color-line: var(--color-line);
+  --color-error: var(--color-error);
+
+  --font-sans: var(--font-pretendard), "Pretendard Variable", "Pretendard", -apple-system, sans-serif;
+
+  --container-symposium: 1200px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-bg-deep);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-purple);
+  color: #ffffff;
+}
+
+/* Visible, on-brand focus ring for keyboard nav */
+:focus-visible {
+  outline: 2px solid var(--color-cyan);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+/* --- Layout primitives ------------------------------------------------ */
+.container-symposium {
+  width: 100%;
+  max-width: var(--container-symposium);
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .container-symposium {
+    padding-inline: 2.5rem;
+  }
+}
+
+.section-pad {
+  padding-block: clamp(4rem, 9vw, 7.5rem);
+}
+
+/*
+  Local override for the handful of sections that read better as light
+  panels against the otherwise all-dark page (e.g. 원장 인사말, 프로그램).
+  Re-scopes the shared text/surface/line tokens for everything inside it —
+  components don't need per-element edits, they already read var(--color-ink)
+  etc. --color-cyan is swapped for a darker, readable-on-light blue since the
+  vivid glow cyan is calibrated for dark backgrounds only.
+*/
+.on-light {
+  --color-surface: #f0efeb;
+  --color-surface-2: #e6e4da;
+  --color-ink: #0a1a3d;
+  --color-ink-soft: #3d4a66;
+  --color-muted: #6b7488;
+  --color-line: rgba(10, 26, 61, 0.12);
+  --color-cyan: #0b84c4;
+}
+
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-cyan);
+}
+
+/*
+  Site-wide button treatment: near-black glass pill with a soft gradient
+  rim and a faint top-down glow, per the reference button ("Get unlimited
+  access"). Three stacked background layers on one element — top radial
+  glow + dark fill are clipped to padding-box (inside the border), the
+  gradient rim is clipped to border-box — so no extra wrapper/pseudo-element
+  is needed for the gradient border.
+*/
+.btn-glow {
+  position: relative;
+  border: 1px solid transparent;
+  background-image:
+    radial-gradient(120% 180% at 50% -40%, rgba(130, 180, 255, 0.22), transparent 55%),
+    linear-gradient(180deg, #0d1428 0%, #05070f 100%),
+    linear-gradient(180deg, rgba(150, 190, 255, 0.55), rgba(143, 108, 235, 0.32));
+  background-origin: padding-box, padding-box, border-box;
+  background-clip: padding-box, padding-box, border-box;
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.08),
+    0 12px 28px -14px rgba(0, 0, 0, 0.8);
+  transition: box-shadow var(--duration-base) var(--ease-elegant),
+    transform var(--duration-base) var(--ease-elegant),
+    background-image var(--duration-base) var(--ease-elegant);
+}
+.btn-glow:hover {
+  background-image:
+    radial-gradient(120% 180% at 50% -40%, rgba(180, 150, 255, 0.42), transparent 55%),
+    linear-gradient(180deg, #1c1440 0%, #08050f 100%),
+    linear-gradient(180deg, rgba(200, 180, 255, 0.85), rgba(143, 108, 235, 0.8));
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.12),
+    0 0 32px -6px rgba(143, 108, 235, 0.55),
+    0 16px 34px -14px rgba(0, 0, 0, 0.85);
+  transform: translateY(-2px);
+}
+.btn-glow:active {
+  transform: translateY(0);
+}
+
+/* Very subtle film-grain texture for otherwise-flat gradient sections —
+   an inline SVG turbulence filter, tiled, at low opacity via overlay blend
+   so it reads as fine grain rather than visible noise. */
+.grain-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+}
+
+/* Thin gradient rule used as a section/title accent — the one place a title
+   "highlight" is allowed to read purple, per the palette rule. */
+.rule-accent {
+  height: 2px;
+  width: 3rem;
+  background: linear-gradient(90deg, var(--color-cyan), var(--color-purple));
+  border-radius: 999px;
+}
+
+/* Shared hover-highlight color for text links/nav — the only recurring
+   place purple should show up outside of buttons and title accents. */
+.link-hover {
+  transition: color var(--duration-base) var(--ease-elegant);
+}
+.link-hover:hover {
+  color: var(--color-purple);
+}
+
+/* --- Scroll reveal (respects reduced motion) --------------------------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity var(--duration-slow) var(--ease-elegant),
+    transform var(--duration-slow) var(--ease-elegant);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Tabular figures for countdown / dates so digits don't jitter in width */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
