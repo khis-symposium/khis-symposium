@@ -42,3 +42,6 @@ next-env.d.ts
 
 # Claude Code bundled skill library (local tooling, not project source)
 /.claude/
+
+.vercel
+.env*
