@@ -69,30 +69,43 @@ export const LOCATION = {
   parking: "aT센터 및 코엑스 지하주차장 이용 (2시간 무료, 이후 유료)",
 } as const;
 
-export type ProgramSession = {
-  time: string;
+/** A single track's content within a time slot (title + optional speaker/org) */
+export type ProgramTrackItem = {
   title: string;
   speaker?: string;
   affiliation?: string;
-  track?: string;
-  /** Optional expanded blurb, shown under the session (see reference layout) */
-  description?: string;
+};
+
+export type ProgramSlot = {
+  time: string;
+  duration?: string;
+  /** Use for rows common to both tracks (registration, lunch, break) */
+  shared?: ProgramTrackItem;
+  /** Use together for rows where the two tracks run in parallel */
+  track1?: ProgramTrackItem;
+  track2?: ProgramTrackItem;
 };
 
 export type ProgramDay = {
   id: string;
   dayLabel: string;
   dateLabel: string;
-  sessions: ProgramSession[];
+  slots: ProgramSlot[];
 };
+
+export const TRACK_LABELS = {
+  track1: "Track 1 · 401호",
+  track2: "Track 2 · 402호",
+} as const;
 
 export const PROGRAM_INTRO = {
   eyebrow: "SCHEDULE",
-  title: "일정 및 프로그램",
+  title: "프로그램",
   description:
-    "1일차와 2일차에 걸쳐 진행되는 세부 일정을 안내드립니다. 기조연설, 세션 발표, 패널 토론으로 구성되며 일정은 사정에 따라 변경될 수 있습니다.",
-  linkLabel: "전체 일정 다운로드",
-  // 지정 시 실제 현장 사진으로 전환됨. 비워두면 테크 톤 그라디언트 플레이스홀더가 표시됨.
+    "1일차와 2일차에 걸쳐 진행되는 세부 일정을 안내드립니다. 국가통합바이오빅데이터 플랫폼 데이터 개방, 디지털 보건의료정보시스템 등 의정원 주요사업 추진 현황 등으로 구성되며 일정은 사정에 따라 변경될 수 있습니다.",
+  linkLabel: "리플렛 다운로드",
+  leafletUrl: "/files/khis-symposium-leaflet.pdf",
+  // 지정 시 실제 현장 사진으로 전환됨. 비워두면 GlowingShadow 플레이스홀더가 표시됨.
   image1: "",
   image2: "",
 } as const;
@@ -101,103 +114,67 @@ export const PROGRAM: ProgramDay[] = [
   {
     id: "day1",
     dayLabel: "DAY 1",
-    dateLabel: "2026. 9. 10(목)",
-    sessions: [
+    dateLabel: "2026. 09. 10.(목)",
+    slots: [
       {
-        time: "09:30 – 10:00",
-        title: "참가자 등록 및 환영 리셉션",
-        description:
-          "현장 등록 데스크에서 참가 확인 후 명찰을 수령하실 수 있습니다. 담당 스태프가 상시 대기하며 문의사항을 안내해 드립니다.",
+        time: "09:30 – 10:50",
+        duration: "(80분)",
+        track1: { title: "개회식", speaker: "백롱민 단장 · 기조연설" },
       },
       {
-        time: "10:00 – 10:20",
-        title: "개회사",
-        speaker: "홍 길 동",
-        affiliation: "한국보건의료정보원 원장",
+        time: "10:50 – 12:30",
+        duration: "(100분)",
+        track1: { title: "국가통합바이오빅데이터 개방을 통한 국민건강 증진 (사업추진)" },
+        track2: { title: "디지털 보건의료정보 플랫폼" },
       },
+      { time: "12:30 – 13:50", duration: "(80분)", shared: { title: "점심 시간" } },
       {
-        time: "10:20 – 11:10",
-        title: "기조연설 · 보건의료 데이터 생태계의 미래",
-        speaker: "김 O O",
-        affiliation: "보건복지부",
-        track: "기조연설",
+        time: "13:50 – 15:30",
+        duration: "(100분)",
+        track1: { title: "국가통합바이오빅데이터 개방을 통한 국민건강 증진 (활용)" },
+        track2: { title: "보건의료데이터 인프라 혁신" },
       },
+      { time: "15:30 – 15:50", duration: "(20분)", shared: { title: "휴식" } },
       {
-        time: "11:10 – 12:00",
-        title: "보건의료데이터 표준화와 상호운용성",
-        speaker: "이 O O",
-        affiliation: "한국보건의료정보원",
-        track: "세션 1",
+        time: "15:50 – 17:30",
+        duration: "(100분)",
+        track1: { title: "의료 AI 생태계 구축 (AI고속도로, 의료전달체계 확립, AI전략 등)" },
+        track2: { title: "빅데이터 기반 질병 대응 전략" },
       },
-      { time: "12:00 – 13:30", title: "오찬" },
-      {
-        time: "13:30 – 14:20",
-        title: "의료 마이데이터 정책 동향과 과제",
-        speaker: "박 O O",
-        affiliation: "정책연구실",
-        track: "세션 2",
-      },
-      {
-        time: "14:20 – 15:10",
-        title: "디지털 헬스케어 산업 협력 사례",
-        speaker: "최 O O",
-        affiliation: "산업계",
-        track: "세션 3",
-      },
-      { time: "15:10 – 15:30", title: "휴식" },
-      {
-        time: "15:30 – 16:40",
-        title: "패널 토론 · 데이터 신뢰 기반의 협력 모델",
-        speaker: "지정 토론자 5인",
-        track: "패널 토론",
-      },
-      { time: "16:40 – 17:30", title: "네트워킹 리셉션" },
     ],
   },
   {
     id: "day2",
     dayLabel: "DAY 2",
-    dateLabel: "2026. 9. 11(금)",
-    sessions: [
-      { time: "09:30 – 10:00", title: "참가자 등록" },
+    dateLabel: "2026. 09. 11.(금)",
+    slots: [
       {
-        time: "10:00 – 10:50",
-        title: "특별강연 · 인공지능과 보건의료 데이터 윤리",
-        speaker: "정 O O",
-        affiliation: "학계",
-        track: "특별강연",
+        time: "10:00 – 11:40",
+        duration: "(100분)",
+        track1: { title: "한국형 의료데이터 표준화의 현장 적용과 확산" },
+        track2: { title: "(가제) 의료 서비스의 새로운 연결" },
+      },
+      { time: "11:40 – 13:00", duration: "(80분)", shared: { title: "점심 시간" } },
+      {
+        time: "13:00 – 14:40",
+        duration: "(100분)",
+        track1: { title: "표준 기반 의료시스템 실행체계", affiliation: "대한의료정보학회" },
+        track2: { title: "AI 시대 신뢰받는 보건의료데이터 활용 방향" },
+      },
+      { time: "14:40 – 15:00", duration: "(20분)", shared: { title: "휴식" } },
+      {
+        time: "15:00 – 16:40",
+        duration: "(100분)",
+        track1: {
+          title: "AI 시대 글로벌 디지털헬스와 상호운용성 전략",
+          affiliation: "대한의료정보학회",
+        },
+        track2: { title: "데이터 안전한 활용", affiliation: "과학기자협회" },
       },
       {
-        time: "10:50 – 11:40",
-        title: "지역 의료데이터 연계 플랫폼 구축 사례",
-        speaker: "한 O O",
-        affiliation: "한국보건의료정보원",
-        track: "세션 4",
-      },
-      {
-        time: "11:40 – 12:30",
-        title: "공공보건 통계 데이터 활용 방안",
-        speaker: "윤 O O",
-        affiliation: "공공기관",
-        track: "세션 5",
-      },
-      { time: "12:30 – 14:00", title: "오찬" },
-      {
-        time: "14:00 – 15:30",
-        title: "분과 세션 · 표준/보안/정책 트랙 병행 진행",
-        speaker: "분과별 발표자",
-        track: "분과 세션",
-      },
-      { time: "15:30 – 15:50", title: "휴식" },
-      {
-        time: "15:50 – 16:30",
-        title: "우수사례 시상 및 성과 공유",
-        track: "시상식",
-      },
-      {
-        time: "16:30 – 17:00",
-        title: "폐회사 및 차년도 안내",
-        speaker: "한국보건의료정보원",
+        time: "16:40 – 17:00",
+        duration: "(20분)",
+        track1: { title: "폐회식" },
       },
     ],
   },
