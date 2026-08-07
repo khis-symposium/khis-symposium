@@ -35,6 +35,28 @@ function ErrorText({ message }: { message?: string }) {
 const PHONE_PATTERN = /^0\d{1,2}-\d{3,4}-\d{4}$/;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// 숫자만 입력해도 010-0000-0000 형식으로 자동 하이픈 삽입 — 모바일 숫자 키패드에
+// '-' 키가 없는 경우가 많아, 입력값에서 숫자만 추출해 형식을 맞춰준다.
+// 02(서울) 지역번호는 2자리, 그 외 휴대폰/지역번호는 3자리로 구분해 그룹핑한다.
+function formatPhoneNumber(raw: string) {
+  const digits = raw.replace(/\D/g, "").slice(0, 11);
+  if (digits.length < 4) return digits;
+
+  if (digits.startsWith("02")) {
+    if (digits.length <= 5) return `${digits.slice(0, 2)}-${digits.slice(2)}`;
+    if (digits.length <= 9) {
+      return `${digits.slice(0, 2)}-${digits.slice(2, digits.length - 4)}-${digits.slice(-4)}`;
+    }
+    return `${digits.slice(0, 2)}-${digits.slice(2, 6)}-${digits.slice(6, 10)}`;
+  }
+
+  if (digits.length <= 7) return `${digits.slice(0, 3)}-${digits.slice(3)}`;
+  if (digits.length <= 10) {
+    return `${digits.slice(0, 3)}-${digits.slice(3, digits.length - 4)}-${digits.slice(-4)}`;
+  }
+  return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7, 11)}`;
+}
+
 function validate(formData: FormData): Errors {
   const errors: Errors = {};
 
@@ -75,6 +97,7 @@ function validate(formData: FormData): Errors {
 export function Registration() {
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<Errors>({});
+  const [phone, setPhone] = useState("");
 
   const day1Sessions = REGISTRATION_SESSIONS.filter((s) => s.dayId === "day1");
   const day2Sessions = REGISTRATION_SESSIONS.filter((s) => s.dayId === "day2");
@@ -252,8 +275,11 @@ export function Registration() {
                       id="phone"
                       name="phone"
                       type="tel"
+                      inputMode="numeric"
                       autoComplete="tel"
                       placeholder="010-1234-0000"
+                      value={phone}
+                      onChange={(e) => setPhone(formatPhoneNumber(e.target.value))}
                       className={fieldClass(!!errors.phone)}
                     />
                     <ErrorText message={errors.phone} />
