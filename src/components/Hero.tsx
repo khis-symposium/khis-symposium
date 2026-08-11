@@ -32,7 +32,9 @@ export function Hero() {
               <span className="block whitespace-normal sm:whitespace-nowrap">{SITE.heroTitleLine2}</span>
             </h1>
 
-            <p className="max-w-lg text-[17px] leading-[1.7] text-white/70">{SITE.tagline}</p>
+            <p className="max-w-lg break-keep text-balance text-[17px] leading-[1.7] text-white/70">
+              {SITE.tagline}
+            </p>
 
             <div className="flex flex-wrap gap-x-12 gap-y-5">
               <div>
