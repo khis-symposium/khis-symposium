@@ -6,7 +6,6 @@ import { Container } from "./ui/Container";
 import { Reveal } from "./ui/Reveal";
 import {
   AFFILIATION_TYPES,
-  GOOGLE_SHEET_ENDPOINT,
   PRIVACY_NOTICE,
   REGISTRATION_SESSIONS,
 } from "@/lib/constants";
@@ -117,35 +116,32 @@ export function Registration() {
 
     setStatus("submitting");
     try {
-      if (GOOGLE_SHEET_ENDPOINT) {
-        // Build a plain JSON payload (sessions collected as an array) —
-        // the Apps Script endpoint parses the body via JSON.parse(e.postData.contents).
-        const payload: Record<string, string | string[]> = {};
-        formData.forEach((value, key) => {
-          if (key === "sessions") {
-            const existing = payload.sessions;
-            const list = Array.isArray(existing) ? existing : [];
-            list.push(String(value));
-            payload.sessions = list;
-          } else {
-            payload[key] = String(value);
-          }
-        });
-        // Content-Type: text/plain keeps this a CORS "simple request" (no
-        // preflight) — Apps Script doesn't handle OPTIONS preflights, so
-        // application/json here would silently fail. Apps Script web apps
-        // also don't send CORS headers back for simple POSTs, so the
-        // response is opaque under no-cors — a resolved fetch (no
-        // network/HTTP error) is treated as success.
-        await fetch(GOOGLE_SHEET_ENDPOINT, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify(payload),
-        });
-      } else {
-        // GOOGLE_SHEET_ENDPOINT not configured yet — demo the submit flow only.
-        await new Promise((resolve) => setTimeout(resolve, 900));
+      const payload: Record<string, string | string[]> = {};
+      formData.forEach((value, key) => {
+        if (key === "sessions") {
+          const existing = payload.sessions;
+          const list = Array.isArray(existing) ? existing : [];
+          list.push(String(value));
+          payload.sessions = list;
+        } else {
+          payload[key] = String(value);
+        }
+      });
+
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const result: unknown = await response.json();
+      if (
+        !response.ok ||
+        typeof result !== "object" ||
+        result === null ||
+        !("ok" in result) ||
+        result.ok !== true
+      ) {
+        throw new Error("Registration request failed");
       }
       setStatus("success");
     } catch {

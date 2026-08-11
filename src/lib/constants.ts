@@ -243,15 +243,6 @@ export const PRIVACY_NOTICE = {
   retention: "행사 종료 후 관련 법령에 따라 파기",
 } as const;
 
-// Google Sheets 연동 — Apps Script 웹앱 배포 URL을 넣으면 제출 데이터가 시트에
-// 저장됩니다. 비워두면(기본값) 제출은 시연용으로만 동작합니다.
-// 설정 방법:
-//   1. 응답을 받을 Google Sheet를 새로 만든다.
-//   2. 확장 프로그램 > Apps Script 에서 POST를 받아 행을 추가하는 스크립트를 배포한다.
-//   3. 배포된 웹앱 URL을 아래에 붙여넣는다.
-export const GOOGLE_SHEET_ENDPOINT =
-  "https://script.google.com/macros/s/AKfycby72qpHD-W_MDHyHS2PInhoLmtkOGYnuO-4rhvE996vkIz5vQ21ihYETyOf-1O1-2KG/exec";
-
 export const FOOTER = {
   orgName: "한국보건의료정보원",
   logoImage: "/images/khis-logo.png",
