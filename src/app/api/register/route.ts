@@ -147,6 +147,11 @@ export async function POST(request: Request) {
       return jsonResponse(false, 502);
     }
 
+    const upstreamBody: unknown = JSON.parse(await upstreamResponse.text());
+    if (!isRecord(upstreamBody) || upstreamBody.result !== "success") {
+      return jsonResponse(false, 502);
+    }
+
     return jsonResponse(true, 200);
   } catch (error) {
     const isTimeout = error instanceof DOMException && error.name === "TimeoutError";
