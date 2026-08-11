@@ -4,6 +4,7 @@ export const runtime = "nodejs";
 
 const MAX_BODY_BYTES = 32 * 1024;
 const UPSTREAM_TIMEOUT_MS = 8_000;
+const UPSTREAM_TOKEN_PATTERN = /^[A-Za-z0-9_-]{43}$/;
 const PHONE_PATTERN = /^0\d{1,2}-\d{3,4}-\d{4}$/;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const ALLOWED_FIELDS = new Set([
@@ -94,6 +95,13 @@ function getUpstreamUrl(): URL | null {
   }
 }
 
+function getUpstreamToken(): string | null {
+  const configuredToken = process.env.REGISTRATION_UPSTREAM_TOKEN;
+  return configuredToken && UPSTREAM_TOKEN_PATTERN.test(configuredToken)
+    ? configuredToken
+    : null;
+}
+
 export async function POST(request: Request) {
   const contentType = request.headers.get("content-type")?.split(";", 1)[0].trim().toLowerCase();
   if (contentType !== "application/json") {
@@ -129,7 +137,8 @@ export async function POST(request: Request) {
   }
 
   const upstreamUrl = getUpstreamUrl();
-  if (!upstreamUrl) {
+  const upstreamToken = getUpstreamToken();
+  if (!upstreamUrl || !upstreamToken) {
     return jsonResponse(false, 503);
   }
 
@@ -137,7 +146,7 @@ export async function POST(request: Request) {
     const upstreamResponse = await fetch(upstreamUrl, {
       method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({ ...payload, authToken: upstreamToken }),
       cache: "no-store",
       redirect: "follow",
       signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
