@@ -8,6 +8,7 @@ import {
   AFFILIATION_TYPES,
   PRIVACY_NOTICE,
   REGISTRATION_SESSIONS,
+  TRACK_LABELS,
 } from "@/lib/constants";
 
 type Status = "idle" | "submitting" | "success" | "error";
@@ -98,8 +99,20 @@ export function Registration() {
   const [errors, setErrors] = useState<Errors>({});
   const [phone, setPhone] = useState("");
 
-  const day1Sessions = REGISTRATION_SESSIONS.filter((s) => s.dayId === "day1");
-  const day2Sessions = REGISTRATION_SESSIONS.filter((s) => s.dayId === "day2");
+  const sessionGroups = [
+    {
+      id: "day1",
+      dayLabel: "1일차",
+      dateLabel: "9.10.(목)",
+      items: REGISTRATION_SESSIONS.filter((session) => session.dayId === "day1"),
+    },
+    {
+      id: "day2",
+      dayLabel: "2일차",
+      dateLabel: "9.11.(금)",
+      items: REGISTRATION_SESSIONS.filter((session) => session.dayId === "day2"),
+    },
+  ] as const;
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -305,41 +318,76 @@ export function Registration() {
                     </span>{" "}
                     <span className="text-[var(--color-cyan)]">*</span>
                   </legend>
-                  <div
-                    className={`grid grid-cols-1 gap-4 rounded-xl border p-4 sm:grid-cols-2 ${
-                      errors.sessions ? "border-red-500" : "border-white/15"
-                    }`}
-                  >
-                    {[
-                      { label: "1일차", items: day1Sessions },
-                      { label: "2일차", items: day2Sessions },
-                    ].map((group) => (
-                      <div key={group.label} className="flex flex-col gap-2">
-                        <p className="text-[13px] font-semibold tracking-wide text-white/50">
-                          {group.label}
-                        </p>
-                        {group.items.map((session) => (
-                          <label
-                            key={session.id}
-                            className="flex cursor-pointer items-start gap-2.5 rounded-lg border border-white/10 p-2.5 transition-colors duration-200 has-[:checked]:border-[var(--color-cyan)] has-[:checked]:bg-[var(--color-cyan)]/10"
+                  <div className="flex flex-col gap-4">
+                    {sessionGroups.map((group) => (
+                      <section
+                        key={group.id}
+                        aria-labelledby={`${group.id}-registration-heading`}
+                        className={`overflow-hidden rounded-xl border ${
+                          errors.sessions ? "border-red-500" : "border-white/15"
+                        }`}
+                      >
+                        <div className="flex items-baseline gap-2 border-b border-white/15 bg-white/[0.08] px-4 py-3">
+                          <h3
+                            id={`${group.id}-registration-heading`}
+                            className="text-[16px] font-bold text-white"
                           >
-                            <input
-                              type="checkbox"
-                              name="sessions"
-                              value={session.id}
-                              className="mt-1 h-4 w-4 shrink-0 accent-[var(--color-cyan)]"
-                            />
-                            <span>
-                              <span className="block text-[12px] text-white/45">
-                                {session.time} · {session.trackLabel}
-                              </span>
-                              <span className="block text-[14px] font-medium leading-snug text-white [word-break:keep-all]">
-                                {session.title}
-                              </span>
-                            </span>
-                          </label>
-                        ))}
-                      </div>
+                            {group.dayLabel}
+                          </h3>
+                          <span className="text-[13px] font-medium text-[var(--color-cyan)]">
+                            {group.dateLabel}
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2">
+                          {[
+                            { id: "track1", label: TRACK_LABELS.track1 },
+                            { id: "track2", label: TRACK_LABELS.track2 },
+                          ].map((track, trackIndex) => {
+                            const trackSessions = group.items.filter(
+                              (session) => session.trackLabel === track.label
+                            );
+
+                            return (
+                              <div
+                                key={track.id}
+                                className={`p-3 sm:p-4 ${
+                                  trackIndex === 1
+                                    ? "border-t border-white/15 sm:border-l sm:border-t-0"
+                                    : ""
+                                }`}
+                              >
+                                <p className="mb-3 text-[13px] font-bold tracking-wide text-white/65">
+                                  {track.label}
+                                </p>
+                                <div className="flex flex-col gap-2">
+                                  {trackSessions.map((session) => (
+                                    <label
+                                      key={session.id}
+                                      className="flex cursor-pointer items-start gap-2.5 rounded-lg border border-white/10 p-2.5 transition-colors duration-200 has-[:checked]:border-[var(--color-cyan)] has-[:checked]:bg-[var(--color-cyan)]/10"
+                                    >
+                                      <input
+                                        type="checkbox"
+                                        name="sessions"
+                                        value={session.id}
+                                        className="mt-1 h-4 w-4 shrink-0 accent-[var(--color-cyan)]"
+                                      />
+                                      <span>
+                                        <span className="block text-[12px] text-white/45">
+                                          {session.time}
+                                        </span>
+                                        <span className="block whitespace-pre-line text-[14px] font-medium leading-snug text-white [word-break:keep-all]">
+                                          {session.title}
+                                        </span>
+                                      </span>
+                                    </label>
+                                  ))}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </section>
                     ))}
                   </div>
                   <ErrorText message={errors.sessions} />

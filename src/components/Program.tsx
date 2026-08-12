@@ -40,7 +40,7 @@ function TrackBlock({
       <span className={`rounded-[4px] px-2.5 py-0.5 text-[11px] font-semibold tracking-wide ${bg} ${text}`}>
         {label}
       </span>
-      <h3 className="mt-2 text-[16px] font-bold leading-snug text-[var(--color-ink)] [word-break:keep-all] [overflow-wrap:break-word]">
+      <h3 className="mt-2 whitespace-pre-line text-[16px] font-bold leading-snug text-[var(--color-ink)] [word-break:keep-all] [overflow-wrap:break-word]">
         {item.title}
       </h3>
       {item.speaker || item.affiliation ? (
@@ -65,7 +65,8 @@ export function Program() {
             <h2 className="mt-4 text-[clamp(1.75rem,3.2vw,2.75rem)] font-extrabold leading-[1.2] tracking-tight text-[var(--color-ink)]">
               {PROGRAM_INTRO.title}
             </h2>
-            <p className="mt-5 max-w-md text-[16px] leading-[1.8] text-[var(--color-muted)] [word-break:keep-all] [overflow-wrap:break-word]">
+            <div className="rule-accent mt-4" />
+            <p className="mt-5 max-w-md whitespace-pre-line text-[16px] leading-[1.8] text-[var(--color-muted)] [word-break:keep-all] [overflow-wrap:break-word]">
               {PROGRAM_INTRO.description}
             </p>
             <a

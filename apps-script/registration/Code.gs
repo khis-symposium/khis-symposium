@@ -23,6 +23,7 @@ const ALLOWED_AFFILIATIONS_ = [
   "협회·학계",
   "산업계",
   "언론",
+  "학생",
   "기타"
 ];
 const ALLOWED_SESSIONS_ = [
