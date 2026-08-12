@@ -98,30 +98,30 @@ export function Location() {
             </div>
           </Reveal>
 
-          {/*
-            Keep the verified COEX map artwork, but crop its broad landmark context
-            to the venue area and add a non-interactive highlight for rooms 401/402.
-          */}
+          {/* Full source artwork, with the venue highlight aligned to its native coordinates. */}
           <Reveal delay={100}>
-            <div className="relative aspect-[4/3] overflow-hidden rounded-[12px] border border-[var(--color-cyan)]/25 bg-[#e4f4f7] shadow-2xl">
-              <Image
-                src={LOCATION.mapImage}
-                alt="코엑스 컨퍼런스룸 401·402호 위치를 강조한 행사장 약도"
-                fill
-                sizes="(max-width: 1023px) calc(100vw - 3rem), 64vw"
-                className="scale-[1.2] object-cover object-center"
-              />
-
-              <div
-                className="pointer-events-none absolute left-[32%] top-[47%] h-[29%] w-[22%] rounded-[12px] border-2 border-[var(--color-cyan)] bg-[var(--color-cyan)]/10 shadow-[0_0_0_4px_rgba(255,255,255,0.75),0_0_28px_rgba(22,166,240,0.7)]"
-                aria-hidden
-              />
-
-              <div className="absolute left-3 top-3 flex max-w-[calc(100%-1.5rem)] items-center gap-2 rounded-full border border-white/70 bg-[var(--color-void)]/90 px-3 py-2 text-white shadow-lg backdrop-blur-sm sm:left-5 sm:top-5 sm:px-4">
+            <div className="rounded-[12px] border border-[var(--color-cyan)]/25 bg-[#e4f4f7] p-1 shadow-2xl">
+              <div className="flex items-center gap-2 rounded-[8px] bg-[var(--color-void)] px-3 py-2.5 text-white sm:px-4">
                 <MapPin size={18} weight="fill" className="shrink-0 text-[var(--color-cyan)]" />
                 <p className="text-[12px] font-semibold leading-snug sm:text-[14px]">
                   행사장 · 코엑스 컨퍼런스룸 401·402호
                 </p>
+              </div>
+
+              <div className="relative mt-1 aspect-[4167/2278] w-full">
+                <Image
+                  src={LOCATION.mapImage}
+                  alt="코엑스 컨퍼런스룸 401·402호 위치를 강조한 행사장 약도"
+                  width={4167}
+                  height={2278}
+                  sizes="(max-width: 1023px) calc(100vw - 3.5rem), 64vw"
+                  className="block h-auto w-full"
+                />
+
+                <div
+                  className="pointer-events-none absolute left-[39.5%] top-[50.5%] h-[20%] w-[15%] rounded-[8px] border-2 border-[var(--color-cyan)] bg-[var(--color-cyan)]/10 shadow-[0_0_0_3px_rgba(255,255,255,0.8),0_0_24px_rgba(22,166,240,0.75)]"
+                  aria-hidden
+                />
               </div>
             </div>
           </Reveal>
