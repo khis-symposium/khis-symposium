@@ -114,7 +114,7 @@ export const PROGRAM_INTRO = {
   eyebrow: "SCHEDULE",
   title: "프로그램",
   description:
-    "1일차와 2일차에 걸쳐 진행되는 세부 일정을 안내드립니다. 국가통합바이오빅데이터 플랫폼 데이터 개방, 디지털 보건의료정보시스템 등 의정원 주요사업 추진 현황 등으로 구성되며 일정은 사정에 따라 변경될 수 있습니다.",
+    "행사 기간 동안 진행되는 세부 일정을 안내 드립니다.\n일정은 운영 상황에 따라 변경될 수 있습니다.",
   linkLabel: "리플렛 다운로드",
   leafletUrl: "/files/khis-symposium-leaflet.pdf",
   // 지정 시 실제 현장 사진으로 전환됨. 비워두면 GlowingShadow 플레이스홀더가 표시됨.
@@ -164,7 +164,7 @@ export const PROGRAM: ProgramDay[] = [
         time: "10:00 – 11:40",
         duration: "(100분)",
         track1: { title: "한국형 의료데이터 표준화의 현장 적용과 확산" },
-        track2: { title: "(가제) 의료 서비스의 새로운 연결" },
+        track2: { title: "비대면 진료 제도화,\n새로운 의료서비스의 시작" },
       },
       { time: "11:40 – 13:00", duration: "(80분)", shared: { title: "점심 시간" } },
       {
@@ -234,6 +234,7 @@ export const AFFILIATION_TYPES = [
   "협회·학계",
   "산업계",
   "언론",
+  "학생",
   "기타",
 ] as const;
 
@@ -242,15 +243,6 @@ export const PRIVACY_NOTICE = {
   purpose: "심포지엄 등록·운영 서비스 제공, 만족도 조사 포함",
   retention: "행사 종료 후 관련 법령에 따라 파기",
 } as const;
-
-// Google Sheets 연동 — Apps Script 웹앱 배포 URL을 넣으면 제출 데이터가 시트에
-// 저장됩니다. 비워두면(기본값) 제출은 시연용으로만 동작합니다.
-// 설정 방법:
-//   1. 응답을 받을 Google Sheet를 새로 만든다.
-//   2. 확장 프로그램 > Apps Script 에서 POST를 받아 행을 추가하는 스크립트를 배포한다.
-//   3. 배포된 웹앱 URL을 아래에 붙여넣는다.
-export const GOOGLE_SHEET_ENDPOINT =
-  "https://script.google.com/macros/s/AKfycby72qpHD-W_MDHyHS2PInhoLmtkOGYnuO-4rhvE996vkIz5vQ21ihYETyOf-1O1-2KG/exec";
 
 export const FOOTER = {
   orgName: "한국보건의료정보원",

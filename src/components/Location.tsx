@@ -98,16 +98,27 @@ export function Location() {
             </div>
           </Reveal>
 
-          {/* Map — sized to the image's own aspect ratio (no cropping/distortion) */}
+          {/* Full final artwork, including the venue highlight in the source image. */}
           <Reveal delay={100}>
-            <div className="overflow-hidden rounded-[12px] border border-white/10 bg-white shadow-2xl">
-              <Image
-                src={LOCATION.mapImage}
-                alt="심포지엄 장소 약도"
-                width={4167}
-                height={2278}
-                className="h-auto w-full"
-              />
+            <div className="rounded-[12px] border border-[var(--color-cyan)]/25 bg-[#e4f4f7] p-1 shadow-2xl">
+              <div className="flex items-center gap-2 rounded-[8px] bg-[var(--color-void)] px-3 py-2.5 text-white sm:px-4">
+                <MapPin size={18} weight="fill" className="shrink-0 text-[var(--color-cyan)]" />
+                <p className="text-[12px] font-semibold leading-snug sm:text-[14px]">
+                  행사장 · 코엑스 컨퍼런스룸 401·402호
+                </p>
+              </div>
+
+              <div className="relative mt-1 aspect-[4167/1861] w-full">
+                <Image
+                  src="/images/location-map-final.jpg"
+                  alt="코엑스 컨퍼런스룸 401·402호 위치를 강조한 행사장 약도"
+                  width={4167}
+                  height={1861}
+                  sizes="(max-width: 1023px) calc(100vw - 3.5rem), 64vw"
+                  unoptimized
+                  className="block h-auto w-full"
+                />
+              </div>
             </div>
           </Reveal>
         </div>
