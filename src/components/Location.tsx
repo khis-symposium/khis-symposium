@@ -98,7 +98,7 @@ export function Location() {
             </div>
           </Reveal>
 
-          {/* Full source artwork, with the venue highlight aligned to its native coordinates. */}
+          {/* Full final artwork, including the venue highlight in the source image. */}
           <Reveal delay={100}>
             <div className="rounded-[12px] border border-[var(--color-cyan)]/25 bg-[#e4f4f7] p-1 shadow-2xl">
               <div className="flex items-center gap-2 rounded-[8px] bg-[var(--color-void)] px-3 py-2.5 text-white sm:px-4">
@@ -108,19 +108,15 @@ export function Location() {
                 </p>
               </div>
 
-              <div className="relative mt-1 aspect-[4167/2278] w-full">
+              <div className="relative mt-1 aspect-[4167/1861] w-full">
                 <Image
-                  src={LOCATION.mapImage}
+                  src="/images/location-map-final.jpg"
                   alt="코엑스 컨퍼런스룸 401·402호 위치를 강조한 행사장 약도"
                   width={4167}
-                  height={2278}
+                  height={1861}
                   sizes="(max-width: 1023px) calc(100vw - 3.5rem), 64vw"
+                  unoptimized
                   className="block h-auto w-full"
-                />
-
-                <div
-                  className="pointer-events-none absolute left-[39.5%] top-[50.5%] h-[20%] w-[15%] rounded-[8px] border-2 border-[var(--color-cyan)] bg-[var(--color-cyan)]/10 shadow-[0_0_0_3px_rgba(255,255,255,0.8),0_0_24px_rgba(22,166,240,0.75)]"
-                  aria-hidden
                 />
               </div>
             </div>
