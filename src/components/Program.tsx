@@ -69,16 +69,18 @@ export function Program() {
             <p className="mt-5 max-w-md whitespace-pre-line text-[16px] leading-[1.8] text-[var(--color-muted)] [word-break:keep-all] [overflow-wrap:break-word]">
               {PROGRAM_INTRO.description}
             </p>
-            <a
-              href={PROGRAM_INTRO.leafletUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              download
-              className="mt-5 inline-flex items-center gap-1.5 text-[16px] font-semibold text-[var(--color-cyan)] transition-colors hover:text-[var(--color-purple)]"
-            >
-              {PROGRAM_INTRO.linkLabel}
-              <ArrowRight size={16} />
-            </a>
+            {PROGRAM_INTRO.leafletAvailable ? (
+              <a
+                href={PROGRAM_INTRO.leafletUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                download
+                className="mt-5 inline-flex items-center gap-1.5 text-[16px] font-semibold text-[var(--color-cyan)] transition-colors hover:text-[var(--color-purple)]"
+              >
+                {PROGRAM_INTRO.linkLabel}
+                <ArrowRight size={16} />
+              </a>
+            ) : null}
 
             {/* Visual collage — 2025 심포지엄 현장 사진, 살짝 겹치게 + 블루 톤 오버레이.
                 컨테이너 너비는 위 설명문(max-w-md)과 맞춤 */}

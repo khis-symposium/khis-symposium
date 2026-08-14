@@ -9,6 +9,7 @@ import {
   PRIVACY_NOTICE,
   REGISTRATION_SESSIONS,
   TRACK_LABELS,
+  updateRegistrationSessionSelection,
 } from "@/lib/constants";
 
 type Status = "idle" | "submitting" | "success" | "error";
@@ -98,6 +99,7 @@ export function Registration() {
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<Errors>({});
   const [phone, setPhone] = useState("");
+  const [selectedSessionIds, setSelectedSessionIds] = useState<string[]>([]);
 
   const sessionGroups = [
     {
@@ -314,7 +316,7 @@ export function Registration() {
                   <legend className={labelBase}>
                     참여세션{" "}
                     <span className="text-[13px] font-normal text-white/45">
-                      (총 {REGISTRATION_SESSIONS.length}개 중 복수 선택 가능)
+                      (총 {REGISTRATION_SESSIONS.length}개 · 동일 시간대 1개만 선택 가능)
                     </span>{" "}
                     <span className="text-[var(--color-cyan)]">*</span>
                   </legend>
@@ -370,6 +372,16 @@ export function Registration() {
                                         type="checkbox"
                                         name="sessions"
                                         value={session.id}
+                                        checked={selectedSessionIds.includes(session.id)}
+                                        onChange={(event) =>
+                                          setSelectedSessionIds((selectedIds) =>
+                                            updateRegistrationSessionSelection(
+                                              selectedIds,
+                                              session.id,
+                                              event.target.checked
+                                            )
+                                          )
+                                        }
                                         className="mt-1 h-4 w-4 shrink-0 accent-[var(--color-cyan)]"
                                       />
                                       <span>
