@@ -1,4 +1,8 @@
-import { AFFILIATION_TYPES, REGISTRATION_SESSIONS } from "@/lib/constants";
+import {
+  AFFILIATION_TYPES,
+  REGISTRATION_SESSIONS,
+  hasRegistrationSessionSlotConflict,
+} from "@/lib/constants";
 
 export const runtime = "nodejs";
 
@@ -75,6 +79,7 @@ function parsePayload(value: unknown): RegistrationPayload | null {
       (session) => typeof session !== "string" || !ALLOWED_SESSIONS.has(session)
     ) ||
     new Set(value.sessions).size !== value.sessions.length ||
+    hasRegistrationSessionSlotConflict(value.sessions) ||
     value.consent !== "agree"
   ) {
     return null;

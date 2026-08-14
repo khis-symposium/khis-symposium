@@ -17,11 +17,11 @@ export const SITE = {
   // 히어로 타이틀 줄바꿈 (둘 다 흰색)
   heroTitleLine1: "2026 한국보건의료정보원",
   heroTitleLine2: "연례 심포지엄",
-  tagline: "빅데이터 기반의 AI 플랫폼, 보건의료 미래를 열다",
+  tagline: "연결에서 혁신으로, 보건의료 디지털 전환의 미래",
   dateLabel: "2026. 9. 10.(목) - 9. 11.(금)",
   venueLabel: "서울 강남 코엑스 컨퍼런스룸 401, 402",
   description:
-    "한국보건의료정보원이 주최하는 연례 심포지엄으로, 빅데이터 기반의 AI 플랫폼을 통해 보건의료의 미래를 여는 자리입니다.",
+    "2026 한국보건의료정보원 연례 심포지엄 — 연결에서 혁신으로, 보건의료 디지털 전환의 미래",
 } as const;
 
 export const NAV_LINKS = [
@@ -90,6 +90,8 @@ export type ProgramTrackItem = {
 
 export type ProgramSlot = {
   time: string;
+  /** Keep the deployed Apps Script session ID stable when display times change. */
+  registrationIdTime?: string;
   duration?: string;
   /** Use for rows common to both tracks (registration, lunch, break) */
   shared?: ProgramTrackItem;
@@ -117,6 +119,7 @@ export const PROGRAM_INTRO = {
     "행사 기간 동안 진행되는 세부 일정을 안내 드립니다.\n일정은 운영 상황에 따라 변경될 수 있습니다.",
   linkLabel: "리플렛 다운로드",
   leafletUrl: "/files/khis-symposium-leaflet.pdf",
+  leafletAvailable: false,
   // 지정 시 실제 현장 사진으로 전환됨. 비워두면 GlowingShadow 플레이스홀더가 표시됨.
   image1: "",
   image2: "",
@@ -129,29 +132,33 @@ export const PROGRAM: ProgramDay[] = [
     dateLabel: "2026. 09. 10.(목)",
     slots: [
       {
-        time: "09:30 – 10:50",
-        duration: "(80분)",
-        track1: { title: "개회식", speaker: "백롱민 단장 · 기조연설" },
+        time: "09:30 – 10:25",
+        track1: { title: "개회식" },
       },
       {
-        time: "10:50 – 12:30",
-        duration: "(100분)",
-        track1: { title: "국가통합바이오빅데이터 개방을 통한 국민건강 증진 (사업추진)" },
-        track2: { title: "디지털 보건의료정보 플랫폼" },
+        time: "10:25 – 11:05",
+        track1: { title: "기조연설" },
+      },
+      {
+        time: "11:10 – 12:30",
+        registrationIdTime: "10:50 – 12:30",
+        duration: "(80분)",
+        track1: { title: "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다" },
+        track2: { title: "디지털 보건의료정보 플랫폼 국민 중심 의료의 새로운 시작" },
       },
       { time: "12:30 – 13:50", duration: "(80분)", shared: { title: "점심 시간" } },
       {
         time: "13:50 – 15:30",
         duration: "(100분)",
-        track1: { title: "국가통합바이오빅데이터 개방을 통한 국민건강 증진 (활용)" },
+        track1: { title: "국가통합바이오빅데이터, 데이터 활용으로 국민건강의 미래를 열다" },
         track2: { title: "보건의료데이터 인프라 혁신" },
       },
       { time: "15:30 – 15:50", duration: "(20분)", shared: { title: "휴식" } },
       {
         time: "15:50 – 17:30",
         duration: "(100분)",
-        track1: { title: "의료 AI 생태계 구축 (AI고속도로, 의료전달체계 확립, AI전략 등)" },
-        track2: { title: "빅데이터 기반 질병 대응 전략" },
+        track1: { title: "의료 AI 생태계 구축" },
+        track2: { title: "빅데이터 기반의 미래 질병 대응 전략" },
       },
     ],
   },
@@ -164,24 +171,21 @@ export const PROGRAM: ProgramDay[] = [
         time: "10:00 – 11:40",
         duration: "(100분)",
         track1: { title: "한국형 의료데이터 표준화의 현장 적용과 확산" },
-        track2: { title: "비대면 진료 제도화,\n새로운 의료서비스의 시작" },
+        track2: { title: "비대면 진료 제도화, 의료서비스의 새로운 연결" },
       },
       { time: "11:40 – 13:00", duration: "(80분)", shared: { title: "점심 시간" } },
       {
         time: "13:00 – 14:40",
         duration: "(100분)",
-        track1: { title: "표준 기반 의료시스템 실행체계", affiliation: "대한의료정보학회" },
+        track1: { title: "표준 기반 AI-Ready 의료시스템 실행체계" },
         track2: { title: "AI 시대 신뢰받는 보건의료데이터 활용 방향" },
       },
       { time: "14:40 – 15:00", duration: "(20분)", shared: { title: "휴식" } },
       {
         time: "15:00 – 16:40",
         duration: "(100분)",
-        track1: {
-          title: "AI 시대 글로벌 디지털헬스와 상호운용성 전략",
-          affiliation: "대한의료정보학회",
-        },
-        track2: { title: "데이터 안전한 활용", affiliation: "과학기자협회" },
+        track1: { title: "AI 시대 글로벌 디지털헬스와 상호운용성 전략" },
+        track2: { title: "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)" },
       },
       {
         time: "16:40 – 17:00",
@@ -199,6 +203,7 @@ export type RegistrationSessionOption = {
   dayId: string;
   dayLabel: string;
   time: string;
+  slotKey: string;
   trackLabel: string;
   title: string;
 };
@@ -206,26 +211,68 @@ export type RegistrationSessionOption = {
 export const REGISTRATION_SESSIONS: RegistrationSessionOption[] = PROGRAM.flatMap((day) =>
   day.slots.flatMap((slot): RegistrationSessionOption[] => {
     if (!slot.track1 || !slot.track2) return [];
+    const registrationIdTime = slot.registrationIdTime ?? slot.time;
+    const slotKey = `${day.id}::${slot.time}`;
     return [
       {
-        id: `${day.id}-${slot.time}-t1`,
+        id: `${day.id}-${registrationIdTime}-t1`,
         dayId: day.id,
         dayLabel: day.dayLabel,
         time: slot.time,
+        slotKey,
         trackLabel: TRACK_LABELS.track1,
         title: slot.track1.title,
       },
       {
-        id: `${day.id}-${slot.time}-t2`,
+        id: `${day.id}-${registrationIdTime}-t2`,
         dayId: day.id,
         dayLabel: day.dayLabel,
         time: slot.time,
+        slotKey,
         trackLabel: TRACK_LABELS.track2,
         title: slot.track2.title,
       },
     ];
   })
 );
+
+export function hasRegistrationSessionSlotConflict(
+  sessionIds: readonly string[],
+  sessions: readonly RegistrationSessionOption[] = REGISTRATION_SESSIONS
+) {
+  const sessionsById = new Map(sessions.map((session) => [session.id, session]));
+  const selectedSlots = new Set<string>();
+
+  for (const sessionId of sessionIds) {
+    const session = sessionsById.get(sessionId);
+    if (!session) continue;
+    if (selectedSlots.has(session.slotKey)) return true;
+    selectedSlots.add(session.slotKey);
+  }
+
+  return false;
+}
+
+export function updateRegistrationSessionSelection(
+  selectedIds: readonly string[],
+  toggledId: string,
+  checked: boolean,
+  sessions: readonly RegistrationSessionOption[] = REGISTRATION_SESSIONS
+) {
+  if (!checked) return selectedIds.filter((sessionId) => sessionId !== toggledId);
+
+  const sessionsById = new Map(sessions.map((session) => [session.id, session]));
+  const toggledSession = sessionsById.get(toggledId);
+  if (!toggledSession) return [...selectedIds];
+
+  return [
+    ...selectedIds.filter((sessionId) => {
+      const selectedSession = sessionsById.get(sessionId);
+      return sessionId !== toggledId && selectedSession?.slotKey !== toggledSession.slotKey;
+    }),
+    toggledId,
+  ];
+}
 
 export const AFFILIATION_TYPES = [
   "정보부처",

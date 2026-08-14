@@ -11,7 +11,7 @@ const pretendard = localFont({
 });
 
 const siteTitle = `${SITE.name} | ${SITE.year} ${SITE.shortName}`;
-const siteUrl = "https://khis-symposium.vercel.app";
+const siteUrl = "https://khis-symposium.kr";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     description: SITE.description,
     images: [
       {
-        url: "/images/og-image.png",
+        url: "/images/og-image-20260814-v2.png",
         width: 1200,
         height: 630,
         alt: siteTitle,
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: siteTitle,
     description: SITE.description,
-    images: ["/images/og-image.png"],
+    images: ["/images/og-image-20260814-v2.png"],
   },
 };
 
