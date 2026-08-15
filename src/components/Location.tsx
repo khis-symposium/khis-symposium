@@ -108,12 +108,12 @@ export function Location() {
                 </p>
               </div>
 
-              <div className="relative mt-1 aspect-[5906/2216] w-full">
+              <div className="relative mt-1 aspect-[1143/684] w-full">
                 <Image
-                  src="/images/location-map-20260813-v2.png"
+                  src="/images/location-map-20260815-v3.jpg"
                   alt="코엑스 컨퍼런스룸 401·402호 위치를 강조한 행사장 약도"
-                  width={5906}
-                  height={2216}
+                  width={1143}
+                  height={684}
                   sizes="(max-width: 1023px) calc(100vw - 3.5rem), 64vw"
                   unoptimized
                   className="block h-auto w-full"
