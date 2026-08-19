@@ -285,6 +285,11 @@ export const AFFILIATION_TYPES = [
   "기타",
 ] as const;
 
+export const AFFILIATION_OPTIONS = AFFILIATION_TYPES.map((value) => ({
+  value,
+  label: value === "정보부처" ? "정부부처" : value,
+}));
+
 export const PRIVACY_NOTICE = {
   items: "성명, 소속분류, 소속명, 직위, 연락처, 이메일, 참여세션",
   purpose: "심포지엄 등록·운영 서비스 제공, 만족도 조사 포함",

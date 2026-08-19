@@ -5,7 +5,7 @@ import { CaretDown, CheckCircle, CircleNotch, WarningCircle } from "@phosphor-ic
 import { Container } from "./ui/Container";
 import { Reveal } from "./ui/Reveal";
 import {
-  AFFILIATION_TYPES,
+  AFFILIATION_OPTIONS,
   PRIVACY_NOTICE,
   REGISTRATION_SESSIONS,
   TRACK_LABELS,
@@ -234,9 +234,13 @@ export function Registration() {
                         <option value="" disabled hidden>
                           선택해 주세요
                         </option>
-                        {AFFILIATION_TYPES.map((opt) => (
-                          <option key={opt} value={opt} className="bg-[#0b1330] text-white">
-                            {opt}
+                        {AFFILIATION_OPTIONS.map((option) => (
+                          <option
+                            key={option.value}
+                            value={option.value}
+                            className="bg-[#0b1330] text-white"
+                          >
+                            {option.label}
                           </option>
                         ))}
                       </select>

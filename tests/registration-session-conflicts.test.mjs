@@ -62,6 +62,23 @@ function loadRoute(constants, fetchImpl) {
 const constants = loadConstants();
 const sessions = constants.REGISTRATION_SESSIONS;
 
+test("registration shows 정부부처 while preserving the deployed 정보부처 value", () => {
+  assert.equal(constants.AFFILIATION_OPTIONS.length, 8);
+  assert.equal(constants.AFFILIATION_OPTIONS[0].label, "정부부처");
+  assert.equal(constants.AFFILIATION_OPTIONS[0].value, "정보부처");
+  assert.equal(
+    constants.AFFILIATION_OPTIONS.filter(({ label }) => label === "정부부처").length,
+    1
+  );
+  assert.ok(
+    constants.AFFILIATION_OPTIONS.every(({ label }) => label !== "정보부처")
+  );
+  assert.deepEqual(
+    constants.AFFILIATION_OPTIONS.map(({ value }) => value),
+    [...constants.AFFILIATION_TYPES]
+  );
+});
+
 function validPayload(selectedSessions = [sessions[0].id]) {
   return {
     name: "로컬 회귀 테스트",
