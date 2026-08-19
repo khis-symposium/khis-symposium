@@ -26,20 +26,57 @@ const EXPECTED_HEADERS = [
   "동의여부",
 ];
 
-function loadSiteConstants() {
-  const source = fs.readFileSync(path.join(repo, "src", "lib", "constants.ts"), "utf8");
-  const javascript = ts.transpileModule(source, {
+function transpile(file) {
+  return ts.transpileModule(fs.readFileSync(path.join(repo, file), "utf8"), {
     compilerOptions: {
       module: ts.ModuleKind.CommonJS,
       target: ts.ScriptTarget.ES2022,
     },
   }).outputText;
+}
+
+function loadSiteModule() {
   const compiledExports = {};
-  new Function("exports", javascript)(compiledExports);
-  return {
-    affiliations: [...compiledExports.AFFILIATION_TYPES],
-    sessions: compiledExports.REGISTRATION_SESSIONS.map((session) => session.id),
+  new Function("exports", transpile(path.join("src", "lib", "constants.ts")))(
+    compiledExports
+  );
+  return compiledExports;
+}
+
+function loadRoute(fetchImpl) {
+  const compiledExports = {};
+  const isolatedProcess = {
+    env: {
+      REGISTRATION_UPSTREAM_URL: "http://127.0.0.1:9/register",
+      REGISTRATION_UPSTREAM_TOKEN: VALID_TOKEN,
+    },
   };
+
+  new Function(
+    "exports",
+    "require",
+    "process",
+    "fetch",
+    "Response",
+    "AbortSignal",
+    "DOMException",
+    "console",
+    transpile(path.join("src", "app", "api", "register", "route.ts"))
+  )(
+    compiledExports,
+    (specifier) => {
+      assert.equal(specifier, "@/lib/constants");
+      return siteModule;
+    },
+    isolatedProcess,
+    fetchImpl,
+    Response,
+    AbortSignal,
+    DOMException,
+    { info() {} }
+  );
+
+  return compiledExports;
 }
 
 function extractArray(name) {
@@ -48,7 +85,11 @@ function extractArray(name) {
   return vm.runInNewContext(match[1]);
 }
 
-const siteContract = loadSiteConstants();
+const siteModule = loadSiteModule();
+const siteContract = {
+  affiliations: [...siteModule.AFFILIATION_TYPES],
+  sessions: siteModule.REGISTRATION_SESSIONS.map((session) => session.id),
+};
 
 function validPayload() {
   return {
@@ -62,6 +103,29 @@ function validPayload() {
     consent: "agree",
     authToken: VALID_TOKEN,
   };
+}
+
+function storedRow(payload) {
+  return [
+    payload.name,
+    payload.affiliationType,
+    payload.orgName,
+    payload.position,
+    payload.phone,
+    payload.email,
+    payload.sessions.join(", "),
+    payload.consent,
+  ];
+}
+
+function defaultExistingRows() {
+  const first = validPayload();
+  first.name = "기존 테스트 등록 1";
+  first.email = "existing-1@example.invalid";
+  const second = validPayload();
+  second.name = "기존 테스트 등록 2";
+  second.email = "existing-2@example.invalid";
+  return [storedRow(first), storedRow(second)];
 }
 
 function createHarness(options = {}) {
@@ -79,8 +143,16 @@ function createHarness(options = {}) {
     responses: [],
     logs: [],
     events: [],
+    duplicateReads: 0,
+    lastRowReads: 0,
+    lockHeld: false,
   };
   const headers = options.headers || EXPECTED_HEADERS;
+  const sheetRows = (options.existingRows || defaultExistingRows()).map((row, index) => [
+    new Date(index),
+    ...row,
+  ]);
+  state.sheetRows = sheetRows;
   const sheet = options.sheetMissing
     ? null
     : {
@@ -88,28 +160,50 @@ function createHarness(options = {}) {
           if (row === 1 && column === 1 && rows === 1 && columns === 9) {
             return {
               getValues() {
+                assert.equal(state.lockHeld, true);
                 state.headerReads += 1;
                 state.events.push("headers");
                 return [[...headers]];
               },
             };
           }
+
+          if (row === 2 && column === 2 && columns === 8) {
+            return {
+              getValues() {
+                assert.equal(state.lockHeld, true);
+                state.duplicateReads += 1;
+                state.events.push("duplicate-read");
+                return sheetRows.slice(0, rows).map((existing) => existing.slice(1, 9));
+              },
+            };
+          }
+
           return {
             setNumberFormat(format) {
+              assert.equal(state.lockHeld, true);
               state.formatCalls.push({ row, column, rows, columns, format });
               state.events.push("format");
               return this;
             },
             setValues(values) {
+              assert.equal(state.lockHeld, true);
               state.events.push("write");
               if (options.setValuesThrows) throw new Error("mock write failure");
               state.writes.push({ row, column, rows, columns, values });
+              assert.equal(column, 1);
+              assert.equal(rows, 1);
+              assert.equal(columns, 9);
+              sheetRows[row - 2] = [...values[0]];
               return this;
             },
           };
         },
         getLastRow() {
-          return 3;
+          assert.equal(state.lockHeld, true);
+          state.lastRowReads += 1;
+          state.events.push("last-row");
+          return sheetRows.length + 1;
         },
       };
 
@@ -135,11 +229,16 @@ function createHarness(options = {}) {
           tryLock(timeout) {
             state.lockAttempts.push(timeout);
             state.events.push("lock");
-            return options.lockAcquired !== false;
+            if (options.lockAcquired === false) return false;
+            assert.equal(state.lockHeld, false);
+            state.lockHeld = true;
+            return true;
           },
           releaseLock() {
+            assert.equal(state.lockHeld, true);
             state.lockReleases += 1;
             state.events.push("unlock");
+            state.lockHeld = false;
           },
         };
       },
@@ -173,6 +272,7 @@ function createHarness(options = {}) {
         };
       },
       flush() {
+        assert.equal(state.lockHeld, true);
         state.events.push("flush");
         if (options.flushThrows) throw new Error("mock flush failure");
         state.flushes += 1;
@@ -214,7 +314,28 @@ function assertRejected(harness, value, raw) {
   assert.equal(harness.state.writes.length, 0);
 }
 
+async function postRoute(route, payload) {
+  return route.POST(
+    new Request("http://127.0.0.1/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    })
+  );
+}
+
 test("Apps Script and Next constants use identical affiliations and session IDs", () => {
+  assert.deepEqual([...extractArray("ALLOWED_KEYS_")], [
+    "name",
+    "affiliationType",
+    "orgName",
+    "position",
+    "phone",
+    "email",
+    "sessions",
+    "consent",
+    "authToken",
+  ]);
   assert.deepEqual([...extractArray("ALLOWED_AFFILIATIONS_")], siteContract.affiliations);
   assert.equal(siteContract.affiliations[0], "정부부처");
   assert.ok(!siteContract.affiliations.includes("정보부처"));
@@ -224,9 +345,11 @@ test("Apps Script and Next constants use identical affiliations and session IDs"
 
 test("valid token and payload write once, flush, unlock, then acknowledge success", () => {
   const harness = createHarness();
-  assert.deepEqual(harness.invoke(), { result: "success" });
+  assert.deepEqual(harness.invoke(), { result: "success", duplicate: false });
   assert.equal(harness.state.writes.length, 1);
   assert.equal(harness.state.flushes, 1);
+  assert.equal(harness.state.duplicateReads, 1);
+  assert.equal(harness.state.lastRowReads, 1);
   assert.equal(harness.state.lockReleases, 1);
   assert.deepEqual(harness.state.requestedSheetNames, ["시트1"]);
   assert.equal(harness.state.activeSheetAccesses, 0);
@@ -236,8 +359,22 @@ test("valid token and payload write once, flush, unlock, then acknowledge succes
     Object.prototype.toString.call(harness.state.writes[0].values[0][0]),
     "[object Date]"
   );
+  assert.deepEqual(
+    {
+      row: harness.state.writes[0].row,
+      column: harness.state.writes[0].column,
+      rows: harness.state.writes[0].rows,
+      columns: harness.state.writes[0].columns,
+    },
+    { row: 4, column: 1, rows: 1, columns: 9 }
+  );
   assert.ok(harness.state.events.indexOf("write") < harness.state.events.indexOf("flush"));
-  assert.ok(harness.state.events.indexOf("flush") < harness.state.events.indexOf('response:{"result":"success"}'));
+  assert.ok(
+    harness.state.events.indexOf("flush") <
+      harness.state.events.indexOf('response:{"result":"success","duplicate":false}')
+  );
+  assert.ok(harness.state.events.indexOf("duplicate-read") < harness.state.events.indexOf("write"));
+  assert.equal(harness.state.lockHeld, false);
 });
 
 test("legacy 정보부처 input is normalized before validation and Sheet write", () => {
@@ -245,10 +382,116 @@ test("legacy 정보부처 input is normalized before validation and Sheet write"
   payload.affiliationType = "정보부처";
   const harness = createHarness();
 
-  assert.deepEqual(harness.invoke(payload), { result: "success" });
+  assert.deepEqual(harness.invoke(payload), { result: "success", duplicate: false });
   assert.equal(harness.state.writes.length, 1);
   assert.equal(harness.state.writes[0].values[0][2], "정부부처");
   assert.notEqual(harness.state.writes[0].values[0][2], "정보부처");
+});
+
+test("a response-loss retry returns duplicate success without a second append", () => {
+  const options = { flushThrows: true };
+  const harness = createHarness(options);
+
+  assert.deepEqual(harness.invoke(), { result: "error" });
+  assert.equal(harness.state.writes.length, 1);
+  options.flushThrows = false;
+
+  assert.deepEqual(harness.invoke(), { result: "success", duplicate: true });
+  assert.equal(harness.state.writes.length, 1);
+  assert.equal(harness.state.flushes, 0);
+  assert.equal(harness.state.lockAttempts.length, 2);
+  assert.equal(harness.state.lockReleases, 2);
+});
+
+test("a Route timeout after an Apps write recovers through duplicate ACK without another append", async () => {
+  const harness = createHarness();
+  let upstreamCalls = 0;
+  const route = loadRoute(async (_url, options) => {
+    upstreamCalls += 1;
+    const appResponse = harness.invoke(JSON.parse(options.body));
+    if (upstreamCalls === 1) {
+      assert.deepEqual(appResponse, { result: "success", duplicate: false });
+      throw new DOMException("mock response loss after write", "TimeoutError");
+    }
+    return new Response(JSON.stringify(appResponse), { status: 200 });
+  });
+  const payload = validPayload();
+  delete payload.authToken;
+
+  const firstResponse = await postRoute(route, payload);
+  assert.equal(firstResponse.status, 504);
+  assert.deepEqual(await firstResponse.json(), { ok: false });
+  assert.equal(harness.state.writes.length, 1);
+  assert.equal(harness.state.flushes, 1);
+
+  const retryResponse = await postRoute(route, payload);
+  assert.equal(retryResponse.status, 200);
+  assert.deepEqual(await retryResponse.json(), { ok: true, duplicate: true });
+  assert.equal(upstreamCalls, 2);
+  assert.equal(harness.state.writes.length, 1);
+  assert.equal(harness.state.flushes, 1);
+});
+
+test("canonical and legacy affiliation retries share one canonical duplicate", () => {
+  const harness = createHarness();
+  assert.deepEqual(harness.invoke(), { result: "success", duplicate: false });
+
+  const legacy = validPayload();
+  legacy.affiliationType = "정보부처";
+  assert.deepEqual(harness.invoke(legacy), { result: "success", duplicate: true });
+  assert.equal(harness.state.writes.length, 1);
+  assert.equal(harness.state.sheetRows.at(-1)[2], "정부부처");
+
+  const historicalLegacy = storedRow(validPayload());
+  historicalLegacy[1] = "정보부처";
+  const seeded = createHarness({ existingRows: [historicalLegacy] });
+  assert.deepEqual(seeded.invoke(), { result: "success", duplicate: true });
+  assert.equal(seeded.state.writes.length, 0);
+});
+
+test("the same session set is duplicate regardless of payload order", () => {
+  const first = validPayload();
+  first.sessions = [siteContract.sessions[0], siteContract.sessions[2]];
+  const retry = { ...first, sessions: [...first.sessions].reverse() };
+  const harness = createHarness();
+
+  assert.deepEqual(harness.invoke(first), { result: "success", duplicate: false });
+  assert.deepEqual(harness.invoke(retry), { result: "success", duplicate: true });
+  assert.equal(harness.state.writes.length, 1);
+});
+
+for (const [field, mutate] of [
+  ["name", (payload) => { payload.name = "다른 이름"; }],
+  ["affiliationType", (payload) => { payload.affiliationType = "공공기관"; }],
+  ["orgName", (payload) => { payload.orgName = "다른 기관"; }],
+  ["position", (payload) => { payload.position = "다른 직위"; }],
+  ["phone", (payload) => { payload.phone = "010-1111-2222"; }],
+  ["email", (payload) => { payload.email = "different@example.invalid"; }],
+  ["sessions", (payload) => { payload.sessions = [siteContract.sessions[2]]; }],
+]) {
+  test(`a valid payload with different ${field} creates a separate row`, () => {
+    const harness = createHarness();
+    assert.deepEqual(harness.invoke(), { result: "success", duplicate: false });
+    const changed = validPayload();
+    mutate(changed);
+    assert.deepEqual(harness.invoke(changed), { result: "success", duplicate: false });
+    assert.equal(harness.state.writes.length, 2);
+  });
+}
+
+test("serialized concurrent identical requests append exactly once", async () => {
+  const harness = createHarness();
+  const [first, second] = await Promise.all([
+    Promise.resolve().then(() => harness.invoke()),
+    Promise.resolve().then(() => harness.invoke()),
+  ]);
+
+  assert.deepEqual(first, { result: "success", duplicate: false });
+  assert.deepEqual(second, { result: "success", duplicate: true });
+  assert.equal(harness.state.writes.length, 1);
+  assert.deepEqual(harness.state.lockAttempts, [5000, 5000]);
+  assert.equal(harness.state.lockReleases, 2);
+  assert.equal(harness.state.lockHeld, false);
 });
 
 for (const [name, mutate, options = {}] of [
@@ -337,6 +580,9 @@ for (const [name, mutate] of [
   ["empty sessions", (payload) => { payload.sessions = []; }],
   ["unknown session", (payload) => { payload.sessions = ["unknown-session"]; }],
   ["duplicate session", (payload) => { payload.sessions = [siteContract.sessions[0], siteContract.sessions[0]]; }],
+  ["same-slot sessions", (payload) => {
+    payload.sessions = [siteContract.sessions[0], siteContract.sessions[1]];
+  }],
   ["consent mismatch", (payload) => { payload.consent = "disagree"; }],
 ]) {
   test(`payload validation rejects ${name} without a write`, () => {
@@ -387,7 +633,7 @@ test("formula-like user strings are text-formatted and apostrophe-prefixed", () 
   payload.position = "@hidden";
   payload.email = "-local@example.invalid";
   const harness = createHarness();
-  assert.deepEqual(harness.invoke(payload), { result: "success" });
+  assert.deepEqual(harness.invoke(payload), { result: "success", duplicate: false });
   assert.deepEqual(harness.state.formatCalls, [
     { row: 4, column: 2, rows: 1, columns: 8, format: "@" },
   ]);
@@ -402,3 +648,20 @@ test("formula-like user strings are text-formatted and apostrophe-prefixed", () 
   assert.ok(harness.state.responses.every((response) => !response.includes(payload.name)));
   assert.ok(harness.state.responses.every((response) => !response.includes(VALID_TOKEN)));
 });
+
+for (const [roundTrip, storedName] of [
+  ["preserved", "'=SUM(1,1)"],
+  ["stripped", "=SUM(1,1)"],
+]) {
+  test(`formula-safe ${roundTrip} apostrophe round-trip remains an exact duplicate`, () => {
+    const payload = validPayload();
+    payload.name = "=SUM(1,1)";
+    const existing = storedRow(payload);
+    existing[0] = storedName;
+    const harness = createHarness({ existingRows: [existing] });
+
+    assert.deepEqual(harness.invoke(payload), { result: "success", duplicate: true });
+    assert.equal(harness.state.writes.length, 0);
+    assert.equal(harness.state.flushes, 0);
+  });
+}

@@ -77,22 +77,21 @@ function doPost(e) {
       return resultResponse_("error");
     }
 
-    const targetRow = sheet.getLastRow() + 1;
+    const lastRow = sheet.getLastRow();
+    const registrationValues = registrationValues_(data);
+    if (hasExactDuplicate_(sheet, lastRow, registrationValues)) {
+      return resultResponse_("success", true);
+    }
+
+    const targetRow = lastRow + 1;
     sheet.getRange(targetRow, 2, 1, 8).setNumberFormat("@");
     sheet.getRange(targetRow, 1, 1, 9).setValues([[
       new Date(),
-      safeCellText_(data.name),
-      safeCellText_(data.affiliationType),
-      safeCellText_(data.orgName),
-      safeCellText_(data.position),
-      safeCellText_(data.phone),
-      safeCellText_(data.email),
-      safeCellText_(data.sessions.join(", ")),
-      safeCellText_(data.consent)
+      ...registrationValues
     ]]);
     SpreadsheetApp.flush();
 
-    return resultResponse_("success");
+    return resultResponse_("success", false);
   } catch (_error) {
     return resultResponse_("error");
   } finally {
@@ -188,8 +187,14 @@ function isValidPayload_(data) {
       typeof session === "string" && ALLOWED_SESSIONS_.indexOf(session) !== -1
     ) &&
     new Set(data.sessions).size === data.sessions.length &&
+    !hasSessionSlotConflict_(data.sessions) &&
     data.consent === "agree"
   );
+}
+
+function hasSessionSlotConflict_(sessions) {
+  const slots = sessions.map((session) => session.replace(/-t[12]$/, ""));
+  return new Set(slots).size !== slots.length;
 }
 
 function isRecord_(value) {
@@ -214,6 +219,65 @@ function hasExpectedHeaders_(sheet) {
   );
 }
 
+function registrationValues_(data) {
+  return [
+    safeCellText_(data.name),
+    safeCellText_(data.affiliationType),
+    safeCellText_(data.orgName),
+    safeCellText_(data.position),
+    safeCellText_(data.phone),
+    safeCellText_(data.email),
+    safeCellText_(canonicalSessionText_(data.sessions)),
+    safeCellText_(data.consent)
+  ];
+}
+
+function hasExactDuplicate_(sheet, lastRow, candidateValues) {
+  if (lastRow < 2) {
+    return false;
+  }
+
+  const existingRows = sheet.getRange(2, 2, lastRow - 1, 8).getValues();
+  const candidateKey = duplicateKey_(candidateValues);
+  return existingRows.some((row) => duplicateKey_(normalizeStoredRow_(row)) === candidateKey);
+}
+
+function normalizeStoredRow_(row) {
+  if (!Array.isArray(row) || row.length !== 8) {
+    return null;
+  }
+
+  const sessions = String(row[6]).split(", ");
+  if (
+    sessions.length === 0 ||
+    sessions.some((session) => ALLOWED_SESSIONS_.indexOf(session) === -1) ||
+    new Set(sessions).size !== sessions.length
+  ) {
+    return null;
+  }
+
+  return [
+    safeCellText_(String(row[0])),
+    safeCellText_(normalizeAffiliation_(String(row[1]))),
+    safeCellText_(String(row[2])),
+    safeCellText_(String(row[3])),
+    safeCellText_(String(row[4])),
+    safeCellText_(String(row[5])),
+    safeCellText_(canonicalSessionText_(sessions)),
+    safeCellText_(String(row[7]))
+  ];
+}
+
+function canonicalSessionText_(sessions) {
+  return ALLOWED_SESSIONS_
+    .filter((session) => sessions.indexOf(session) !== -1)
+    .join(", ");
+}
+
+function duplicateKey_(values) {
+  return Array.isArray(values) ? JSON.stringify(values) : null;
+}
+
 function safeCellText_(value) {
   const text = String(value);
   return /^[\s\x00-\x1F]*[=+\-@]/.test(text) ? `'${text}` : text;
@@ -223,10 +287,15 @@ function utf8ByteLength_(value) {
   return Utilities.newBlob(value).getBytes().length;
 }
 
-function resultResponse_(result) {
+function resultResponse_(result, duplicate) {
   // ContentService cannot set a reliable custom HTTP status. The caller must
   // inspect this logical result and fail closed unless it is exactly "success".
+  const body = { result };
+  if (result === "success" && typeof duplicate === "boolean") {
+    body.duplicate = duplicate;
+  }
+
   return ContentService
-    .createTextOutput(JSON.stringify({ result }))
+    .createTextOutput(JSON.stringify(body))
     .setMimeType(ContentService.MimeType.JSON);
 }
