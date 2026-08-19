@@ -216,6 +216,8 @@ function assertRejected(harness, value, raw) {
 
 test("Apps Script and Next constants use identical affiliations and session IDs", () => {
   assert.deepEqual([...extractArray("ALLOWED_AFFILIATIONS_")], siteContract.affiliations);
+  assert.equal(siteContract.affiliations[0], "정부부처");
+  assert.ok(!siteContract.affiliations.includes("정보부처"));
   assert.deepEqual([...extractArray("ALLOWED_SESSIONS_")], siteContract.sessions);
   assert.deepEqual([...extractArray("EXPECTED_HEADERS_")], EXPECTED_HEADERS);
 });
@@ -229,12 +231,24 @@ test("valid token and payload write once, flush, unlock, then acknowledge succes
   assert.deepEqual(harness.state.requestedSheetNames, ["시트1"]);
   assert.equal(harness.state.activeSheetAccesses, 0);
   assert.equal(harness.state.logs.length, 0);
+  assert.equal(harness.state.writes[0].values[0][2], "정부부처");
   assert.equal(
     Object.prototype.toString.call(harness.state.writes[0].values[0][0]),
     "[object Date]"
   );
   assert.ok(harness.state.events.indexOf("write") < harness.state.events.indexOf("flush"));
   assert.ok(harness.state.events.indexOf("flush") < harness.state.events.indexOf('response:{"result":"success"}'));
+});
+
+test("legacy 정보부처 input is normalized before validation and Sheet write", () => {
+  const payload = validPayload();
+  payload.affiliationType = "정보부처";
+  const harness = createHarness();
+
+  assert.deepEqual(harness.invoke(payload), { result: "success" });
+  assert.equal(harness.state.writes.length, 1);
+  assert.equal(harness.state.writes[0].values[0][2], "정부부처");
+  assert.notEqual(harness.state.writes[0].values[0][2], "정보부처");
 });
 
 for (const [name, mutate, options = {}] of [

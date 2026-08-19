@@ -62,6 +62,36 @@ function loadRoute(constants, fetchImpl) {
 const constants = loadConstants();
 const sessions = constants.REGISTRATION_SESSIONS;
 
+test("registration uses the canonical 정부부처 label and value", () => {
+  assert.equal(constants.AFFILIATION_OPTIONS.length, 8);
+  assert.equal(constants.AFFILIATION_OPTIONS[0].label, "정부부처");
+  assert.equal(constants.AFFILIATION_OPTIONS[0].value, "정부부처");
+  assert.equal(
+    constants.AFFILIATION_OPTIONS.filter(({ label }) => label === "정부부처").length,
+    1
+  );
+  assert.equal(
+    constants.AFFILIATION_OPTIONS.filter(({ value }) => value === "정부부처").length,
+    1
+  );
+  assert.ok(constants.AFFILIATION_OPTIONS.every(
+    ({ label, value }) => label !== "정보부처" && value !== "정보부처"
+  ));
+  assert.deepEqual(
+    constants.AFFILIATION_OPTIONS.map(({ value }) => value),
+    [...constants.AFFILIATION_TYPES]
+  );
+  assert.deepEqual(constants.AFFILIATION_TYPES.slice(1), [
+    "공공기관",
+    "의료기관",
+    "협회·학계",
+    "산업계",
+    "언론",
+    "학생",
+    "기타",
+  ]);
+});
+
 function validPayload(selectedSessions = [sessions[0].id]) {
   return {
     name: "로컬 회귀 테스트",
@@ -169,6 +199,7 @@ test("route accepts non-conflicting sessions and preserves the upstream contract
   assert.equal(upstreamRequests.length, 1);
 
   const upstreamBody = JSON.parse(upstreamRequests[0].options.body);
+  assert.equal(upstreamBody.affiliationType, "정부부처");
   assert.deepEqual(upstreamBody.sessions, selected);
   assert.equal(upstreamBody.authToken.length, 43);
   assert.deepEqual(Object.keys(upstreamBody).sort(), [
@@ -182,4 +213,35 @@ test("route accepts non-conflicting sessions and preserves the upstream contract
     "position",
     "sessions",
   ]);
+});
+
+test("route normalizes the legacy 정보부처 alias before the upstream request", async () => {
+  const upstreamBodies = [];
+  const route = loadRoute(constants, async (_url, options) => {
+    upstreamBodies.push(JSON.parse(options.body));
+    return new Response('{"result":"success"}', { status: 200 });
+  });
+  const payload = validPayload();
+  payload.affiliationType = "정보부처";
+
+  const response = await post(route.POST, payload);
+  assert.equal(response.status, 200);
+  assert.deepEqual(await response.json(), { ok: true });
+  assert.equal(upstreamBodies.length, 1);
+  assert.equal(upstreamBodies[0].affiliationType, "정부부처");
+});
+
+test("route rejects an unknown affiliation before the upstream request", async () => {
+  let upstreamCalls = 0;
+  const route = loadRoute(constants, async () => {
+    upstreamCalls += 1;
+    return new Response('{"result":"success"}', { status: 200 });
+  });
+  const payload = validPayload();
+  payload.affiliationType = "알 수 없음";
+
+  const response = await post(route.POST, payload);
+  assert.equal(response.status, 400);
+  assert.deepEqual(await response.json(), { ok: false });
+  assert.equal(upstreamCalls, 0);
 });

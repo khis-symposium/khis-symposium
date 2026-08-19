@@ -17,7 +17,7 @@ const ALLOWED_KEYS_ = [
   "authToken"
 ];
 const ALLOWED_AFFILIATIONS_ = [
-  "정보부처",
+  "정부부처",
   "공공기관",
   "의료기관",
   "협회·학계",
@@ -26,6 +26,9 @@ const ALLOWED_AFFILIATIONS_ = [
   "학생",
   "기타"
 ];
+const LEGACY_AFFILIATION_ALIASES_ = {
+  "정보부처": "정부부처"
+};
 const ALLOWED_SESSIONS_ = [
   "day1-10:50 – 12:30-t1",
   "day1-10:50 – 12:30-t2",
@@ -129,7 +132,14 @@ function parseRequest_(e) {
     return null;
   }
 
+  candidate.affiliationType = normalizeAffiliation_(candidate.affiliationType);
   return candidate;
+}
+
+function normalizeAffiliation_(value) {
+  return Object.prototype.hasOwnProperty.call(LEGACY_AFFILIATION_ALIASES_, value)
+    ? LEGACY_AFFILIATION_ALIASES_[value]
+    : value;
 }
 
 function isAuthorized_(providedToken) {

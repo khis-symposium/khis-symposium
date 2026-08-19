@@ -275,7 +275,7 @@ export function updateRegistrationSessionSelection(
 }
 
 export const AFFILIATION_TYPES = [
-  "정보부처",
+  "정부부처",
   "공공기관",
   "의료기관",
   "협회·학계",
@@ -284,6 +284,11 @@ export const AFFILIATION_TYPES = [
   "학생",
   "기타",
 ] as const;
+
+export const AFFILIATION_OPTIONS = AFFILIATION_TYPES.map((value) => ({
+  value,
+  label: value,
+}));
 
 export const PRIVACY_NOTICE = {
   items: "성명, 소속분류, 소속명, 직위, 연락처, 이메일, 참여세션",
