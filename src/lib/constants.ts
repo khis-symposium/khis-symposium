@@ -8,6 +8,8 @@
  * ============================================================================
  */
 
+export const EVENT_THEME = "연결에서 혁신으로, 보건의료 AI 디지털 전환의 미래";
+
 export const SITE = {
   orgName: "한국보건의료정보원",
   orgNameEn: "Korea Health Information Service",
@@ -17,11 +19,10 @@ export const SITE = {
   // 히어로 타이틀 줄바꿈 (둘 다 흰색)
   heroTitleLine1: "2026 한국보건의료정보원",
   heroTitleLine2: "연례 심포지엄",
-  tagline: "연결에서 혁신으로, 보건의료 디지털 전환의 미래",
+  tagline: EVENT_THEME,
   dateLabel: "2026. 9. 10.(목) - 9. 11.(금)",
   venueLabel: "서울 강남 코엑스 컨퍼런스룸 401, 402",
-  description:
-    "2026 한국보건의료정보원 연례 심포지엄 — 연결에서 혁신으로, 보건의료 디지털 전환의 미래",
+  description: `2026 한국보건의료정보원 연례 심포지엄 — ${EVENT_THEME}`,
 } as const;
 
 export const NAV_LINKS = [
@@ -81,9 +82,10 @@ export const LOCATION = {
   ],
 } as const;
 
-/** A single track's content within a time slot (title + optional speaker/org) */
+/** A single track's content within a time slot (title + optional chair/speaker/org) */
 export type ProgramTrackItem = {
   title: string;
+  chair?: string;
   speaker?: string;
   affiliation?: string;
 };
@@ -143,21 +145,30 @@ export const PROGRAM: ProgramDay[] = [
         time: "11:10 – 12:30",
         registrationIdTime: "10:50 – 12:30",
         duration: "(80분)",
-        track1: { title: "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다" },
-        track2: { title: "디지털 보건의료정보 플랫폼 국민 중심 의료의 새로운 시작" },
+        track1: {
+          title: "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다",
+          chair: "양성일 교수",
+        },
+        track2: {
+          title: "디지털 보건의료정보 플랫폼 국민 중심 의료의 새로운 시작",
+          chair: "김일곤 대한의료정보학회장",
+        },
       },
       { time: "12:30 – 13:50", duration: "(80분)", shared: { title: "점심 시간" } },
       {
         time: "13:50 – 15:30",
         duration: "(100분)",
-        track1: { title: "국가통합바이오빅데이터, 데이터 활용으로 국민건강의 미래를 열다" },
-        track2: { title: "보건의료데이터 인프라 혁신" },
+        track1: {
+          title: "국가통합바이오빅데이터, 데이터 활용으로 국민건강의 미래를 열다",
+          chair: "이영성 교수",
+        },
+        track2: { title: "보건의료데이터 인프라 혁신", chair: "이호영 교수" },
       },
       { time: "15:30 – 15:50", duration: "(20분)", shared: { title: "휴식" } },
       {
         time: "15:50 – 17:30",
         duration: "(100분)",
-        track1: { title: "의료 AI 생태계 구축" },
+        track1: { title: "의료 AI 생태계 구축", chair: "양현종 교수" },
         track2: { title: "빅데이터 기반의 미래 질병 대응 전략" },
       },
     ],
@@ -170,7 +181,10 @@ export const PROGRAM: ProgramDay[] = [
       {
         time: "10:00 – 11:40",
         duration: "(100분)",
-        track1: { title: "한국형 의료데이터 표준화의 현장 적용과 확산" },
+        track1: {
+          title: "한국형 의료데이터 표준화의 현장 적용과 확산",
+          chair: "김종연 대한의료정보학회 이사장",
+        },
         track2: { title: "비대면 진료 제도화, 의료서비스의 새로운 연결" },
       },
       { time: "11:40 – 13:00", duration: "(80분)", shared: { title: "점심 시간" } },
@@ -184,8 +198,14 @@ export const PROGRAM: ProgramDay[] = [
       {
         time: "15:00 – 16:40",
         duration: "(100분)",
-        track1: { title: "AI 시대 글로벌 디지털헬스와 상호운용성 전략" },
-        track2: { title: "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)" },
+        track1: {
+          title: "AI 시대 글로벌 디지털헬스와 상호운용성 전략",
+          chair: "양광모 교수",
+        },
+        track2: {
+          title: "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)",
+          chair: "이은정 KBS 기자",
+        },
       },
       {
         time: "16:40 – 17:00",

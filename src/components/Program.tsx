@@ -1,6 +1,3 @@
-"use client";
-
-import { useState } from "react";
 import Image from "next/image";
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { Container } from "./ui/Container";
@@ -40,9 +37,14 @@ function TrackBlock({
       <span className={`rounded-[4px] px-2.5 py-0.5 text-[11px] font-semibold tracking-wide ${bg} ${text}`}>
         {label}
       </span>
-      <h3 className="mt-2 whitespace-pre-line text-[16px] font-bold leading-snug text-[var(--color-ink)] [word-break:keep-all] [overflow-wrap:break-word]">
+      <h4 className="mt-2 whitespace-pre-line text-[16px] font-bold leading-snug text-[var(--color-ink)] [word-break:keep-all] [overflow-wrap:break-word]">
         {item.title}
-      </h3>
+      </h4>
+      {item.chair ? (
+        <p className="mt-2 text-[13px] font-medium leading-relaxed text-[var(--color-ink-soft)] [word-break:keep-all] [overflow-wrap:break-word]">
+          좌장: {item.chair}
+        </p>
+      ) : null}
       {item.speaker || item.affiliation ? (
         <p className="mt-1.5 text-[14px] text-[var(--color-muted)]">
           {[item.speaker, item.affiliation].filter(Boolean).join(" · ")}
@@ -53,8 +55,6 @@ function TrackBlock({
 }
 
 export function Program() {
-  const [activeDay, setActiveDay] = useState(PROGRAM[0].id);
-
   return (
     <section id="program" className="on-light section-pad bg-[var(--color-surface)]">
       <Container>
@@ -114,88 +114,56 @@ export function Program() {
             </div>
           </Reveal>
 
-          {/* Right: day tabs + timeline */}
-          <div>
-            <Reveal delay={80}>
-              <div role="tablist" aria-label="일자 선택" className="flex w-full border-b border-[var(--color-line)]">
-                {PROGRAM.map((d) => {
-                  const isActive = d.id === activeDay;
-                  return (
-                    <button
-                      key={d.id}
-                      role="tab"
-                      aria-selected={isActive}
-                      aria-controls={`panel-${d.id}`}
-                      id={`tab-${d.id}`}
-                      onClick={() => setActiveDay(d.id)}
-                      className={`relative min-h-[44px] px-2 pb-4 pr-8 text-left transition-colors duration-200 cursor-pointer ${
-                        isActive ? "text-[var(--color-blue)]" : "text-[var(--color-muted)] hover:text-[var(--color-ink-soft)]"
-                      }`}
-                    >
-                      <span className="text-lg font-extrabold">{d.dayLabel}</span>
-                      <span className="mt-1 block text-[12px] tracking-wide">{d.dateLabel}</span>
-                      {isActive ? (
-                        <span className="absolute -bottom-px left-0 h-[2px] w-full bg-gradient-to-r from-[var(--color-blue)] to-[var(--color-cyan)]" />
-                      ) : null}
-                    </button>
-                  );
-                })}
-              </div>
-            </Reveal>
-
-            {/*
-              All day-panels are always mounted and stacked in the same grid
-              cell (col-start-1 row-start-1) — only the active one is visible.
-              Because they share one cell, the grid's row height is computed
-              from the tallest panel, so the section's overall height stays
-              fixed across DAY 1 / DAY 2 instead of jumping when the days
-              have a different number of lines.
-            */}
-            <div className="mt-2 grid">
-              {PROGRAM.map((d) => {
-                const isActiveDay = d.id === activeDay;
-                return (
-                  <div
-                    key={d.id}
-                    role="tabpanel"
-                    id={`panel-${d.id}`}
-                    aria-labelledby={`tab-${d.id}`}
-                    aria-hidden={!isActiveDay}
-                    className={`col-start-1 row-start-1 transition-opacity duration-200 ${
-                      isActiveDay ? "opacity-100" : "pointer-events-none opacity-0"
-                    }`}
-                  >
-                    <ol className="flex flex-col">
-                      {d.slots.map((slot, i) => (
-                        <Reveal as="li" key={`${d.id}-${i}`} delay={Math.min(i, 6) * 50}>
-                          <div className="grid grid-cols-[minmax(84px,110px)_1fr] items-center gap-4 border-b border-[var(--color-line)]/70 py-6 sm:gap-8">
-                            <div className="text-center text-[16px] font-semibold tracking-wide text-[var(--color-muted)]">
-                              {slot.time}
-                              {slot.duration ? (
-                                <span className="mt-0.5 block text-[12px] font-normal text-[var(--color-muted)]/70">
-                                  {slot.duration}
-                                </span>
-                              ) : null}
-                            </div>
-
-                            {slot.shared ? (
-                              <h3 className="text-center text-[16px] font-bold text-[var(--color-ink)] [word-break:keep-all] [overflow-wrap:break-word]">
-                                {slot.shared.title}
-                              </h3>
-                            ) : (
-                              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                                <TrackBlock label={TRACK_LABELS.track1} item={slot.track1} accent="track1" />
-                                <TrackBlock label={TRACK_LABELS.track2} item={slot.track2} accent="track2" />
-                              </div>
-                            )}
-                          </div>
-                        </Reveal>
-                      ))}
-                    </ol>
+          {/* Right: both days are rendered in chronological order. */}
+          <div className="flex flex-col gap-14">
+            {PROGRAM.map((d, dayIndex) => (
+              <section key={d.id} aria-labelledby={`program-${d.id}-heading`}>
+                <Reveal delay={dayIndex * 80}>
+                  <div className="relative border-b border-[var(--color-line)] pb-4">
+                    <h3 id={`program-${d.id}-heading`}>
+                      <span className="block text-lg font-extrabold text-[var(--color-blue)]">
+                        {d.dayLabel}
+                      </span>
+                      <span className="mt-1 block text-[12px] font-medium tracking-wide text-[var(--color-muted)]">
+                        {d.dateLabel}
+                      </span>
+                    </h3>
+                    <span
+                      className="absolute -bottom-px left-0 h-[2px] w-full bg-gradient-to-r from-[var(--color-blue)] via-[var(--color-cyan)] to-transparent"
+                      aria-hidden
+                    />
                   </div>
-                );
-              })}
-            </div>
+                </Reveal>
+
+                <ol className="flex flex-col">
+                  {d.slots.map((slot, i) => (
+                    <Reveal as="li" key={`${d.id}-${i}`} delay={Math.min(i, 6) * 50}>
+                      <div className="grid grid-cols-[minmax(84px,110px)_1fr] items-center gap-4 border-b border-[var(--color-line)]/70 py-6 sm:gap-8">
+                        <div className="text-center text-[16px] font-semibold tracking-wide text-[var(--color-muted)]">
+                          {slot.time}
+                          {slot.duration ? (
+                            <span className="mt-0.5 block text-[12px] font-normal text-[var(--color-muted)]/70">
+                              {slot.duration}
+                            </span>
+                          ) : null}
+                        </div>
+
+                        {slot.shared ? (
+                          <h4 className="text-center text-[16px] font-bold text-[var(--color-ink)] [word-break:keep-all] [overflow-wrap:break-word]">
+                            {slot.shared.title}
+                          </h4>
+                        ) : (
+                          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                            <TrackBlock label={TRACK_LABELS.track1} item={slot.track1} accent="track1" />
+                            <TrackBlock label={TRACK_LABELS.track2} item={slot.track2} accent="track2" />
+                          </div>
+                        )}
+                      </div>
+                    </Reveal>
+                  ))}
+                </ol>
+              </section>
+            ))}
           </div>
         </div>
       </Container>
