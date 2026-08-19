@@ -6,6 +6,10 @@ import { fileURLToPath } from "node:url";
 import ts from "typescript";
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const routeSource = fs.readFileSync(
+  path.join(repo, "src", "app", "api", "register", "route.ts"),
+  "utf8"
+);
 
 function transpile(file) {
   return ts.transpileModule(fs.readFileSync(path.join(repo, file), "utf8"), {
@@ -24,7 +28,7 @@ function loadConstants() {
   return compiledExports;
 }
 
-function loadRoute(constants, fetchImpl) {
+function loadRoute(constants, fetchImpl, options = {}) {
   const compiledExports = {};
   const requireModule = (specifier) => {
     assert.equal(specifier, "@/lib/constants");
@@ -45,6 +49,7 @@ function loadRoute(constants, fetchImpl) {
     "Response",
     "AbortSignal",
     "DOMException",
+    "console",
     transpile(path.join("src", "app", "api", "register", "route.ts"))
   )(
     compiledExports,
@@ -52,8 +57,9 @@ function loadRoute(constants, fetchImpl) {
     isolatedProcess,
     fetchImpl,
     Response,
-    AbortSignal,
-    DOMException
+    options.abortSignal || AbortSignal,
+    options.domException || DOMException,
+    options.console || { info() {} }
   );
 
   return compiledExports;
@@ -214,6 +220,93 @@ test("route accepts non-conflicting sessions and preserves the upstream contract
     "sessions",
   ]);
 });
+
+test("route timeout and maxDuration keep a ten-second completion buffer", () => {
+  const timeout = Number(
+    routeSource.match(/const UPSTREAM_TIMEOUT_MS = ([\d_]+);/)[1].replaceAll("_", "")
+  );
+  const buffer = Number(
+    routeSource.match(/const UPSTREAM_COMPLETION_BUFFER_MS = ([\d_]+);/)[1].replaceAll("_", "")
+  );
+  const duration = Number(routeSource.match(/export const maxDuration = (\d+);/)[1]);
+
+  assert.equal(timeout, 20_000);
+  assert.equal(buffer, 10_000);
+  assert.equal(duration, 30);
+  assert.ok(timeout + buffer <= duration * 1_000);
+});
+
+test("route passes the configured twenty-second timeout signal to fetch", async () => {
+  const signal = {};
+  const timeoutCalls = [];
+  let receivedSignal;
+  const route = loadRoute(
+    constants,
+    async (_url, options) => {
+      receivedSignal = options.signal;
+      return new Response('{"result":"success"}', { status: 200 });
+    },
+    {
+      abortSignal: {
+        timeout(milliseconds) {
+          timeoutCalls.push(milliseconds);
+          return signal;
+        },
+      },
+    }
+  );
+
+  const response = await post(route.POST, validPayload());
+  assert.equal(response.status, 200);
+  assert.deepEqual(timeoutCalls, [20_000]);
+  assert.equal(receivedSignal, signal);
+});
+
+test("route treats a duplicate logical ACK as HTTP success", async () => {
+  const route = loadRoute(constants, async () =>
+    new Response('{"result":"success","duplicate":true}', { status: 200 })
+  );
+
+  const response = await post(route.POST, validPayload());
+  assert.equal(response.status, 200);
+  assert.deepEqual(await response.json(), { ok: true, duplicate: true });
+});
+
+test("route returns a clear 504 only for the upstream timeout", async () => {
+  const logs = [];
+  const route = loadRoute(
+    constants,
+    async () => {
+      throw new DOMException("timed out", "TimeoutError");
+    },
+    { console: { info: (...values) => logs.push(values) } }
+  );
+
+  const payload = validPayload();
+  const response = await post(route.POST, payload);
+  assert.equal(response.status, 504);
+  assert.deepEqual(await response.json(), { ok: false });
+  assert.equal(logs.length, 1);
+  assert.match(logs[0][1], /"outcome":"timeout"/);
+  assert.doesNotMatch(logs[0][1], new RegExp(payload.email));
+  assert.doesNotMatch(logs[0][1], /A{43}/);
+});
+
+for (const [name, fetchImpl] of [
+  ["network failure", async () => { throw new Error("network failed"); }],
+  ["non-timeout abort", async () => { throw new DOMException("aborted", "AbortError"); }],
+  ["upstream HTTP failure", async () => new Response("error", { status: 503 })],
+  ["malformed upstream JSON", async () => new Response("not-json", { status: 200 })],
+  ["logical upstream failure", async () => new Response('{"result":"error"}', { status: 200 })],
+  ["invalid duplicate flag", async () => new Response('{"result":"success","duplicate":"true"}', { status: 200 })],
+]) {
+  test(`route never mistakes ${name} for success`, async () => {
+    const route = loadRoute(constants, fetchImpl);
+    const response = await post(route.POST, validPayload());
+    assert.equal(response.status, 502);
+    assert.deepEqual(await response.json(), { ok: false });
+  });
+}
 
 test("route normalizes the legacy 정보부처 alias before the upstream request", async () => {
   const upstreamBodies = [];

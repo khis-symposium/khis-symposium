@@ -5,9 +5,11 @@ import {
 } from "@/lib/constants";
 
 export const runtime = "nodejs";
+export const maxDuration = 30;
 
 const MAX_BODY_BYTES = 32 * 1024;
-const UPSTREAM_TIMEOUT_MS = 8_000;
+const UPSTREAM_TIMEOUT_MS = 20_000;
+const UPSTREAM_COMPLETION_BUFFER_MS = 10_000;
 const UPSTREAM_TOKEN_PATTERN = /^[A-Za-z0-9_-]{43}$/;
 const PHONE_PATTERN = /^0\d{1,2}-\d{3,4}-\d{4}$/;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -38,13 +40,35 @@ type RegistrationPayload = {
   consent: "agree";
 };
 
-function jsonResponse(ok: boolean, status: number) {
+function jsonResponse(ok: boolean, status: number, duplicate?: boolean) {
+  const body: { ok: boolean; duplicate?: true } = { ok };
+  if (ok && duplicate === true) {
+    body.duplicate = true;
+  }
+
   return Response.json(
-    { ok },
+    body,
     {
       status,
       headers: { "Cache-Control": "no-store" },
     }
+  );
+}
+
+function logUpstreamResult(
+  outcome: string,
+  requestStartedAt: number,
+  upstreamStartedAt: number,
+  details: Record<string, unknown> = {}
+) {
+  console.info(
+    "[registration-upstream]",
+    JSON.stringify({
+      outcome,
+      preUpstreamMs: Math.max(0, upstreamStartedAt - requestStartedAt),
+      upstreamMs: Math.max(0, Date.now() - upstreamStartedAt),
+      ...details,
+    })
   );
 }
 
@@ -119,6 +143,7 @@ function getUpstreamToken(): string | null {
 }
 
 export async function POST(request: Request) {
+  const requestStartedAt = Date.now();
   const contentType = request.headers.get("content-type")?.split(";", 1)[0].trim().toLowerCase();
   if (contentType !== "application/json") {
     return jsonResponse(false, 400);
@@ -158,6 +183,8 @@ export async function POST(request: Request) {
     return jsonResponse(false, 503);
   }
 
+  const upstreamStartedAt = Date.now();
+
   try {
     const upstreamResponse = await fetch(upstreamUrl, {
       method: "POST",
@@ -169,17 +196,56 @@ export async function POST(request: Request) {
     });
 
     if (!upstreamResponse.ok) {
+      logUpstreamResult("http_error", requestStartedAt, upstreamStartedAt, {
+        status: upstreamResponse.status,
+        redirected: upstreamResponse.redirected,
+      });
       return jsonResponse(false, 502);
     }
 
-    const upstreamBody: unknown = JSON.parse(await upstreamResponse.text());
-    if (!isRecord(upstreamBody) || upstreamBody.result !== "success") {
+    let upstreamBody: unknown;
+    try {
+      upstreamBody = JSON.parse(await upstreamResponse.text());
+    } catch {
+      logUpstreamResult("invalid_json", requestStartedAt, upstreamStartedAt, {
+        status: upstreamResponse.status,
+        redirected: upstreamResponse.redirected,
+      });
       return jsonResponse(false, 502);
     }
 
-    return jsonResponse(true, 200);
+    if (
+      !isRecord(upstreamBody) ||
+      upstreamBody.result !== "success" ||
+      (upstreamBody.duplicate !== undefined && typeof upstreamBody.duplicate !== "boolean")
+    ) {
+      logUpstreamResult("logical_error", requestStartedAt, upstreamStartedAt, {
+        status: upstreamResponse.status,
+        redirected: upstreamResponse.redirected,
+      });
+      return jsonResponse(false, 502);
+    }
+
+    const duplicate = upstreamBody.duplicate === true;
+    logUpstreamResult("success", requestStartedAt, upstreamStartedAt, {
+      status: upstreamResponse.status,
+      redirected: upstreamResponse.redirected,
+      duplicate,
+    });
+    return jsonResponse(true, 200, duplicate);
   } catch (error) {
     const isTimeout = error instanceof DOMException && error.name === "TimeoutError";
+    const isAbort = error instanceof DOMException && error.name === "AbortError";
+    logUpstreamResult(
+      isTimeout ? "timeout" : isAbort ? "abort" : "network_error",
+      requestStartedAt,
+      upstreamStartedAt,
+      { errorName: error instanceof Error ? error.name : "unknown" }
+    );
     return jsonResponse(false, isTimeout ? 504 : 502);
   }
+}
+
+if (UPSTREAM_TIMEOUT_MS + UPSTREAM_COMPLETION_BUFFER_MS > maxDuration * 1_000) {
+  throw new Error("Registration upstream timeout exceeds the route duration budget");
 }
