@@ -23,6 +23,9 @@ const ALLOWED_FIELDS = new Set([
 ]);
 const ALLOWED_AFFILIATIONS = new Set<string>(AFFILIATION_TYPES);
 const ALLOWED_SESSIONS = new Set(REGISTRATION_SESSIONS.map((session) => session.id));
+const LEGACY_AFFILIATION_ALIASES = new Map<string, string>([
+  ["정보부처", "정부부처"],
+]);
 
 type RegistrationPayload = {
   name: string;
@@ -57,15 +60,23 @@ function isStringWithin(value: unknown, maxLength: number, required = true): val
   );
 }
 
+function normalizeAffiliationType(value: unknown): unknown {
+  return typeof value === "string"
+    ? LEGACY_AFFILIATION_ALIASES.get(value) ?? value
+    : value;
+}
+
 function parsePayload(value: unknown): RegistrationPayload | null {
   if (!isRecord(value) || Object.keys(value).some((key) => !ALLOWED_FIELDS.has(key))) {
     return null;
   }
 
+  const affiliationType = normalizeAffiliationType(value.affiliationType);
+
   if (
     !isStringWithin(value.name, 100) ||
-    !isStringWithin(value.affiliationType, 50) ||
-    !ALLOWED_AFFILIATIONS.has(value.affiliationType) ||
+    !isStringWithin(affiliationType, 50) ||
+    !ALLOWED_AFFILIATIONS.has(affiliationType) ||
     !isStringWithin(value.orgName, 200) ||
     !isStringWithin(value.position, 100, false) ||
     !isStringWithin(value.phone, 20) ||
@@ -85,7 +96,7 @@ function parsePayload(value: unknown): RegistrationPayload | null {
     return null;
   }
 
-  return value as RegistrationPayload;
+  return { ...value, affiliationType } as RegistrationPayload;
 }
 
 function getUpstreamUrl(): URL | null {

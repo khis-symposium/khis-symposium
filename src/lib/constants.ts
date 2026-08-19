@@ -275,7 +275,7 @@ export function updateRegistrationSessionSelection(
 }
 
 export const AFFILIATION_TYPES = [
-  "정보부처",
+  "정부부처",
   "공공기관",
   "의료기관",
   "협회·학계",
@@ -287,7 +287,7 @@ export const AFFILIATION_TYPES = [
 
 export const AFFILIATION_OPTIONS = AFFILIATION_TYPES.map((value) => ({
   value,
-  label: value === "정보부처" ? "정부부처" : value,
+  label: value,
 }));
 
 export const PRIVACY_NOTICE = {
