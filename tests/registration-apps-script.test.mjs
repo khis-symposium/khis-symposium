@@ -90,6 +90,12 @@ const siteContract = {
   affiliations: [...siteModule.AFFILIATION_TYPES],
   sessions: siteModule.REGISTRATION_SESSIONS.map((session) => session.id),
 };
+const openingSession = siteModule.REGISTRATION_SESSIONS.find(
+  (session) => session.kind === "common"
+);
+const firstParallelSessionIds = siteModule.REGISTRATION_SESSIONS
+  .filter((session) => session.dayId === "day1" && session.time === "11:10 – 12:30")
+  .map((session) => session.id);
 
 function validPayload() {
   return {
@@ -340,6 +346,12 @@ test("Apps Script and Next constants use identical affiliations and session IDs"
   assert.equal(siteContract.affiliations[0], "정부부처");
   assert.ok(!siteContract.affiliations.includes("정보부처"));
   assert.deepEqual([...extractArray("ALLOWED_SESSIONS_")], siteContract.sessions);
+  assert.equal(siteContract.sessions.length, 13);
+  assert.equal(openingSession.id, "day1-09:30 – 10:25-common");
+  assert.deepEqual(firstParallelSessionIds, [
+    "day1-10:50 – 12:30-t1",
+    "day1-10:50 – 12:30-t2",
+  ]);
   assert.deepEqual([...extractArray("EXPECTED_HEADERS_")], EXPECTED_HEADERS);
 });
 
@@ -375,6 +387,16 @@ test("valid token and payload write once, flush, unlock, then acknowledge succes
   );
   assert.ok(harness.state.events.indexOf("duplicate-read") < harness.state.events.indexOf("write"));
   assert.equal(harness.state.lockHeld, false);
+});
+
+test("Apps Script accepts opening and stores its canonical ID in Sheet column H", () => {
+  const payload = validPayload();
+  payload.sessions = [openingSession.id];
+  const harness = createHarness();
+
+  assert.deepEqual(harness.invoke(payload), { result: "success", duplicate: false });
+  assert.equal(harness.state.writes.length, 1);
+  assert.equal(harness.state.writes[0].values[0][7], "day1-09:30 – 10:25-common");
 });
 
 test("legacy 정보부처 input is normalized before validation and Sheet write", () => {
@@ -581,7 +603,7 @@ for (const [name, mutate] of [
   ["unknown session", (payload) => { payload.sessions = ["unknown-session"]; }],
   ["duplicate session", (payload) => { payload.sessions = [siteContract.sessions[0], siteContract.sessions[0]]; }],
   ["same-slot sessions", (payload) => {
-    payload.sessions = [siteContract.sessions[0], siteContract.sessions[1]];
+    payload.sessions = firstParallelSessionIds;
   }],
   ["consent mismatch", (payload) => { payload.consent = "disagree"; }],
 ]) {

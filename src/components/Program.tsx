@@ -37,7 +37,7 @@ function TrackBlock({
       <span className={`rounded-[4px] px-2.5 py-0.5 text-[11px] font-semibold tracking-wide ${bg} ${text}`}>
         {label}
       </span>
-      <h4 className="mt-2 whitespace-pre-line text-[16px] font-bold leading-snug text-[var(--color-ink)] [word-break:keep-all] [overflow-wrap:break-word]">
+      <h4 className="mt-2 whitespace-pre-line text-center text-[16px] font-bold leading-snug text-[var(--color-ink)] [word-break:keep-all] [overflow-wrap:break-word]">
         {item.title}
       </h4>
       {item.chair ? (

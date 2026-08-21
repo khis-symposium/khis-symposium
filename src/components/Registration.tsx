@@ -9,8 +9,10 @@ import {
   PRIVACY_NOTICE,
   REGISTRATION_SESSIONS,
   TRACK_LABELS,
+  type RegistrationSessionOption,
   updateRegistrationSessionSelection,
 } from "@/lib/constants";
+import { buildRegistrationPayload } from "@/lib/registration-payload";
 
 type Status = "idle" | "submitting" | "success" | "error";
 type Errors = Record<string, string>;
@@ -30,6 +32,35 @@ function ErrorText({ message }: { message?: string }) {
       <WarningCircle size={14} weight="fill" />
       {message}
     </p>
+  );
+}
+
+function RegistrationSessionCheckbox({
+  session,
+  selected,
+  onToggle,
+}: {
+  session: RegistrationSessionOption;
+  selected: boolean;
+  onToggle: (sessionId: string, checked: boolean) => void;
+}) {
+  return (
+    <label className="flex cursor-pointer items-start gap-2.5 rounded-lg border border-white/10 p-2.5 transition-colors duration-200 has-[:checked]:border-[var(--color-cyan)] has-[:checked]:bg-[var(--color-cyan)]/10">
+      <input
+        type="checkbox"
+        name="sessions"
+        value={session.id}
+        checked={selected}
+        onChange={(event) => onToggle(session.id, event.target.checked)}
+        className="mt-1 h-4 w-4 shrink-0 accent-[var(--color-cyan)]"
+      />
+      <span>
+        <span className="block text-[12px] text-white/45">{session.time}</span>
+        <span className="block whitespace-pre-line text-[14px] font-medium leading-snug text-white [word-break:keep-all]">
+          {session.title}
+        </span>
+      </span>
+    </label>
   );
 }
 
@@ -131,17 +162,7 @@ export function Registration() {
 
     setStatus("submitting");
     try {
-      const payload: Record<string, string | string[]> = {};
-      formData.forEach((value, key) => {
-        if (key === "sessions") {
-          const existing = payload.sessions;
-          const list = Array.isArray(existing) ? existing : [];
-          list.push(String(value));
-          payload.sessions = list;
-        } else {
-          payload[key] = String(value);
-        }
-      });
+      const payload = buildRegistrationPayload(formData);
 
       const response = await fetch("/api/register", {
         method: "POST",
@@ -345,13 +366,41 @@ export function Registration() {
                           </span>
                         </div>
 
+                        {group.items.some((session) => session.kind === "common") ? (
+                          <div className="border-b border-white/15 p-3 sm:p-4">
+                            <p className="mb-3 text-[13px] font-bold tracking-wide text-white/65">
+                              공통
+                            </p>
+                            <div className="flex flex-col gap-2">
+                              {group.items
+                                .filter((session) => session.kind === "common")
+                                .map((session) => (
+                                  <RegistrationSessionCheckbox
+                                    key={session.id}
+                                    session={session}
+                                    selected={selectedSessionIds.includes(session.id)}
+                                    onToggle={(sessionId, checked) =>
+                                      setSelectedSessionIds((selectedIds) =>
+                                        updateRegistrationSessionSelection(
+                                          selectedIds,
+                                          sessionId,
+                                          checked
+                                        )
+                                      )
+                                    }
+                                  />
+                                ))}
+                            </div>
+                          </div>
+                        ) : null}
+
                         <div className="grid grid-cols-1 sm:grid-cols-2">
                           {[
                             { id: "track1", label: TRACK_LABELS.track1 },
                             { id: "track2", label: TRACK_LABELS.track2 },
                           ].map((track, trackIndex) => {
                             const trackSessions = group.items.filter(
-                              (session) => session.trackLabel === track.label
+                              (session) => session.kind === track.id
                             );
 
                             return (
@@ -368,35 +417,20 @@ export function Registration() {
                                 </p>
                                 <div className="flex flex-col gap-2">
                                   {trackSessions.map((session) => (
-                                    <label
+                                    <RegistrationSessionCheckbox
                                       key={session.id}
-                                      className="flex cursor-pointer items-start gap-2.5 rounded-lg border border-white/10 p-2.5 transition-colors duration-200 has-[:checked]:border-[var(--color-cyan)] has-[:checked]:bg-[var(--color-cyan)]/10"
-                                    >
-                                      <input
-                                        type="checkbox"
-                                        name="sessions"
-                                        value={session.id}
-                                        checked={selectedSessionIds.includes(session.id)}
-                                        onChange={(event) =>
-                                          setSelectedSessionIds((selectedIds) =>
-                                            updateRegistrationSessionSelection(
-                                              selectedIds,
-                                              session.id,
-                                              event.target.checked
-                                            )
+                                      session={session}
+                                      selected={selectedSessionIds.includes(session.id)}
+                                      onToggle={(sessionId, checked) =>
+                                        setSelectedSessionIds((selectedIds) =>
+                                          updateRegistrationSessionSelection(
+                                            selectedIds,
+                                            sessionId,
+                                            checked
                                           )
-                                        }
-                                        className="mt-1 h-4 w-4 shrink-0 accent-[var(--color-cyan)]"
-                                      />
-                                      <span>
-                                        <span className="block text-[12px] text-white/45">
-                                          {session.time}
-                                        </span>
-                                        <span className="block whitespace-pre-line text-[14px] font-medium leading-snug text-white [word-break:keep-all]">
-                                          {session.title}
-                                        </span>
-                                      </span>
-                                    </label>
+                                        )
+                                      }
+                                    />
                                   ))}
                                 </div>
                               </div>
