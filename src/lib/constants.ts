@@ -94,6 +94,8 @@ export type ProgramSlot = {
   time: string;
   /** Keep the deployed Apps Script session ID stable when display times change. */
   registrationIdTime?: string;
+  /** Explicitly include a shared program item in the registration catalog. */
+  registration?: boolean;
   duration?: string;
   /** Use for rows common to both tracks (registration, lunch, break) */
   shared?: ProgramTrackItem;
@@ -135,7 +137,8 @@ export const PROGRAM: ProgramDay[] = [
     slots: [
       {
         time: "09:30 – 10:25",
-        track1: { title: "개회식" },
+        registration: true,
+        shared: { title: "개회식" },
       },
       {
         time: "10:25 – 11:05",
@@ -183,7 +186,7 @@ export const PROGRAM: ProgramDay[] = [
         duration: "(100분)",
         track1: {
           title: "한국형 의료데이터 표준화의 현장 적용과 확산",
-          chair: "김종연 대한의료정보학회 이사장",
+          chair: "김종엽 대한의료정보학회 이사장",
         },
         track2: { title: "비대면 진료 제도화, 의료서비스의 새로운 연결" },
       },
@@ -216,23 +219,40 @@ export const PROGRAM: ProgramDay[] = [
   },
 ];
 
-// 등록 폼 "참여세션" 체크박스 — PROGRAM에서 두 트랙이 동시 진행되는 슬롯만 뽑아
-// 자동 생성 (개회식/폐회식/점심/휴식 등 단일 항목은 제외). 총 12개.
+// 등록 폼 "참여세션" 체크박스 — 두 트랙이 동시 진행되는 슬롯과 명시적으로
+// 등록 대상으로 지정한 공통 슬롯만 PROGRAM에서 생성한다. 총 13개.
 export type RegistrationSessionOption = {
   id: string;
   dayId: string;
   dayLabel: string;
   time: string;
   slotKey: string;
+  kind: "common" | "track1" | "track2";
   trackLabel: string;
   title: string;
 };
 
 export const REGISTRATION_SESSIONS: RegistrationSessionOption[] = PROGRAM.flatMap((day) =>
   day.slots.flatMap((slot): RegistrationSessionOption[] => {
-    if (!slot.track1 || !slot.track2) return [];
     const registrationIdTime = slot.registrationIdTime ?? slot.time;
     const slotKey = `${day.id}::${slot.time}`;
+
+    if (slot.registration && slot.shared) {
+      return [
+        {
+          id: `${day.id}-${registrationIdTime}-common`,
+          dayId: day.id,
+          dayLabel: day.dayLabel,
+          time: slot.time,
+          slotKey,
+          kind: "common",
+          trackLabel: "공통",
+          title: slot.shared.title,
+        },
+      ];
+    }
+
+    if (!slot.track1 || !slot.track2) return [];
     return [
       {
         id: `${day.id}-${registrationIdTime}-t1`,
@@ -240,6 +260,7 @@ export const REGISTRATION_SESSIONS: RegistrationSessionOption[] = PROGRAM.flatMa
         dayLabel: day.dayLabel,
         time: slot.time,
         slotKey,
+        kind: "track1",
         trackLabel: TRACK_LABELS.track1,
         title: slot.track1.title,
       },
@@ -249,6 +270,7 @@ export const REGISTRATION_SESSIONS: RegistrationSessionOption[] = PROGRAM.flatMa
         dayLabel: day.dayLabel,
         time: slot.time,
         slotKey,
+        kind: "track2",
         trackLabel: TRACK_LABELS.track2,
         title: slot.track2.title,
       },

@@ -10,6 +10,10 @@ const routeSource = fs.readFileSync(
   path.join(repo, "src", "app", "api", "register", "route.ts"),
   "utf8"
 );
+const registrationSource = fs.readFileSync(
+  path.join(repo, "src", "components", "Registration.tsx"),
+  "utf8"
+);
 
 function transpile(file) {
   return ts.transpileModule(fs.readFileSync(path.join(repo, file), "utf8"), {
@@ -25,6 +29,15 @@ function loadConstants() {
   new Function("exports", transpile(path.join("src", "lib", "constants.ts")))(
     compiledExports
   );
+  return compiledExports;
+}
+
+function loadRegistrationPayloadModule() {
+  const compiledExports = {};
+  new Function(
+    "exports",
+    transpile(path.join("src", "lib", "registration-payload.ts"))
+  )(compiledExports);
   return compiledExports;
 }
 
@@ -67,6 +80,11 @@ function loadRoute(constants, fetchImpl, options = {}) {
 
 const constants = loadConstants();
 const sessions = constants.REGISTRATION_SESSIONS;
+const openingSession = sessions.find((session) => session.kind === "common");
+const firstParallelSlot = sessions.filter(
+  (session) => session.dayId === "day1" && session.time === "11:10 – 12:30"
+);
+const registrationPayloadModule = loadRegistrationPayloadModule();
 
 test("registration uses the canonical 정부부처 label and value", () => {
   assert.equal(constants.AFFILIATION_OPTIONS.length, 8);
@@ -121,35 +139,57 @@ async function post(postHandler, payload) {
   );
 }
 
-test("registration catalog keeps 12 deployed IDs while showing the V3 time", () => {
-  assert.equal(sessions.length, 12);
-  const firstSlot = sessions.filter(
-    (session) => session.dayId === "day1" && session.time === "11:10 – 12:30"
-  );
-  assert.equal(firstSlot.length, 2);
+test("registration catalog adds one canonical opening while preserving deployed IDs", () => {
+  assert.equal(sessions.length, 13);
+  assert.deepEqual(openingSession, {
+    id: "day1-09:30 – 10:25-common",
+    dayId: "day1",
+    dayLabel: "DAY 1",
+    time: "09:30 – 10:25",
+    slotKey: "day1::09:30 – 10:25",
+    kind: "common",
+    trackLabel: "공통",
+    title: "개회식",
+  });
+  assert.equal(sessions.filter((session) => session.title === "개회식").length, 1);
+  assert.equal(firstParallelSlot.length, 2);
   assert.deepEqual(
-    firstSlot.map((session) => session.id),
+    firstParallelSlot.map((session) => session.id),
     ["day1-10:50 – 12:30-t1", "day1-10:50 – 12:30-t2"]
   );
-  assert.ok(firstSlot.every((session) => session.slotKey === "day1::11:10 – 12:30"));
+  assert.ok(
+    firstParallelSlot.every((session) => session.slotKey === "day1::11:10 – 12:30")
+  );
+});
+
+test("registration UI submits the opening canonical value from its single checkbox", () => {
+  assert.ok(openingSession);
+  assert.match(registrationSource, /buildRegistrationPayload\(formData\)/);
+  assert.match(registrationSource, /value=\{session\.id\}/);
+  assert.match(registrationSource, /session\.kind === "common"/);
+
+  const formData = new FormData();
+  formData.append("sessions", openingSession.id);
+  const payload = registrationPayloadModule.buildRegistrationPayload(formData);
+  assert.deepEqual(payload.sessions, ["day1-09:30 – 10:25-common"]);
 });
 
 test("selecting Track 2 replaces Track 1 in the same day and time slot", () => {
-  const [track1, track2] = sessions.slice(0, 2);
+  const [track1, track2] = firstParallelSlot;
   let selected = constants.updateRegistrationSessionSelection([], track1.id, true);
   selected = constants.updateRegistrationSessionSelection(selected, track2.id, true);
   assert.deepEqual(selected, [track2.id]);
 });
 
 test("selecting Track 1 replaces Track 2 in the same day and time slot", () => {
-  const [track1, track2] = sessions.slice(0, 2);
+  const [track1, track2] = firstParallelSlot;
   let selected = constants.updateRegistrationSessionSelection([], track2.id, true);
   selected = constants.updateRegistrationSessionSelection(selected, track1.id, true);
   assert.deepEqual(selected, [track1.id]);
 });
 
 test("sessions in different time slots remain selected together", () => {
-  const first = sessions[0];
+  const first = firstParallelSlot[0];
   const later = sessions.find(
     (session) => session.dayId === first.dayId && session.slotKey !== first.slotKey
   );
@@ -186,14 +226,17 @@ test("route rejects a forged same-slot payload before upstream fetch", async () 
     upstreamCalls += 1;
     return new Response('{"result":"success"}', { status: 200 });
   });
-  const response = await post(route.POST, validPayload(sessions.slice(0, 2).map((session) => session.id)));
+  const response = await post(
+    route.POST,
+    validPayload(firstParallelSlot.map((session) => session.id))
+  );
   assert.equal(response.status, 400);
   assert.deepEqual(await response.json(), { ok: false });
   assert.equal(upstreamCalls, 0);
 });
 
-test("route accepts non-conflicting sessions and preserves the upstream contract", async () => {
-  const selected = [sessions[0].id, sessions[2].id];
+test("route accepts the opening with another slot and preserves the upstream contract", async () => {
+  const selected = [openingSession.id, firstParallelSlot[0].id];
   const upstreamRequests = [];
   const route = loadRoute(constants, async (url, options) => {
     upstreamRequests.push({ url, options });
@@ -219,6 +262,19 @@ test("route accepts non-conflicting sessions and preserves the upstream contract
     "position",
     "sessions",
   ]);
+});
+
+test("route rejects an unregistered session before the upstream request", async () => {
+  let upstreamCalls = 0;
+  const route = loadRoute(constants, async () => {
+    upstreamCalls += 1;
+    return new Response('{"result":"success"}', { status: 200 });
+  });
+
+  const response = await post(route.POST, validPayload(["day1-unregistered-common"]));
+  assert.equal(response.status, 400);
+  assert.deepEqual(await response.json(), { ok: false });
+  assert.equal(upstreamCalls, 0);
 });
 
 test("route timeout and maxDuration keep a ten-second completion buffer", () => {

@@ -30,6 +30,7 @@ const LEGACY_AFFILIATION_ALIASES_ = {
   "정보부처": "정부부처"
 };
 const ALLOWED_SESSIONS_ = [
+  "day1-09:30 – 10:25-common",
   "day1-10:50 – 12:30-t1",
   "day1-10:50 – 12:30-t2",
   "day1-13:50 – 15:30-t1",

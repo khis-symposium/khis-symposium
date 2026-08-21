@@ -54,12 +54,30 @@ test("the confirmed chair catalog contains exactly the eight requested entries",
     "국가통합바이오빅데이터, 데이터 활용으로 국민건강의 미래를 열다|이영성 교수",
     "보건의료데이터 인프라 혁신|이호영 교수",
     "의료 AI 생태계 구축|양현종 교수",
-    "한국형 의료데이터 표준화의 현장 적용과 확산|김종연 대한의료정보학회 이사장",
+    "한국형 의료데이터 표준화의 현장 적용과 확산|김종엽 대한의료정보학회 이사장",
     "AI 시대 글로벌 디지털헬스와 상호운용성 전략|양광모 교수",
     "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)|이은정 KBS 기자",
   ]);
   assert.equal(programSource.includes("좌장: {item.chair}"), true);
+  assert.equal(constantsSource.includes(["김종", "연"].join("")), false);
   assert.equal(/좌장:\s*미정|\(좌장:\s*미정\)/.test(constantsSource + programSource), false);
+});
+
+test("individual track titles are centered without changing neighboring metadata", () => {
+  const titleClass = programSource.match(
+    /<h4 className="([^"]+)">\s*\{item\.title\}/
+  )?.[1];
+  const chairClass = programSource.match(
+    /<p className="([^"]+)">\s*좌장: \{item\.chair\}/
+  )?.[1];
+
+  assert.ok(titleClass);
+  assert.match(titleClass, /(?:^|\s)text-center(?:\s|$)/);
+  assert.match(titleClass, /\[word-break:keep-all\]/);
+  assert.match(titleClass, /\[overflow-wrap:break-word\]/);
+  assert.ok(chairClass);
+  assert.doesNotMatch(chairClass, /(?:^|\s)text-center(?:\s|$)/);
+  assert.doesNotMatch(programSource, /style=\{\{[^}]*textAlign/);
 });
 
 test("DAY 1 and DAY 2 render serially without tab state or hidden panels", () => {
@@ -101,7 +119,7 @@ test("program registration IDs, display times, tracks, and titles remain exact",
       )
     ),
     [
-      "day1|DAY 1|2026. 09. 10.(목)|09:30 – 10:25||||개회식|",
+      "day1|DAY 1|2026. 09. 10.(목)|09:30 – 10:25|||개회식||",
       "day1|DAY 1|2026. 09. 10.(목)|10:25 – 11:05||||기조연설|",
       "day1|DAY 1|2026. 09. 10.(목)|11:10 – 12:30|10:50 – 12:30|(80분)||국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다|디지털 보건의료정보 플랫폼 국민 중심 의료의 새로운 시작",
       "day1|DAY 1|2026. 09. 10.(목)|12:30 – 13:50||(80분)|점심 시간||",
@@ -127,6 +145,7 @@ test("program registration IDs, display times, tracks, and titles remain exact",
       title,
     })),
     [
+      { id: "day1-09:30 – 10:25-common", dayId: "day1", time: "09:30 – 10:25", slotKey: "day1::09:30 – 10:25", trackLabel: "공통", title: "개회식" },
       { id: "day1-10:50 – 12:30-t1", dayId: "day1", time: "11:10 – 12:30", slotKey: "day1::11:10 – 12:30", trackLabel: "Track 1 · 401호", title: "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다" },
       { id: "day1-10:50 – 12:30-t2", dayId: "day1", time: "11:10 – 12:30", slotKey: "day1::11:10 – 12:30", trackLabel: "Track 2 · 402호", title: "디지털 보건의료정보 플랫폼 국민 중심 의료의 새로운 시작" },
       { id: "day1-13:50 – 15:30-t1", dayId: "day1", time: "13:50 – 15:30", slotKey: "day1::13:50 – 15:30", trackLabel: "Track 1 · 401호", title: "국가통합바이오빅데이터, 데이터 활용으로 국민건강의 미래를 열다" },
@@ -141,4 +160,21 @@ test("program registration IDs, display times, tracks, and titles remain exact",
       { id: "day2-15:00 – 16:40-t2", dayId: "day2", time: "15:00 – 16:40", slotKey: "day2::15:00 – 16:40", trackLabel: "Track 2 · 402호", title: "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)" },
     ]
   );
+
+  const openingOptions = constants.REGISTRATION_SESSIONS.filter(
+    (session) => session.title === "개회식"
+  );
+  assert.equal(constants.REGISTRATION_SESSIONS.length, 13);
+  assert.deepEqual(openingOptions, [
+    {
+      id: "day1-09:30 – 10:25-common",
+      dayId: "day1",
+      dayLabel: "DAY 1",
+      time: "09:30 – 10:25",
+      slotKey: "day1::09:30 – 10:25",
+      kind: "common",
+      trackLabel: "공통",
+      title: "개회식",
+    },
+  ]);
 });
