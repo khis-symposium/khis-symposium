@@ -14,6 +14,9 @@ const code = fs.readFileSync(
 );
 const VALID_TOKEN = "A".repeat(43);
 const WRONG_TOKEN = "B".repeat(43);
+const SAFE_REQUEST_ID = "123e4567-e89b-42d3-a456-426614174000";
+const SECOND_SAFE_REQUEST_ID = "123e4567-e89b-42d3-b456-426614174001";
+const TIMING_LOG_PREFIX = "[registration-timing] ";
 const EXPECTED_HEADERS = [
   "타임스탬프",
   "성명",
@@ -244,6 +247,7 @@ function createHarness(options = {}) {
             assert.equal(state.lockHeld, true);
             state.lockReleases += 1;
             state.events.push("unlock");
+            if (options.releaseLockThrows) throw new Error("mock release failure");
             state.lockHeld = false;
           },
         };
@@ -254,6 +258,7 @@ function createHarness(options = {}) {
         return {
           getProperty(name) {
             state.propertyReads += 1;
+            state.events.push("property");
             assert.equal(name, "REGISTRATION_UPSTREAM_TOKEN");
             return Object.prototype.hasOwnProperty.call(options, "propertyToken")
               ? options.propertyToken
@@ -320,6 +325,67 @@ function assertRejected(harness, value, raw) {
   assert.equal(harness.state.writes.length, 0);
 }
 
+function timingSummaries(harness) {
+  return harness.state.logs.map((entry) => {
+    assert.equal(entry.length, 1);
+    assert.equal(typeof entry[0], "string");
+    assert.ok(entry[0].startsWith(TIMING_LOG_PREFIX));
+    return JSON.parse(entry[0].slice(TIMING_LOG_PREFIX.length));
+  });
+}
+
+function assertTimingSummary(summary, expected) {
+  assert.deepEqual(Object.keys(summary), [
+    "requestId",
+    "authMs",
+    "validationMs",
+    "lockWaitMs",
+    "lookupMs",
+    "appendMs",
+    "flushMs",
+    "totalMs",
+    "duplicate",
+    "outcome",
+  ]);
+  for (const field of [
+    "authMs",
+    "validationMs",
+    "lockWaitMs",
+    "lookupMs",
+    "appendMs",
+    "flushMs",
+    "totalMs",
+  ]) {
+    assert.equal(Number.isFinite(summary[field]), true, `${field} must be finite`);
+    assert.ok(summary[field] >= 0, `${field} must be non-negative`);
+  }
+  assert.equal(summary.requestId, expected.requestId ?? null);
+  assert.equal(summary.duplicate, expected.duplicate ?? null);
+  assert.equal(summary.outcome, expected.outcome);
+}
+
+function assertLogExcludesPayloadAndToken(harness, payload) {
+  const serializedLogs = JSON.stringify(harness.state.logs);
+  for (const field of [
+    "name",
+    "affiliationType",
+    "orgName",
+    "position",
+    "phone",
+    "email",
+    "sessions",
+    "consent",
+    "authToken",
+  ]) {
+    const values = Array.isArray(payload[field]) ? payload[field] : [payload[field]];
+    for (const value of values) {
+      if (typeof value === "string" && value.length > 0) {
+        assert.ok(!serializedLogs.includes(value), `${field} must not appear in logs`);
+      }
+    }
+  }
+}
+
 async function postRoute(route, payload) {
   return route.POST(
     new Request("http://127.0.0.1/api/register", {
@@ -332,6 +398,18 @@ async function postRoute(route, payload) {
 
 test("Apps Script and Next constants use identical affiliations and session IDs", () => {
   assert.deepEqual([...extractArray("ALLOWED_KEYS_")], [
+    "name",
+    "affiliationType",
+    "orgName",
+    "position",
+    "phone",
+    "email",
+    "sessions",
+    "consent",
+    "authToken",
+    "requestId",
+  ]);
+  assert.deepEqual([...extractArray("REQUIRED_KEYS_")], [
     "name",
     "affiliationType",
     "orgName",
@@ -365,7 +443,11 @@ test("valid token and payload write once, flush, unlock, then acknowledge succes
   assert.equal(harness.state.lockReleases, 1);
   assert.deepEqual(harness.state.requestedSheetNames, ["시트1"]);
   assert.equal(harness.state.activeSheetAccesses, 0);
-  assert.equal(harness.state.logs.length, 0);
+  assert.equal(harness.state.logs.length, 1);
+  assertTimingSummary(timingSummaries(harness)[0], {
+    outcome: "success",
+    duplicate: false,
+  });
   assert.equal(harness.state.writes[0].values[0][2], "정부부처");
   assert.equal(
     Object.prototype.toString.call(harness.state.writes[0].values[0][0]),
@@ -386,7 +468,83 @@ test("valid token and payload write once, flush, unlock, then acknowledge succes
       harness.state.events.indexOf('response:{"result":"success","duplicate":false}')
   );
   assert.ok(harness.state.events.indexOf("duplicate-read") < harness.state.events.indexOf("write"));
+  assert.ok(harness.state.events.indexOf("property") < harness.state.events.indexOf("lock"));
+  assert.ok(harness.state.events.indexOf("property") < harness.state.events.indexOf("spreadsheet"));
   assert.equal(harness.state.lockHeld, false);
+});
+
+test("version 8 accepts a safe optional requestId without storing or deduplicating on it", () => {
+  const first = validPayload();
+  first.requestId = SAFE_REQUEST_ID;
+  const retry = validPayload();
+  retry.requestId = SECOND_SAFE_REQUEST_ID;
+  const harness = createHarness();
+
+  assert.deepEqual(harness.invoke(first), { result: "success", duplicate: false });
+  assert.deepEqual(harness.invoke(retry), { result: "success", duplicate: true });
+  assert.equal(harness.state.writes.length, 1);
+  assert.equal(harness.state.writes[0].columns, 9);
+  assert.equal(JSON.stringify(harness.state.writes).includes(SAFE_REQUEST_ID), false);
+  assert.equal(JSON.stringify(harness.state.writes).includes(SECOND_SAFE_REQUEST_ID), false);
+
+  const summaries = timingSummaries(harness);
+  assert.equal(summaries.length, 2);
+  assertTimingSummary(summaries[0], {
+    requestId: SAFE_REQUEST_ID,
+    duplicate: false,
+    outcome: "success",
+  });
+  assertTimingSummary(summaries[1], {
+    requestId: SECOND_SAFE_REQUEST_ID,
+    duplicate: true,
+    outcome: "duplicate",
+  });
+  assertLogExcludesPayloadAndToken(harness, first);
+});
+
+test("version 8 remains compatible with a version 7 payload without requestId", () => {
+  const payload = validPayload();
+  assert.equal(Object.prototype.hasOwnProperty.call(payload, "requestId"), false);
+  const harness = createHarness();
+
+  assert.deepEqual(harness.invoke(payload), { result: "success", duplicate: false });
+  assertTimingSummary(timingSummaries(harness)[0], {
+    outcome: "success",
+    duplicate: false,
+  });
+});
+
+for (const [name, requestId] of [
+  ["non-UUID", "not-a-uuid"],
+  ["newline injection", `${SAFE_REQUEST_ID}\nforged-log-entry`],
+  ["over maximum length", "a".repeat(37)],
+  ["non-v4 UUID", "123e4567-e89b-12d3-a456-426614174000"],
+]) {
+  test(`invalid requestId (${name}) is rejected and never logged verbatim`, () => {
+    const payload = validPayload();
+    payload.requestId = requestId;
+    const harness = createHarness();
+
+    assertRejected(harness, payload);
+    assert.equal(harness.state.spreadsheetAccesses, 0);
+    const serializedLogs = JSON.stringify(harness.state.logs);
+    assert.equal(serializedLogs.includes(requestId), false);
+    assertTimingSummary(timingSummaries(harness)[0], {
+      outcome: "validation_error",
+    });
+  });
+}
+
+test("an unauthorized caller cannot inject even a well-formed requestId into logs", () => {
+  const payload = validPayload();
+  payload.authToken = WRONG_TOKEN;
+  payload.requestId = SAFE_REQUEST_ID;
+  const harness = createHarness();
+
+  assertRejected(harness, payload);
+  assert.equal(harness.state.spreadsheetAccesses, 0);
+  assert.equal(JSON.stringify(harness.state.logs).includes(SAFE_REQUEST_ID), false);
+  assertTimingSummary(timingSummaries(harness)[0], { outcome: "auth_error" });
 });
 
 test("Apps Script accepts opening and stores its canonical ID in Sheet column H", () => {
@@ -516,11 +674,11 @@ test("serialized concurrent identical requests append exactly once", async () =>
   assert.equal(harness.state.lockHeld, false);
 });
 
-for (const [name, mutate, options = {}] of [
-  ["missing token", (payload) => delete payload.authToken],
-  ["wrong token", (payload) => { payload.authToken = WRONG_TOKEN; }],
-  ["invalid-format token", (payload) => { payload.authToken = "short"; }],
-  ["missing Script Property", () => {}, { propertyToken: null }],
+for (const [name, mutate, options, expectedOutcome] of [
+  ["missing token", (payload) => delete payload.authToken, {}, "validation_error"],
+  ["wrong token", (payload) => { payload.authToken = WRONG_TOKEN; }, {}, "auth_error"],
+  ["invalid-format token", (payload) => { payload.authToken = "short"; }, {}, "auth_error"],
+  ["missing Script Property", () => {}, { propertyToken: null }, "auth_error"],
 ]) {
   test(`authentication rejects ${name} before spreadsheet access`, () => {
     const payload = validPayload();
@@ -528,7 +686,8 @@ for (const [name, mutate, options = {}] of [
     const harness = createHarness(options);
     assertRejected(harness, payload);
     assert.equal(harness.state.spreadsheetAccesses, 0);
-    assert.equal(harness.state.logs.length, 0);
+    assert.equal(harness.state.logs.length, 1);
+    assertTimingSummary(timingSummaries(harness)[0], { outcome: expectedOutcome });
   });
 }
 
@@ -648,6 +807,71 @@ test("flush failure returns error and releases the acquired lock", () => {
   assert.ok(!harness.state.responses.includes('{"result":"success"}'));
 });
 
+test("releaseLock failure overrides a pending success ACK and still logs exactly once", () => {
+  const harness = createHarness({ releaseLockThrows: true });
+  let returnedResponse = null;
+
+  assert.throws(
+    () => {
+      returnedResponse = harness.invoke();
+    },
+    /mock release failure/
+  );
+  assert.equal(returnedResponse, null);
+  assert.equal(harness.state.writes.length, 1);
+  assert.equal(harness.state.flushes, 1);
+  assert.equal(harness.state.lockReleases, 1);
+
+  const summaries = timingSummaries(harness);
+  assert.equal(summaries.length, 1);
+  assertTimingSummary(summaries[0], {
+    outcome: "exception",
+    duplicate: false,
+  });
+  assert.equal(JSON.stringify(harness.state.logs).includes("mock release failure"), false);
+  assert.equal(JSON.stringify(harness.state.logs).includes(VALID_TOKEN), false);
+});
+
+test("every representative termination path emits exactly one privacy-safe timing summary", () => {
+  const success = createHarness();
+  const duplicate = createHarness({ existingRows: [storedRow(validPayload())] });
+  const authError = createHarness();
+  const validationError = createHarness();
+  const lockTimeout = createHarness({ lockAcquired: false });
+  const sheetError = createHarness({ sheetMissing: true });
+  const appendException = createHarness({ setValuesThrows: true });
+  const flushException = createHarness({ flushThrows: true });
+  const wrongTokenPayload = validPayload();
+  wrongTokenPayload.authToken = WRONG_TOKEN;
+  const invalidPayload = validPayload();
+  invalidPayload.requestId = "invalid\nforged";
+
+  const cases = [
+    ["success", success, () => success.invoke(), false],
+    ["duplicate", duplicate, () => duplicate.invoke(), true],
+    ["auth_error", authError, () => authError.invoke(wrongTokenPayload), null],
+    ["validation_error", validationError, () => validationError.invoke(invalidPayload), null],
+    ["lock_timeout", lockTimeout, () => lockTimeout.invoke(), null],
+    ["sheet_error", sheetError, () => sheetError.invoke(), null],
+    ["exception", appendException, () => appendException.invoke(), false],
+    ["exception", flushException, () => flushException.invoke(), false],
+  ];
+
+  for (const [outcome, harness, invoke, duplicateValue] of cases) {
+    invoke();
+    const summaries = timingSummaries(harness);
+    assert.equal(summaries.length, 1, `${outcome} must log exactly once`);
+    assertTimingSummary(summaries[0], {
+      outcome,
+      duplicate: duplicateValue,
+    });
+    assert.equal(JSON.stringify(harness.state.logs).includes(VALID_TOKEN), false);
+    assert.equal(JSON.stringify(harness.state.logs).includes(WRONG_TOKEN), false);
+    assert.equal(JSON.stringify(harness.state.logs).includes("mock write failure"), false);
+    assert.equal(JSON.stringify(harness.state.logs).includes("mock flush failure"), false);
+  }
+});
+
 test("formula-like user strings are text-formatted and apostrophe-prefixed", () => {
   const payload = validPayload();
   payload.name = "=SUM(1,1)";
@@ -666,7 +890,12 @@ test("formula-like user strings are text-formatted and apostrophe-prefixed", () 
   assert.equal(row[6], "'-local@example.invalid");
   assert.equal(harness.context.safeCellText_("+82-10-0000-0000"), "'+82-10-0000-0000");
   assert.equal(harness.context.safeCellText_("\u0001-formula"), "'\u0001-formula");
-  assert.equal(harness.state.logs.length, 0);
+  assert.equal(harness.state.logs.length, 1);
+  assertTimingSummary(timingSummaries(harness)[0], {
+    outcome: "success",
+    duplicate: false,
+  });
+  assertLogExcludesPayloadAndToken(harness, payload);
   assert.ok(harness.state.responses.every((response) => !response.includes(payload.name)));
   assert.ok(harness.state.responses.every((response) => !response.includes(VALID_TOKEN)));
 });

@@ -55,23 +55,6 @@ function jsonResponse(ok: boolean, status: number, duplicate?: boolean) {
   );
 }
 
-function logUpstreamResult(
-  outcome: string,
-  requestStartedAt: number,
-  upstreamStartedAt: number,
-  details: Record<string, unknown> = {}
-) {
-  console.info(
-    "[registration-upstream]",
-    JSON.stringify({
-      outcome,
-      preUpstreamMs: Math.max(0, upstreamStartedAt - requestStartedAt),
-      upstreamMs: Math.max(0, Date.now() - upstreamStartedAt),
-      ...details,
-    })
-  );
-}
-
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
@@ -142,108 +125,256 @@ function getUpstreamToken(): string | null {
     : null;
 }
 
+function hasErrorName(value: unknown, expectedName: "TimeoutError" | "AbortError") {
+  return (value instanceof Error || value instanceof DOMException) && value.name === expectedName;
+}
+
+function classifyUpstreamFailure(error: unknown, signal: AbortSignal | null) {
+  const signalReason = signal?.aborted ? signal.reason : undefined;
+  if (hasErrorName(error, "TimeoutError") || hasErrorName(signalReason, "TimeoutError")) {
+    return {
+      outcome: "timeout" as const,
+      errorCode: "upstream_timeout" as const,
+      responseStatus: 504 as const,
+    };
+  }
+
+  if (hasErrorName(error, "AbortError") || hasErrorName(signalReason, "AbortError")) {
+    return {
+      outcome: "abort" as const,
+      errorCode: "upstream_abort" as const,
+      responseStatus: 502 as const,
+    };
+  }
+
+  return {
+    outcome: "network_error" as const,
+    errorCode: "upstream_network_error" as const,
+    responseStatus: 502 as const,
+  };
+}
+
 export async function POST(request: Request) {
   const requestStartedAt = Date.now();
+  let requestId: string | null = null;
+  let validationMs = 0;
+  let preUpstreamMs = 0;
+  let upstreamFetchMs = 0;
+  let upstreamBodyMs = 0;
+  let ackValidationMs = 0;
+  let upstreamStatus: number | null = null;
+  let redirected: boolean | null = null;
+  let summaryDuplicate: boolean | null = null;
+
+  function finish(
+    outcome:
+      | "success"
+      | "validation_error"
+      | "configuration_error"
+      | "http_error"
+      | "invalid_json"
+      | "logical_error"
+      | "timeout"
+      | "abort"
+      | "network_error",
+    stage:
+      | "validation"
+      | "configuration"
+      | "upstream_fetch"
+      | "upstream_http"
+      | "upstream_body"
+      | "ack_validation"
+      | "complete",
+    errorCode:
+      | "invalid_content_type"
+      | "payload_too_large"
+      | "request_body_unreadable"
+      | "request_json_invalid"
+      | "request_payload_invalid"
+      | "upstream_configuration_invalid"
+      | "upstream_timeout"
+      | "upstream_abort"
+      | "upstream_network_error"
+      | "upstream_http_error"
+      | "upstream_invalid_json"
+      | "upstream_logical_ack_invalid"
+      | null,
+    responseStatus: number,
+    ok = false,
+    responseDuplicate?: boolean
+  ) {
+    const postUpstreamStartedAt = Date.now();
+    const response = jsonResponse(ok, responseStatus, responseDuplicate);
+    const finishedAt = Date.now();
+
+    console.info(
+      "[registration-latency]",
+      JSON.stringify({
+        requestId,
+        validationMs,
+        preUpstreamMs,
+        upstreamFetchMs,
+        upstreamBodyMs,
+        ackValidationMs,
+        postUpstreamMs: Math.max(0, finishedAt - postUpstreamStartedAt),
+        totalMs: Math.max(0, finishedAt - requestStartedAt),
+        status: upstreamStatus,
+        redirected,
+        duplicate: summaryDuplicate,
+        outcome,
+        stage,
+        errorCode,
+      })
+    );
+
+    return response;
+  }
+
+  function finishValidation(
+    errorCode:
+      | "invalid_content_type"
+      | "payload_too_large"
+      | "request_body_unreadable"
+      | "request_json_invalid"
+      | "request_payload_invalid",
+    responseStatus: 400 | 413
+  ) {
+    validationMs = Math.max(0, Date.now() - requestStartedAt);
+    return finish("validation_error", "validation", errorCode, responseStatus);
+  }
+
   const contentType = request.headers.get("content-type")?.split(";", 1)[0].trim().toLowerCase();
   if (contentType !== "application/json") {
-    return jsonResponse(false, 400);
+    return finishValidation("invalid_content_type", 400);
   }
 
   const declaredLength = Number(request.headers.get("content-length"));
   if (Number.isFinite(declaredLength) && declaredLength > MAX_BODY_BYTES) {
-    return jsonResponse(false, 413);
+    return finishValidation("payload_too_large", 413);
   }
 
   let rawBody: ArrayBuffer;
   try {
     rawBody = await request.arrayBuffer();
   } catch {
-    return jsonResponse(false, 400);
+    return finishValidation("request_body_unreadable", 400);
   }
 
   if (rawBody.byteLength > MAX_BODY_BYTES) {
-    return jsonResponse(false, 413);
+    return finishValidation("payload_too_large", 413);
   }
 
   let candidate: unknown;
   try {
     candidate = JSON.parse(new TextDecoder().decode(rawBody));
   } catch {
-    return jsonResponse(false, 400);
+    return finishValidation("request_json_invalid", 400);
   }
 
   const payload = parsePayload(candidate);
   if (!payload) {
-    return jsonResponse(false, 400);
+    return finishValidation("request_payload_invalid", 400);
   }
+
+  const validationFinishedAt = Date.now();
+  validationMs = Math.max(0, validationFinishedAt - requestStartedAt);
+  requestId = crypto.randomUUID();
 
   const upstreamUrl = getUpstreamUrl();
   const upstreamToken = getUpstreamToken();
   if (!upstreamUrl || !upstreamToken) {
-    return jsonResponse(false, 503);
+    preUpstreamMs = Math.max(0, Date.now() - validationFinishedAt);
+    return finish(
+      "configuration_error",
+      "configuration",
+      "upstream_configuration_invalid",
+      503
+    );
   }
 
-  const upstreamStartedAt = Date.now();
+  const upstreamRequestBody = JSON.stringify({
+    ...payload,
+    authToken: upstreamToken,
+    requestId,
+  });
+  preUpstreamMs = Math.max(0, Date.now() - validationFinishedAt);
+  const upstreamFetchStartedAt = Date.now();
+
+  let upstreamResponse: Response;
+  let upstreamSignal: AbortSignal | null = null;
 
   try {
-    const upstreamResponse = await fetch(upstreamUrl, {
+    upstreamSignal = AbortSignal.timeout(UPSTREAM_TIMEOUT_MS);
+    upstreamResponse = await fetch(upstreamUrl, {
       method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ ...payload, authToken: upstreamToken }),
+      body: upstreamRequestBody,
       cache: "no-store",
       redirect: "follow",
-      signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
+      signal: upstreamSignal,
     });
-
-    if (!upstreamResponse.ok) {
-      logUpstreamResult("http_error", requestStartedAt, upstreamStartedAt, {
-        status: upstreamResponse.status,
-        redirected: upstreamResponse.redirected,
-      });
-      return jsonResponse(false, 502);
-    }
-
-    let upstreamBody: unknown;
-    try {
-      upstreamBody = JSON.parse(await upstreamResponse.text());
-    } catch {
-      logUpstreamResult("invalid_json", requestStartedAt, upstreamStartedAt, {
-        status: upstreamResponse.status,
-        redirected: upstreamResponse.redirected,
-      });
-      return jsonResponse(false, 502);
-    }
-
-    if (
-      !isRecord(upstreamBody) ||
-      upstreamBody.result !== "success" ||
-      (upstreamBody.duplicate !== undefined && typeof upstreamBody.duplicate !== "boolean")
-    ) {
-      logUpstreamResult("logical_error", requestStartedAt, upstreamStartedAt, {
-        status: upstreamResponse.status,
-        redirected: upstreamResponse.redirected,
-      });
-      return jsonResponse(false, 502);
-    }
-
-    const duplicate = upstreamBody.duplicate === true;
-    logUpstreamResult("success", requestStartedAt, upstreamStartedAt, {
-      status: upstreamResponse.status,
-      redirected: upstreamResponse.redirected,
-      duplicate,
-    });
-    return jsonResponse(true, 200, duplicate);
   } catch (error) {
-    const isTimeout = error instanceof DOMException && error.name === "TimeoutError";
-    const isAbort = error instanceof DOMException && error.name === "AbortError";
-    logUpstreamResult(
-      isTimeout ? "timeout" : isAbort ? "abort" : "network_error",
-      requestStartedAt,
-      upstreamStartedAt,
-      { errorName: error instanceof Error ? error.name : "unknown" }
+    upstreamFetchMs = Math.max(0, Date.now() - upstreamFetchStartedAt);
+    const failure = classifyUpstreamFailure(error, upstreamSignal);
+    return finish(
+      failure.outcome,
+      "upstream_fetch",
+      failure.errorCode,
+      failure.responseStatus
     );
-    return jsonResponse(false, isTimeout ? 504 : 502);
   }
+
+  upstreamFetchMs = Math.max(0, Date.now() - upstreamFetchStartedAt);
+  upstreamStatus = upstreamResponse.status;
+  redirected = upstreamResponse.redirected;
+
+  if (!upstreamResponse.ok) {
+    return finish("http_error", "upstream_http", "upstream_http_error", 502);
+  }
+
+  const upstreamBodyStartedAt = Date.now();
+  let upstreamBodyText: string;
+  try {
+    upstreamBodyText = await upstreamResponse.text();
+  } catch (error) {
+    upstreamBodyMs = Math.max(0, Date.now() - upstreamBodyStartedAt);
+    const failure = classifyUpstreamFailure(error, upstreamSignal);
+    return finish(
+      failure.outcome,
+      "upstream_body",
+      failure.errorCode,
+      failure.responseStatus
+    );
+  }
+  upstreamBodyMs = Math.max(0, Date.now() - upstreamBodyStartedAt);
+
+  const ackValidationStartedAt = Date.now();
+  let upstreamBody: unknown;
+  try {
+    upstreamBody = JSON.parse(upstreamBodyText);
+  } catch {
+    ackValidationMs = Math.max(0, Date.now() - ackValidationStartedAt);
+    return finish("invalid_json", "ack_validation", "upstream_invalid_json", 502);
+  }
+
+  if (
+    !isRecord(upstreamBody) ||
+    upstreamBody.result !== "success" ||
+    (upstreamBody.duplicate !== undefined && typeof upstreamBody.duplicate !== "boolean")
+  ) {
+    ackValidationMs = Math.max(0, Date.now() - ackValidationStartedAt);
+    return finish(
+      "logical_error",
+      "ack_validation",
+      "upstream_logical_ack_invalid",
+      502
+    );
+  }
+
+  ackValidationMs = Math.max(0, Date.now() - ackValidationStartedAt);
+  const duplicate = upstreamBody.duplicate === true;
+  summaryDuplicate = duplicate;
+  return finish("success", "complete", null, 200, true, duplicate);
 }
 
 if (UPSTREAM_TIMEOUT_MS + UPSTREAM_COMPLETION_BUFFER_MS > maxDuration * 1_000) {
