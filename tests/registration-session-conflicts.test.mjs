@@ -251,6 +251,10 @@ test("route accepts the opening with another slot and preserves the upstream con
   assert.equal(upstreamBody.affiliationType, "정부부처");
   assert.deepEqual(upstreamBody.sessions, selected);
   assert.equal(upstreamBody.authToken.length, 43);
+  assert.match(
+    upstreamBody.requestId,
+    /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
+  );
   assert.deepEqual(Object.keys(upstreamBody).sort(), [
     "affiliationType",
     "authToken",
@@ -260,6 +264,7 @@ test("route accepts the opening with another slot and preserves the upstream con
     "orgName",
     "phone",
     "position",
+    "requestId",
     "sessions",
   ]);
 });

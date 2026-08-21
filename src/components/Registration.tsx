@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { CaretDown, CheckCircle, CircleNotch, WarningCircle } from "@phosphor-icons/react/dist/ssr";
 import { Container } from "./ui/Container";
 import { Reveal } from "./ui/Reveal";
@@ -67,6 +67,54 @@ function RegistrationSessionCheckbox({
 const PHONE_PATTERN = /^0\d{1,2}-\d{3,4}-\d{4}$/;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+export const REGISTRATION_PROGRESS = {
+  processing: {
+    delayMs: 2_500,
+    message: "등록 정보를 안전하게 처리 중입니다. 창을 닫거나 다시 제출하지 말아 주세요.",
+  },
+  delayed: {
+    delayMs: 8_000,
+    message: "응답이 다소 지연되고 있습니다. 접수 결과가 표시될 때까지 잠시만 기다려 주세요.",
+  },
+} as const;
+
+type RegistrationProgressMessage =
+  (typeof REGISTRATION_PROGRESS)[keyof typeof REGISTRATION_PROGRESS]["message"];
+type ProgressTimerId = ReturnType<typeof setTimeout>;
+type ProgressTimerScheduler = {
+  set: (callback: () => void, delayMs: number) => ProgressTimerId;
+  clear: (timerId: ProgressTimerId) => void;
+};
+
+const defaultProgressTimerScheduler: ProgressTimerScheduler = {
+  set: (callback, delayMs) => setTimeout(callback, delayMs),
+  clear: (timerId) => clearTimeout(timerId),
+};
+
+export function scheduleRegistrationProgress({
+  generation,
+  isCurrent,
+  onMessage,
+  scheduler = defaultProgressTimerScheduler,
+}: {
+  generation: number;
+  isCurrent: (generation: number) => boolean;
+  onMessage: (message: RegistrationProgressMessage) => void;
+  scheduler?: ProgressTimerScheduler;
+}) {
+  const timerIds = Object.values(REGISTRATION_PROGRESS).map(({ delayMs, message }) =>
+    scheduler.set(() => {
+      if (isCurrent(generation)) {
+        onMessage(message);
+      }
+    }, delayMs)
+  );
+
+  return () => {
+    timerIds.forEach((timerId) => scheduler.clear(timerId));
+  };
+}
+
 // 숫자만 입력해도 010-0000-0000 형식으로 자동 하이픈 삽입 — 모바일 숫자 키패드에
 // '-' 키가 없는 경우가 많아, 입력값에서 숫자만 추출해 형식을 맞춰준다.
 // 02(서울) 지역번호는 2자리, 그 외 휴대폰/지역번호는 3자리로 구분해 그룹핑한다.
@@ -131,6 +179,17 @@ export function Registration() {
   const [errors, setErrors] = useState<Errors>({});
   const [phone, setPhone] = useState("");
   const [selectedSessionIds, setSelectedSessionIds] = useState<string[]>([]);
+  const [progressMessage, setProgressMessage] = useState<RegistrationProgressMessage | "">("");
+  const submissionGenerationRef = useRef(0);
+  const submittingRef = useRef(false);
+  const clearProgressTimersRef = useRef<() => void>(() => undefined);
+
+  useEffect(() => {
+    return () => {
+      submissionGenerationRef.current += 1;
+      clearProgressTimersRef.current();
+    };
+  }, []);
 
   const sessionGroups = [
     {
@@ -149,6 +208,8 @@ export function Registration() {
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (submittingRef.current) return;
+
     const form = e.currentTarget;
     const formData = new FormData(form);
 
@@ -160,6 +221,16 @@ export function Registration() {
       return;
     }
 
+    submittingRef.current = true;
+    const submissionGeneration = submissionGenerationRef.current + 1;
+    submissionGenerationRef.current = submissionGeneration;
+    clearProgressTimersRef.current();
+    setProgressMessage("");
+    clearProgressTimersRef.current = scheduleRegistrationProgress({
+      generation: submissionGeneration,
+      isCurrent: (generation) => submissionGenerationRef.current === generation,
+      onMessage: setProgressMessage,
+    });
     setStatus("submitting");
     try {
       const payload = buildRegistrationPayload(formData);
@@ -182,6 +253,14 @@ export function Registration() {
       setStatus("success");
     } catch {
       setStatus("error");
+    } finally {
+      if (submissionGenerationRef.current === submissionGeneration) {
+        submissionGenerationRef.current = submissionGeneration + 1;
+        clearProgressTimersRef.current();
+        clearProgressTimersRef.current = () => undefined;
+        submittingRef.current = false;
+        setProgressMessage("");
+      }
     }
   }
 
@@ -490,20 +569,32 @@ export function Registration() {
                   </fieldset>
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={status === "submitting"}
-                  className="btn-glow mt-2 inline-flex min-h-[48px] cursor-pointer items-center justify-center gap-2 rounded-full px-8 text-[16px] font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {status === "submitting" ? (
-                    <>
-                      <CircleNotch size={18} className="animate-spin" />
-                      제출 중
-                    </>
-                  ) : (
-                    "사전등록 제출하기"
-                  )}
-                </button>
+                <div className="mt-2 flex flex-col gap-3">
+                  <button
+                    type="submit"
+                    disabled={status === "submitting"}
+                    className="btn-glow inline-flex min-h-[48px] cursor-pointer items-center justify-center gap-2 rounded-full px-8 text-[16px] font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {status === "submitting" ? (
+                      <>
+                        <CircleNotch size={18} className="animate-spin" />
+                        제출 중
+                      </>
+                    ) : (
+                      "사전등록 제출하기"
+                    )}
+                  </button>
+                  <p
+                    role="status"
+                    aria-live="polite"
+                    aria-atomic="true"
+                    className="flex min-h-[3rem] items-start justify-center px-2 text-center text-[14px] leading-[1.7] text-white/65 [overflow-wrap:break-word] [word-break:keep-all]"
+                  >
+                    <span className={status === "submitting" && !progressMessage ? "sr-only" : undefined}>
+                      {status === "submitting" ? progressMessage || "제출 중" : ""}
+                    </span>
+                  </p>
+                </div>
               </form>
             )}
           </Reveal>
