@@ -3,13 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { List, X } from "@phosphor-icons/react/dist/ssr";
-import { NAV_LINKS, SITE } from "@/lib/constants";
+import { getNavigationLinks, SITE } from "@/lib/constants";
 
-export function Header() {
+export function Header({ showSpeakers = false }: { showSpeakers?: boolean }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const navigationLinks = getNavigationLinks(showSpeakers);
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 24);
@@ -96,7 +97,7 @@ export function Header() {
         </Link>
 
         <nav className="hidden md:flex items-center gap-10" aria-label="주요 메뉴">
-          {NAV_LINKS.map((link) => (
+          {navigationLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -146,7 +147,7 @@ export function Header() {
         className="relative z-20 border-t border-[var(--color-line-dark)] bg-[var(--color-bg-deep)] md:hidden"
       >
         <nav className="container-symposium flex flex-col py-4" aria-label="모바일 메뉴">
-          {NAV_LINKS.map((link) => (
+          {navigationLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}

@@ -25,12 +25,15 @@ export const SITE = {
   description: `2026 한국보건의료정보원 연례 심포지엄 — ${EVENT_THEME}`,
 } as const;
 
-export const NAV_LINKS = [
-  // { label: "인사말", href: "#greeting" }, // 섹션 임시 숨김과 함께 비활성화
-  { label: "행사 개요", href: "#overview" },
-  { label: "프로그램", href: "#program" },
-  { label: "오시는 길", href: "#location" },
-] as const;
+export function getNavigationLinks(showSpeakers: boolean) {
+  return [
+    // { label: "인사말", href: "#greeting" }, // 섹션 임시 숨김과 함께 비활성화
+    { label: "행사 개요", href: "#overview" },
+    { label: "프로그램", href: "#program" },
+    ...(showSpeakers ? [{ label: "연사 소개", href: "#speakers" }] : []),
+    { label: "오시는 길", href: "#location" },
+  ] as const;
+}
 
 export const DIRECTOR_GREETING = {
   // 지정 시 인물 사진으로 전환됨. 비워두면 이니셜 플레이스홀더가 표시됨.

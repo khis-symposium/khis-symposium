@@ -3,6 +3,7 @@ import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { Container } from "./ui/Container";
 import { Reveal } from "./ui/Reveal";
 import { GlowingShadow } from "./ui/glowing-shadow";
+import { DetailedProgram } from "./DetailedProgram";
 import { PROGRAM, PROGRAM_INTRO, TRACK_LABELS, type ProgramTrackItem } from "@/lib/constants";
 
 // Track 1 / Track 2 run in different rooms — color-coded (blue / purple) so
@@ -166,6 +167,7 @@ export function Program() {
             ))}
           </div>
         </div>
+        <DetailedProgram />
       </Container>
     </section>
   );
