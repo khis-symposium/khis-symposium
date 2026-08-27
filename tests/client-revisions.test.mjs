@@ -130,7 +130,7 @@ test("program registration IDs, display times, tracks, and titles remain exact",
       "day1|DAY 1|2026. 09. 10.(목)|15:50 – 17:30||(100분)||의료 AI 생태계 구축|빅데이터 기반의 미래 질병 대응 전략",
       "day2|DAY 2|2026. 09. 11.(금)|10:00 – 11:40||(100분)||의료데이터 표준의 현장 활용과 확산 (대한의료정보학회 합동세션)|의료 데이터 품질과 상호운용성 확대를 통한 진료 품질 향상",
       "day2|DAY 2|2026. 09. 11.(금)|11:40 – 13:00||(80분)|점심 시간||",
-      "day2|DAY 2|2026. 09. 11.(금)|13:00 - 14:20|13:00 – 14:40|(80분)||표준 기반 의료데이터 상호운용성 구현체계|AI 시대 신뢰받는 보건의료데이터 활용 방향",
+      "day2|DAY 2|2026. 09. 11.(금)|13:00 - 14:40|13:00 – 14:40|(100분)||표준 기반 의료데이터 상호운용성 구현체계|AI 시대 신뢰받는 보건의료데이터 활용 방향",
       "day2|DAY 2|2026. 09. 11.(금)|14:40 – 15:00||(20분)|휴식||",
       "day2|DAY 2|2026. 09. 11.(금)|15:00 – 16:40||(100분)||AI시대 글로벌 보건의료 표준과 상호운용성 전략|디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)",
       "day2|DAY 2|2026. 09. 11.(금)|16:40 – 17:00||(20분)||폐회식|",
@@ -156,8 +156,8 @@ test("program registration IDs, display times, tracks, and titles remain exact",
       { id: "day1-15:50 – 17:30-t2", dayId: "day1", time: "15:50 – 17:30", slotKey: "day1::15:50 – 17:30", trackLabel: "Track 2 · 402호", title: "빅데이터 기반의 미래 질병 대응 전략" },
       { id: "day2-10:00 – 11:40-t1", dayId: "day2", time: "10:00 – 11:40", slotKey: "day2::10:00 – 11:40", trackLabel: "Track 1 · 401호", title: "의료데이터 표준의 현장 활용과 확산 (대한의료정보학회 합동세션)" },
       { id: "day2-10:00 – 11:40-t2", dayId: "day2", time: "10:00 – 11:40", slotKey: "day2::10:00 – 11:40", trackLabel: "Track 2 · 402호", title: "의료 데이터 품질과 상호운용성 확대를 통한 진료 품질 향상" },
-      { id: "day2-13:00 – 14:40-t1", dayId: "day2", time: "13:00 - 14:20", slotKey: "day2::13:00 - 14:20", trackLabel: "Track 1 · 401호", title: "표준 기반 의료데이터 상호운용성 구현체계" },
-      { id: "day2-13:00 – 14:40-t2", dayId: "day2", time: "13:00 - 14:20", slotKey: "day2::13:00 - 14:20", trackLabel: "Track 2 · 402호", title: "AI 시대 신뢰받는 보건의료데이터 활용 방향" },
+      { id: "day2-13:00 – 14:40-t1", dayId: "day2", time: "13:00 - 14:20", slotKey: "day2::13:00 - 14:40", trackLabel: "Track 1 · 401호", title: "표준 기반 의료데이터 상호운용성 구현체계" },
+      { id: "day2-13:00 – 14:40-t2", dayId: "day2", time: "13:00 - 14:40", slotKey: "day2::13:00 - 14:40", trackLabel: "Track 2 · 402호", title: "AI 시대 신뢰받는 보건의료데이터 활용 방향" },
       { id: "day2-15:00 – 16:40-t1", dayId: "day2", time: "15:00 – 16:40", slotKey: "day2::15:00 – 16:40", trackLabel: "Track 1 · 401호", title: "AI시대 글로벌 보건의료 표준과 상호운용성 전략" },
       { id: "day2-15:00 – 16:40-t2", dayId: "day2", time: "15:00 – 16:40", slotKey: "day2::15:00 – 16:40", trackLabel: "Track 2 · 402호", title: "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)" },
     ]
@@ -190,6 +190,10 @@ test("confirmed DAY 2 content feeds registration labels while stable payload IDs
     parallelSlots.map((slot) => ({
       time: slot.time,
       registrationIdTime: slot.registrationIdTime ?? slot.time,
+      track1Time: slot.track1.time ?? slot.time,
+      track1Duration: slot.track1.duration ?? slot.duration,
+      track2Time: slot.track2.time ?? slot.time,
+      track2Duration: slot.track2.duration ?? slot.duration,
       track1: slot.track1.title,
       track2: slot.track2.title,
     })),
@@ -197,18 +201,30 @@ test("confirmed DAY 2 content feeds registration labels while stable payload IDs
       {
         time: "10:00 – 11:40",
         registrationIdTime: "10:00 – 11:40",
+        track1Time: "10:00 – 11:40",
+        track1Duration: "(100분)",
+        track2Time: "10:00 – 11:40",
+        track2Duration: "(100분)",
         track1: "의료데이터 표준의 현장 활용과 확산 (대한의료정보학회 합동세션)",
         track2: "의료 데이터 품질과 상호운용성 확대를 통한 진료 품질 향상",
       },
       {
-        time: "13:00 - 14:20",
+        time: "13:00 - 14:40",
         registrationIdTime: "13:00 – 14:40",
+        track1Time: "13:00 - 14:20",
+        track1Duration: "(80분)",
+        track2Time: "13:00 - 14:40",
+        track2Duration: "(100분)",
         track1: "표준 기반 의료데이터 상호운용성 구현체계",
         track2: "AI 시대 신뢰받는 보건의료데이터 활용 방향",
       },
       {
         time: "15:00 – 16:40",
         registrationIdTime: "15:00 – 16:40",
+        track1Time: "15:00 – 16:40",
+        track1Duration: "(100분)",
+        track2Time: "15:00 – 16:40",
+        track2Duration: "(100분)",
         track1: "AI시대 글로벌 보건의료 표준과 상호운용성 전략",
         track2: "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)",
       },
@@ -230,6 +246,26 @@ test("confirmed DAY 2 content feeds registration labels while stable payload IDs
       "day2-15:00 – 16:40-t2",
     ]
   );
+
+  const parallelSecondSlot = day2Registration.filter(
+    ({ id }) => id === "day2-13:00 – 14:40-t1" || id === "day2-13:00 – 14:40-t2"
+  );
+  assert.deepEqual(
+    parallelSecondSlot.map(({ id, time, slotKey }) => ({ id, time, slotKey })),
+    [
+      {
+        id: "day2-13:00 – 14:40-t1",
+        time: "13:00 - 14:20",
+        slotKey: "day2::13:00 - 14:40",
+      },
+      {
+        id: "day2-13:00 – 14:40-t2",
+        time: "13:00 - 14:40",
+        slotKey: "day2::13:00 - 14:40",
+      },
+    ]
+  );
+  assert.equal(constants.hasRegistrationSessionSlotConflict(parallelSecondSlot.map(({ id }) => id)), true);
 
   const revisedSession = day2Registration.find(
     ({ id }) => id === "day2-13:00 – 14:40-t1"
@@ -256,6 +292,8 @@ test("confirmed DAY 2 content feeds registration labels while stable payload IDs
   assert.match(registrationSource, /\{session\.time\}/);
   assert.match(registrationSource, /\{session\.title\}/);
   assert.match(registrationSource, /selectedSessionIds\.includes\(session\.id\)/);
+  assert.match(programSource, /item\.time \?\? fallbackTime/);
+  assert.match(programSource, /item\.duration \?\? fallbackDuration/);
   for (const oldValue of [
     "한국형 의료데이터 표준화의 현장 적용과 확산",
     "비대면 진료 제도화, 의료서비스의 새로운 연결",

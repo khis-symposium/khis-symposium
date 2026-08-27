@@ -88,6 +88,9 @@ export const LOCATION = {
 /** A single track's content within a time slot (title + optional chair/speaker/org) */
 export type ProgramTrackItem = {
   title: string;
+  /** Track-specific display schedule when parallel tracks end at different times. */
+  time?: string;
+  duration?: string;
   chair?: string;
   speaker?: string;
   affiliation?: string;
@@ -195,11 +198,19 @@ export const PROGRAM: ProgramDay[] = [
       },
       { time: "11:40 – 13:00", duration: "(80분)", shared: { title: "점심 시간" } },
       {
-        time: "13:00 - 14:20",
+        time: "13:00 - 14:40",
         registrationIdTime: "13:00 – 14:40",
-        duration: "(80분)",
-        track1: { title: "표준 기반 의료데이터 상호운용성 구현체계" },
-        track2: { title: "AI 시대 신뢰받는 보건의료데이터 활용 방향" },
+        duration: "(100분)",
+        track1: {
+          title: "표준 기반 의료데이터 상호운용성 구현체계",
+          time: "13:00 - 14:20",
+          duration: "(80분)",
+        },
+        track2: {
+          title: "AI 시대 신뢰받는 보건의료데이터 활용 방향",
+          time: "13:00 - 14:40",
+          duration: "(100분)",
+        },
       },
       { time: "14:40 – 15:00", duration: "(20분)", shared: { title: "휴식" } },
       {
@@ -262,7 +273,7 @@ export const REGISTRATION_SESSIONS: RegistrationSessionOption[] = PROGRAM.flatMa
         id: `${day.id}-${registrationIdTime}-t1`,
         dayId: day.id,
         dayLabel: day.dayLabel,
-        time: slot.time,
+        time: slot.track1.time ?? slot.time,
         slotKey,
         kind: "track1",
         trackLabel: TRACK_LABELS.track1,
@@ -272,7 +283,7 @@ export const REGISTRATION_SESSIONS: RegistrationSessionOption[] = PROGRAM.flatMa
         id: `${day.id}-${registrationIdTime}-t2`,
         dayId: day.id,
         dayLabel: day.dayLabel,
-        time: slot.time,
+        time: slot.track2.time ?? slot.time,
         slotKey,
         kind: "track2",
         trackLabel: TRACK_LABELS.track2,
