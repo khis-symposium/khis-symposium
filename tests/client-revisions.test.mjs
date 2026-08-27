@@ -7,10 +7,12 @@ import ts from "typescript";
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const constantsPath = path.join(repo, "src", "lib", "constants.ts");
+const overviewPath = path.join(repo, "src", "components", "EventOverview.tsx");
 const programPath = path.join(repo, "src", "components", "Program.tsx");
 const registrationPath = path.join(repo, "src", "components", "Registration.tsx");
 const layoutPath = path.join(repo, "src", "app", "layout.tsx");
 const constantsSource = fs.readFileSync(constantsPath, "utf8");
+const overviewSource = fs.readFileSync(overviewPath, "utf8");
 const programSource = fs.readFileSync(programPath, "utf8");
 const registrationSource = fs.readFileSync(registrationPath, "utf8");
 const layoutSource = fs.readFileSync(layoutPath, "utf8");
@@ -60,31 +62,27 @@ test("the confirmed chair catalog contains exactly the eight requested entries",
     "AI시대 글로벌 보건의료 표준과 상호운용성 전략|양광모 교수",
     "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)|이은정 KBS 기자",
   ]);
-  assert.equal(programSource.includes("좌장: {item.chair}"), true);
   assert.equal(constantsSource.includes(["김종", "연"].join("")), false);
-  assert.equal(/좌장:\s*미정|\(좌장:\s*미정\)/.test(constantsSource + programSource), false);
+  assert.equal(/좌장:\s*미정|\(좌장:\s*미정\)/.test(constantsSource), false);
 });
 
-test("individual track titles are centered without changing neighboring metadata", () => {
-  const titleClass = programSource.match(
-    /<h4 className="([^"]+)">\s*\{item\.title\}/
-  )?.[1];
-  const chairClass = programSource.match(
-    /<p className="([^"]+)">\s*좌장: \{item\.chair\}/
-  )?.[1];
+test("overview and program components render only their supplied section images", () => {
+  assert.match(overviewSource, /id="overview"/);
+  assert.match(overviewSource, /src="\/images\/overview\/event-overview\.jpg"/);
+  assert.match(overviewSource, /width=\{3531\}/);
+  assert.match(overviewSource, /height=\{1878\}/);
+  assert.doesNotMatch(overviewSource, /ROWS\.map|SectionHeading|khis-logo\.png/);
 
-  assert.ok(titleClass);
-  assert.match(titleClass, /(?:^|\s)text-center(?:\s|$)/);
-  assert.match(titleClass, /\[word-break:keep-all\]/);
-  assert.match(titleClass, /\[overflow-wrap:break-word\]/);
-  assert.ok(chairClass);
-  assert.doesNotMatch(chairClass, /(?:^|\s)text-center(?:\s|$)/);
-  assert.doesNotMatch(programSource, /style=\{\{[^}]*textAlign/);
+  assert.match(programSource, /id="program"/);
+  assert.match(programSource, /src="\/images\/program\/program-schedule\.jpg"/);
+  assert.match(programSource, /width=\{4961\}/);
+  assert.match(programSource, /height=\{19910\}/);
+  assert.doesNotMatch(programSource, /PROGRAM\.map|TrackBlock|DetailedProgram|symposium-2025/);
 });
 
-test("DAY 1 and DAY 2 render serially without tab state or hidden panels", () => {
+test("DAY 1 and DAY 2 data remain serial while the Program section stays image-only", () => {
   assert.deepEqual(constants.PROGRAM.map(({ id }) => id), ["day1", "day2"]);
-  assert.match(programSource, /PROGRAM\.map\(\(d, dayIndex\) =>/);
+  assert.doesNotMatch(programSource, /PROGRAM\.map/);
   for (const removedContract of [
     "useState",
     "activeDay",
@@ -99,8 +97,7 @@ test("DAY 1 and DAY 2 render serially without tab state or hidden panels", () =>
     assert.equal(programSource.includes(removedContract), false, removedContract);
   }
   assert.equal(programSource.includes("onClick"), false);
-  assert.match(programSource, /<section key={d\.id} aria-labelledby=/);
-  assert.match(programSource, /<h3 id={`program-\$\{d\.id\}-heading`}>/);
+  assert.doesNotMatch(programSource, /program-day1-heading|program-day2-heading/);
 });
 
 test("program registration IDs, display times, tracks, and titles remain exact", () => {
@@ -292,8 +289,6 @@ test("confirmed DAY 2 content feeds registration labels while stable payload IDs
   assert.match(registrationSource, /\{session\.time\}/);
   assert.match(registrationSource, /\{session\.title\}/);
   assert.match(registrationSource, /selectedSessionIds\.includes\(session\.id\)/);
-  assert.match(programSource, /item\.time \?\? fallbackTime/);
-  assert.match(programSource, /item\.duration \?\? fallbackDuration/);
   for (const oldValue of [
     "한국형 의료데이터 표준화의 현장 적용과 확산",
     "비대면 진료 제도화, 의료서비스의 새로운 연결",

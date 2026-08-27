@@ -302,7 +302,7 @@ test("page order and shared gates keep speaker UI between program and location",
   assert.ok(pageSource.indexOf("<Location />") < pageSource.indexOf("<Registration />"));
   assert.match(pageSource, /<Header showSpeakers=\{SPEAKERS_VISIBLE\}/);
   assert.equal((headerSource.match(/navigationLinks\.map/g) || []).length, 2);
-  assert.match(programSource, /<DetailedProgram \/>/);
+  assert.doesNotMatch(programSource, /DetailedProgram/);
 });
 
 test("committed defaults publish no speaker or detailed-program placeholders", () => {
