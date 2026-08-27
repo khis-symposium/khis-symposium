@@ -70,13 +70,13 @@ test("overview and program components render only their supplied section images"
   assert.match(overviewSource, /id="overview"/);
   assert.match(overviewSource, /src="\/images\/overview\/event-overview\.jpg"/);
   assert.match(overviewSource, /width=\{3531\}/);
-  assert.match(overviewSource, /height=\{1878\}/);
+  assert.match(overviewSource, /height=\{2005\}/);
   assert.doesNotMatch(overviewSource, /ROWS\.map|SectionHeading|khis-logo\.png/);
 
   assert.match(programSource, /id="program"/);
   assert.match(programSource, /src="\/images\/program\/program-schedule\.jpg"/);
   assert.match(programSource, /width=\{4961\}/);
-  assert.match(programSource, /height=\{19910\}/);
+  assert.match(programSource, /height=\{23726\}/);
   assert.doesNotMatch(programSource, /PROGRAM\.map|TrackBlock|DetailedProgram|symposium-2025/);
 });
 
@@ -155,7 +155,7 @@ test("program registration IDs, display times, tracks, and titles remain exact",
       { id: "day2-10:00 – 11:40-t2", dayId: "day2", time: "10:00 – 11:40", slotKey: "day2::10:00 – 11:40", trackLabel: "Track 2 · 402호", title: "의료 데이터 품질과 상호운용성 확대를 통한 진료 품질 향상" },
       { id: "day2-13:00 – 14:40-t1", dayId: "day2", time: "13:00 - 14:20", slotKey: "day2::13:00 - 14:40", trackLabel: "Track 1 · 401호", title: "표준 기반 의료데이터 상호운용성 구현체계" },
       { id: "day2-13:00 – 14:40-t2", dayId: "day2", time: "13:00 - 14:40", slotKey: "day2::13:00 - 14:40", trackLabel: "Track 2 · 402호", title: "AI 시대 신뢰받는 보건의료데이터 활용 방향" },
-      { id: "day2-15:00 – 16:40-t1", dayId: "day2", time: "15:00 – 16:40", slotKey: "day2::15:00 – 16:40", trackLabel: "Track 1 · 401호", title: "AI시대 글로벌 보건의료 표준과 상호운용성 전략" },
+      { id: "day2-15:00 – 16:40-t1", dayId: "day2", time: "14:40 ~ 16:40", slotKey: "day2::15:00 – 16:40", trackLabel: "Track 1 · 401호", title: "AI시대 글로벌 보건의료 표준과 상호운용성 전략" },
       { id: "day2-15:00 – 16:40-t2", dayId: "day2", time: "15:00 – 16:40", slotKey: "day2::15:00 – 16:40", trackLabel: "Track 2 · 402호", title: "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)" },
     ]
   );
@@ -218,8 +218,8 @@ test("confirmed DAY 2 content feeds registration labels while stable payload IDs
       {
         time: "15:00 – 16:40",
         registrationIdTime: "15:00 – 16:40",
-        track1Time: "15:00 – 16:40",
-        track1Duration: "(100분)",
+        track1Time: "14:40 ~ 16:40",
+        track1Duration: "(120분)",
         track2Time: "15:00 – 16:40",
         track2Duration: "(100분)",
         track1: "AI시대 글로벌 보건의료 표준과 상호운용성 전략",
@@ -263,6 +263,40 @@ test("confirmed DAY 2 content feeds registration labels while stable payload IDs
     ]
   );
   assert.equal(constants.hasRegistrationSessionSlotConflict(parallelSecondSlot.map(({ id }) => id)), true);
+
+  const parallelFinalSlot = day2Registration.filter(
+    ({ id }) => id === "day2-15:00 – 16:40-t1" || id === "day2-15:00 – 16:40-t2"
+  );
+  assert.deepEqual(
+    parallelFinalSlot.map(({ id, time, slotKey }) => ({ id, time, slotKey })),
+    [
+      {
+        id: "day2-15:00 – 16:40-t1",
+        time: "14:40 ~ 16:40",
+        slotKey: "day2::15:00 – 16:40",
+      },
+      {
+        id: "day2-15:00 – 16:40-t2",
+        time: "15:00 – 16:40",
+        slotKey: "day2::15:00 – 16:40",
+      },
+    ]
+  );
+  assert.equal(
+    constants.hasRegistrationSessionSlotConflict(parallelFinalSlot.map(({ id }) => id)),
+    true
+  );
+  let finalSlotSelection = constants.updateRegistrationSessionSelection(
+    [],
+    parallelFinalSlot[1].id,
+    true
+  );
+  finalSlotSelection = constants.updateRegistrationSessionSelection(
+    finalSlotSelection,
+    parallelFinalSlot[0].id,
+    true
+  );
+  assert.deepEqual(finalSlotSelection, ["day2-15:00 – 16:40-t1"]);
 
   const revisedSession = day2Registration.find(
     ({ id }) => id === "day2-13:00 – 14:40-t1"
