@@ -3,6 +3,7 @@ import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { Container } from "./ui/Container";
 import { Reveal } from "./ui/Reveal";
 import { GlowingShadow } from "./ui/glowing-shadow";
+import { DetailedProgram } from "./DetailedProgram";
 import { PROGRAM, PROGRAM_INTRO, TRACK_LABELS, type ProgramTrackItem } from "@/lib/constants";
 
 // Track 1 / Track 2 run in different rooms — color-coded (blue / purple) so
@@ -16,10 +17,16 @@ function TrackBlock({
   label,
   item,
   accent,
+  fallbackTime,
+  fallbackDuration,
+  showSchedule,
 }: {
   label: string;
   item?: ProgramTrackItem;
   accent: keyof typeof TRACK_ACCENT;
+  fallbackTime: string;
+  fallbackDuration?: string;
+  showSchedule: boolean;
 }) {
   const { bg, text } = TRACK_ACCENT[accent];
   if (!item) {
@@ -37,6 +44,16 @@ function TrackBlock({
       <span className={`rounded-[4px] px-2.5 py-0.5 text-[11px] font-semibold tracking-wide ${bg} ${text}`}>
         {label}
       </span>
+      {showSchedule ? (
+        <p className="mt-2 text-center text-[13px] font-semibold leading-relaxed text-[var(--color-muted)]">
+          {item.time ?? fallbackTime}
+          {(item.duration ?? fallbackDuration) ? (
+            <span className="ml-1 font-normal text-[var(--color-muted)]/70">
+              {item.duration ?? fallbackDuration}
+            </span>
+          ) : null}
+        </p>
+      ) : null}
       <h4 className="mt-2 whitespace-pre-line text-center text-[16px] font-bold leading-snug text-[var(--color-ink)] [word-break:keep-all] [overflow-wrap:break-word]">
         {item.title}
       </h4>
@@ -140,12 +157,18 @@ export function Program() {
                     <Reveal as="li" key={`${d.id}-${i}`} delay={Math.min(i, 6) * 50}>
                       <div className="grid grid-cols-[minmax(84px,110px)_1fr] items-center gap-4 border-b border-[var(--color-line)]/70 py-6 sm:gap-8">
                         <div className="text-center text-[16px] font-semibold tracking-wide text-[var(--color-muted)]">
-                          {slot.time}
-                          {slot.duration ? (
-                            <span className="mt-0.5 block text-[12px] font-normal text-[var(--color-muted)]/70">
-                              {slot.duration}
-                            </span>
-                          ) : null}
+                          {slot.track1?.time || slot.track2?.time ? (
+                            <span className="text-[13px] tracking-normal">트랙별 시간</span>
+                          ) : (
+                            <>
+                              {slot.time}
+                              {slot.duration ? (
+                                <span className="mt-0.5 block text-[12px] font-normal text-[var(--color-muted)]/70">
+                                  {slot.duration}
+                                </span>
+                              ) : null}
+                            </>
+                          )}
                         </div>
 
                         {slot.shared ? (
@@ -154,8 +177,22 @@ export function Program() {
                           </h4>
                         ) : (
                           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                            <TrackBlock label={TRACK_LABELS.track1} item={slot.track1} accent="track1" />
-                            <TrackBlock label={TRACK_LABELS.track2} item={slot.track2} accent="track2" />
+                            <TrackBlock
+                              label={TRACK_LABELS.track1}
+                              item={slot.track1}
+                              accent="track1"
+                              fallbackTime={slot.time}
+                              fallbackDuration={slot.duration}
+                              showSchedule={Boolean(slot.track1?.time || slot.track2?.time)}
+                            />
+                            <TrackBlock
+                              label={TRACK_LABELS.track2}
+                              item={slot.track2}
+                              accent="track2"
+                              fallbackTime={slot.time}
+                              fallbackDuration={slot.duration}
+                              showSchedule={Boolean(slot.track1?.time || slot.track2?.time)}
+                            />
                           </div>
                         )}
                       </div>
@@ -166,6 +203,7 @@ export function Program() {
             ))}
           </div>
         </div>
+        <DetailedProgram />
       </Container>
     </section>
   );

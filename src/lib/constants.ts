@@ -25,12 +25,15 @@ export const SITE = {
   description: `2026 한국보건의료정보원 연례 심포지엄 — ${EVENT_THEME}`,
 } as const;
 
-export const NAV_LINKS = [
-  // { label: "인사말", href: "#greeting" }, // 섹션 임시 숨김과 함께 비활성화
-  { label: "행사 개요", href: "#overview" },
-  { label: "프로그램", href: "#program" },
-  { label: "오시는 길", href: "#location" },
-] as const;
+export function getNavigationLinks(showSpeakers: boolean) {
+  return [
+    // { label: "인사말", href: "#greeting" }, // 섹션 임시 숨김과 함께 비활성화
+    { label: "행사 개요", href: "#overview" },
+    { label: "프로그램", href: "#program" },
+    ...(showSpeakers ? [{ label: "연사 소개", href: "#speakers" }] : []),
+    { label: "오시는 길", href: "#location" },
+  ] as const;
+}
 
 export const DIRECTOR_GREETING = {
   // 지정 시 인물 사진으로 전환됨. 비워두면 이니셜 플레이스홀더가 표시됨.
@@ -85,6 +88,9 @@ export const LOCATION = {
 /** A single track's content within a time slot (title + optional chair/speaker/org) */
 export type ProgramTrackItem = {
   title: string;
+  /** Track-specific display schedule when parallel tracks end at different times. */
+  time?: string;
+  duration?: string;
   chair?: string;
   speaker?: string;
   affiliation?: string;
@@ -185,24 +191,33 @@ export const PROGRAM: ProgramDay[] = [
         time: "10:00 – 11:40",
         duration: "(100분)",
         track1: {
-          title: "한국형 의료데이터 표준화의 현장 적용과 확산",
+          title: "의료데이터 표준의 현장 활용과 확산 (대한의료정보학회 합동세션)",
           chair: "김종엽 대한의료정보학회 이사장",
         },
-        track2: { title: "비대면 진료 제도화, 의료서비스의 새로운 연결" },
+        track2: { title: "의료 데이터 품질과 상호운용성 확대를 통한 진료 품질 향상" },
       },
       { time: "11:40 – 13:00", duration: "(80분)", shared: { title: "점심 시간" } },
       {
-        time: "13:00 – 14:40",
+        time: "13:00 - 14:40",
+        registrationIdTime: "13:00 – 14:40",
         duration: "(100분)",
-        track1: { title: "표준 기반 AI-Ready 의료시스템 실행체계" },
-        track2: { title: "AI 시대 신뢰받는 보건의료데이터 활용 방향" },
+        track1: {
+          title: "표준 기반 의료데이터 상호운용성 구현체계",
+          time: "13:00 - 14:20",
+          duration: "(80분)",
+        },
+        track2: {
+          title: "AI 시대 신뢰받는 보건의료데이터 활용 방향",
+          time: "13:00 - 14:40",
+          duration: "(100분)",
+        },
       },
       { time: "14:40 – 15:00", duration: "(20분)", shared: { title: "휴식" } },
       {
         time: "15:00 – 16:40",
         duration: "(100분)",
         track1: {
-          title: "AI 시대 글로벌 디지털헬스와 상호운용성 전략",
+          title: "AI시대 글로벌 보건의료 표준과 상호운용성 전략",
           chair: "양광모 교수",
         },
         track2: {
@@ -258,7 +273,7 @@ export const REGISTRATION_SESSIONS: RegistrationSessionOption[] = PROGRAM.flatMa
         id: `${day.id}-${registrationIdTime}-t1`,
         dayId: day.id,
         dayLabel: day.dayLabel,
-        time: slot.time,
+        time: slot.track1.time ?? slot.time,
         slotKey,
         kind: "track1",
         trackLabel: TRACK_LABELS.track1,
@@ -268,7 +283,7 @@ export const REGISTRATION_SESSIONS: RegistrationSessionOption[] = PROGRAM.flatMa
         id: `${day.id}-${registrationIdTime}-t2`,
         dayId: day.id,
         dayLabel: day.dayLabel,
-        time: slot.time,
+        time: slot.track2.time ?? slot.time,
         slotKey,
         kind: "track2",
         trackLabel: TRACK_LABELS.track2,
