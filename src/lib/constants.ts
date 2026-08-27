@@ -188,16 +188,17 @@ export const PROGRAM: ProgramDay[] = [
         time: "10:00 – 11:40",
         duration: "(100분)",
         track1: {
-          title: "한국형 의료데이터 표준화의 현장 적용과 확산",
+          title: "의료데이터 표준의 현장 활용과 확산 (대한의료정보학회 합동세션)",
           chair: "김종엽 대한의료정보학회 이사장",
         },
-        track2: { title: "비대면 진료 제도화, 의료서비스의 새로운 연결" },
+        track2: { title: "의료 데이터 품질과 상호운용성 확대를 통한 진료 품질 향상" },
       },
       { time: "11:40 – 13:00", duration: "(80분)", shared: { title: "점심 시간" } },
       {
-        time: "13:00 – 14:40",
-        duration: "(100분)",
-        track1: { title: "표준 기반 AI-Ready 의료시스템 실행체계" },
+        time: "13:00 - 14:20",
+        registrationIdTime: "13:00 – 14:40",
+        duration: "(80분)",
+        track1: { title: "표준 기반 의료데이터 상호운용성 구현체계" },
         track2: { title: "AI 시대 신뢰받는 보건의료데이터 활용 방향" },
       },
       { time: "14:40 – 15:00", duration: "(20분)", shared: { title: "휴식" } },
@@ -205,7 +206,7 @@ export const PROGRAM: ProgramDay[] = [
         time: "15:00 – 16:40",
         duration: "(100분)",
         track1: {
-          title: "AI 시대 글로벌 디지털헬스와 상호운용성 전략",
+          title: "AI시대 글로벌 보건의료 표준과 상호운용성 전략",
           chair: "양광모 교수",
         },
         track2: {
