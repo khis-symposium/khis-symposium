@@ -218,6 +218,8 @@ export const PROGRAM: ProgramDay[] = [
         duration: "(100분)",
         track1: {
           title: "AI시대 글로벌 보건의료 표준과 상호운용성 전략",
+          time: "14:40 ~ 16:40",
+          duration: "(120분)",
           chair: "양광모 교수",
         },
         track2: {
