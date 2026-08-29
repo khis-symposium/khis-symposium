@@ -14,10 +14,10 @@ export function Program() {
         프로그램
       </h2>
       <Image
-        src="/images/program/program-schedule-new.jpg"
+        src="/images/program/program-schedule-new-new.jpg"
         alt={PROGRAM_ALT}
-        width={4961}
-        height={22239}
+        width={1191}
+        height={5329}
         sizes="100vw"
         className="block h-auto w-full object-contain"
       />

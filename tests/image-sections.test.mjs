@@ -19,10 +19,10 @@ const assets = [
     sha256: "fde61235985cd33f8cb8489804888058f20ee1750515bcbeedb01eabe95861c6",
   },
   {
-    file: path.join("public", "images", "program", "program-schedule-new.jpg"),
-    width: 4961,
-    height: 22239,
-    sha256: "2ec442c443812a8c785bfa972ae1ada646c56a60277446371795f9ff8aeaad36",
+    file: path.join("public", "images", "program", "program-schedule-new-new.jpg"),
+    width: 1191,
+    height: 5329,
+    sha256: "0646441b29d780d1bafd9bedc60e667a096862a20e8289ab6a9c3f10e3af6213",
   },
 ];
 
@@ -134,9 +134,9 @@ test("program section renders one schedule image and no structured schedule UI",
   assert.match(markup, /<section[^>]*id="program"/);
   assert.match(markup, /<h2[^>]*class="sr-only"[^>]*>프로그램<\/h2>/);
   assert.equal((markup.match(/<img\b/g) || []).length, 1);
-  assert.match(markup, /src="\/images\/program\/program-schedule-new\.jpg"/);
-  assert.match(markup, /width="4961"/);
-  assert.match(markup, /height="22239"/);
+  assert.match(markup, /src="\/images\/program\/program-schedule-new-new\.jpg"/);
+  assert.match(markup, /width="1191"/);
+  assert.match(markup, /height="5329"/);
   assert.match(
     markup,
     /alt="2026 한국보건의료정보원 연례 심포지엄 전체 프로그램 일정표\. 9월 10일과 11일, 코엑스 401호·402호의 세션별 시간, 발표와 토론 일정\."/
