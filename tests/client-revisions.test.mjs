@@ -74,9 +74,9 @@ test("overview and program components render only their supplied section images"
   assert.doesNotMatch(overviewSource, /ROWS\.map|SectionHeading|khis-logo\.png/);
 
   assert.match(programSource, /id="program"/);
-  assert.match(programSource, /src="\/images\/program\/program-schedule-new\.jpg"/);
-  assert.match(programSource, /width=\{4961\}/);
-  assert.match(programSource, /height=\{22239\}/);
+  assert.match(programSource, /src="\/images\/program\/program-schedule-new-new\.jpg"/);
+  assert.match(programSource, /width=\{1191\}/);
+  assert.match(programSource, /height=\{5329\}/);
   assert.doesNotMatch(programSource, /PROGRAM\.map|TrackBlock|DetailedProgram|symposium-2025/);
 });
 
