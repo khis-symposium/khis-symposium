@@ -147,16 +147,16 @@ test("program registration IDs, display times, tracks, and titles remain exact",
       { id: "day1-09:30 – 10:25-common", dayId: "day1", time: "09:30 – 10:25", slotKey: "day1::09:30 – 10:25", trackLabel: "공통", title: "개회식" },
       { id: "day1-10:50 – 12:30-t1", dayId: "day1", time: "11:10 – 12:30", slotKey: "day1::11:10 – 12:30", trackLabel: "Track 1 · 401호", title: "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다" },
       { id: "day1-10:50 – 12:30-t2", dayId: "day1", time: "11:10 – 12:30", slotKey: "day1::11:10 – 12:30", trackLabel: "Track 2 · 402호", title: "디지털 보건의료정보 플랫폼 국민 중심 의료의 새로운 시작" },
-      { id: "day1-13:50 – 15:30-t1", dayId: "day1", time: "13:50 – 15:30", slotKey: "day1::13:50 – 15:30", trackLabel: "Track 1 · 401호", title: "국가통합바이오빅데이터, 데이터 활용으로 국민건강의 미래를 열다" },
+      { id: "day1-13:50 – 15:30-t1", dayId: "day1", time: "13:50 – 15:30", slotKey: "day1::13:50 – 15:30", trackLabel: "Track 1 · 401호", title: "국가통합바이오빅데이터 데이터 활용으로 국민건강의 미래를 열다" },
       { id: "day1-13:50 – 15:30-t2", dayId: "day1", time: "13:50 – 15:30", slotKey: "day1::13:50 – 15:30", trackLabel: "Track 2 · 402호", title: "보건의료데이터 인프라 혁신" },
       { id: "day1-15:50 – 17:30-t1", dayId: "day1", time: "15:50 – 17:30", slotKey: "day1::15:50 – 17:30", trackLabel: "Track 1 · 401호", title: "의료 AI 생태계 구축" },
       { id: "day1-15:50 – 17:30-t2", dayId: "day1", time: "15:50 – 17:30", slotKey: "day1::15:50 – 17:30", trackLabel: "Track 2 · 402호", title: "빅데이터 기반의 미래 질병 대응 전략" },
-      { id: "day2-10:00 – 11:40-t1", dayId: "day2", time: "10:00 – 11:40", slotKey: "day2::10:00 – 11:40", trackLabel: "Track 1 · 401호", title: "의료데이터 표준의 현장 활용과 확산 (대한의료정보학회 합동세션)" },
-      { id: "day2-10:00 – 11:40-t2", dayId: "day2", time: "10:00 – 11:40", slotKey: "day2::10:00 – 11:40", trackLabel: "Track 2 · 402호", title: "의료 데이터 품질과 상호운용성 확대를 통한 진료 품질 향상" },
+      { id: "day2-10:00 – 11:40-t1", dayId: "day2", time: "10:00 – 11:40", slotKey: "day2::10:00 – 11:40", trackLabel: "Track 1 · 401호", title: "의료데이터 표준의 현장 활용과 확산" },
+      { id: "day2-10:00 – 11:40-t2", dayId: "day2", time: "10:00 – 11:40", slotKey: "day2::10:00 – 11:40", trackLabel: "Track 2 · 402호", title: "데이터 품질과 상호운용성 확대를 통한 의료 질 향상" },
       { id: "day2-13:00 – 14:40-t1", dayId: "day2", time: "13:00 - 14:20", slotKey: "day2::13:00 - 14:40", trackLabel: "Track 1 · 401호", title: "표준 기반 의료데이터 상호운용성 구현체계" },
       { id: "day2-13:00 – 14:40-t2", dayId: "day2", time: "13:00 - 14:40", slotKey: "day2::13:00 - 14:40", trackLabel: "Track 2 · 402호", title: "AI 시대 신뢰받는 보건의료데이터 활용 방향" },
-      { id: "day2-15:00 – 16:40-t1", dayId: "day2", time: "14:40 ~ 16:40", slotKey: "day2::15:00 – 16:40", trackLabel: "Track 1 · 401호", title: "AI시대 글로벌 보건의료 표준과 상호운용성 전략" },
-      { id: "day2-15:00 – 16:40-t2", dayId: "day2", time: "15:00 – 16:40", slotKey: "day2::15:00 – 16:40", trackLabel: "Track 2 · 402호", title: "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)" },
+      { id: "day2-15:00 – 16:40-t1", dayId: "day2", time: "14:30 – 16:40", slotKey: "day2::15:00 – 16:40", trackLabel: "Track 1 · 401호", title: "AI 시대 글로벌 보건의료 표준과 상호운용성 전략" },
+      { id: "day2-15:00 – 16:40-t2", dayId: "day2", time: "15:00 – 16:40", slotKey: "day2::15:00 – 16:40", trackLabel: "Track 2 · 402호", title: "디지털헬스 미래를 위한 정책을 말하다 (미디어·정책 세션)" },
     ]
   );
 
@@ -272,7 +272,7 @@ test("confirmed DAY 2 content feeds registration labels while stable payload IDs
     [
       {
         id: "day2-15:00 – 16:40-t1",
-        time: "14:40 ~ 16:40",
+        time: "14:30 – 16:40",
         slotKey: "day2::15:00 – 16:40",
       },
       {

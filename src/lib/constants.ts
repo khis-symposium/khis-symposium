@@ -249,6 +249,32 @@ export type RegistrationSessionOption = {
   title: string;
 };
 
+type RegistrationSessionDisplayOverride = {
+  time?: string;
+  title?: string;
+};
+
+const REGISTRATION_SESSION_DISPLAY_OVERRIDES: Readonly<
+  Record<string, RegistrationSessionDisplayOverride>
+> = {
+  "day1-13:50 – 15:30-t1": {
+    title: "국가통합바이오빅데이터 데이터 활용으로 국민건강의 미래를 열다",
+  },
+  "day2-10:00 – 11:40-t1": {
+    title: "의료데이터 표준의 현장 활용과 확산",
+  },
+  "day2-10:00 – 11:40-t2": {
+    title: "데이터 품질과 상호운용성 확대를 통한 의료 질 향상",
+  },
+  "day2-15:00 – 16:40-t1": {
+    time: "14:30 – 16:40",
+    title: "AI 시대 글로벌 보건의료 표준과 상호운용성 전략",
+  },
+  "day2-15:00 – 16:40-t2": {
+    title: "디지털헬스 미래를 위한 정책을 말하다 (미디어·정책 세션)",
+  },
+};
+
 export const REGISTRATION_SESSIONS: RegistrationSessionOption[] = PROGRAM.flatMap((day) =>
   day.slots.flatMap((slot): RegistrationSessionOption[] => {
     const registrationIdTime = slot.registrationIdTime ?? slot.time;
@@ -270,26 +296,31 @@ export const REGISTRATION_SESSIONS: RegistrationSessionOption[] = PROGRAM.flatMa
     }
 
     if (!slot.track1 || !slot.track2) return [];
+    const track1Id = `${day.id}-${registrationIdTime}-t1`;
+    const track2Id = `${day.id}-${registrationIdTime}-t2`;
+    const track1Display = REGISTRATION_SESSION_DISPLAY_OVERRIDES[track1Id];
+    const track2Display = REGISTRATION_SESSION_DISPLAY_OVERRIDES[track2Id];
+
     return [
       {
-        id: `${day.id}-${registrationIdTime}-t1`,
+        id: track1Id,
         dayId: day.id,
         dayLabel: day.dayLabel,
-        time: slot.track1.time ?? slot.time,
+        time: track1Display?.time ?? slot.track1.time ?? slot.time,
         slotKey,
         kind: "track1",
         trackLabel: TRACK_LABELS.track1,
-        title: slot.track1.title,
+        title: track1Display?.title ?? slot.track1.title,
       },
       {
-        id: `${day.id}-${registrationIdTime}-t2`,
+        id: track2Id,
         dayId: day.id,
         dayLabel: day.dayLabel,
-        time: slot.track2.time ?? slot.time,
+        time: track2Display?.time ?? slot.track2.time ?? slot.time,
         slotKey,
         kind: "track2",
         trackLabel: TRACK_LABELS.track2,
-        title: slot.track2.title,
+        title: track2Display?.title ?? slot.track2.title,
       },
     ];
   })
