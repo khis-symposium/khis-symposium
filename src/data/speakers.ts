@@ -13,6 +13,7 @@ export const SPEAKER_SESSIONS = [
     dayId: "day1",
     sourceCode: "개회식",
     trackLabel: "공통",
+    time: "09:30 – 10:25",
     title: "개회식",
   },
   {
@@ -20,6 +21,7 @@ export const SPEAKER_SESSIONS = [
     dayId: "day1",
     sourceCode: "A1",
     trackLabel: "Track 1 · 401호",
+    time: "11:10 – 12:30",
     title: "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다",
   },
   {
@@ -27,6 +29,7 @@ export const SPEAKER_SESSIONS = [
     dayId: "day1",
     sourceCode: "A2",
     trackLabel: "Track 1 · 401호",
+    time: "13:50 – 15:30",
     title: "국가통합바이오빅데이터, 데이터 활용으로 국민건강의 미래를 열다",
   },
   {
@@ -34,6 +37,7 @@ export const SPEAKER_SESSIONS = [
     dayId: "day1",
     sourceCode: "A3",
     trackLabel: "Track 1 · 401호",
+    time: "15:50 – 17:30",
     title: "의료 AI 생태계 구축",
   },
   {
@@ -41,6 +45,7 @@ export const SPEAKER_SESSIONS = [
     dayId: "day2",
     sourceCode: "A4",
     trackLabel: "Track 1 · 401호",
+    time: "10:00 – 11:40",
     title: "의료데이터 표준의 현장 활용과 확산 (대한의료정보학회 합동세션)",
   },
   {
@@ -48,6 +53,7 @@ export const SPEAKER_SESSIONS = [
     dayId: "day2",
     sourceCode: "A5",
     trackLabel: "Track 1 · 401호",
+    time: "13:00 - 14:20",
     title: "표준 기반 의료데이터 상호운용성 구현체계",
   },
   {
@@ -55,6 +61,7 @@ export const SPEAKER_SESSIONS = [
     dayId: "day2",
     sourceCode: "A6",
     trackLabel: "Track 1 · 401호",
+    time: "14:40 ~ 16:40",
     title: "AI시대 글로벌 보건의료 표준과 상호운용성 전략",
   },
   {
@@ -62,6 +69,7 @@ export const SPEAKER_SESSIONS = [
     dayId: "day1",
     sourceCode: "B1",
     trackLabel: "Track 2 · 402호",
+    time: "11:10 – 12:30",
     title: "디지털 보건의료정보 플랫폼 국민 중심 의료의 새로운 시작",
   },
   {
@@ -69,6 +77,7 @@ export const SPEAKER_SESSIONS = [
     dayId: "day1",
     sourceCode: "B2",
     trackLabel: "Track 2 · 402호",
+    time: "13:50 – 15:30",
     title: "보건의료데이터 인프라 혁신",
   },
   {
@@ -76,6 +85,7 @@ export const SPEAKER_SESSIONS = [
     dayId: "day1",
     sourceCode: "B3",
     trackLabel: "Track 2 · 402호",
+    time: "15:50 – 17:30",
     title: "빅데이터 기반의 미래 질병 대응 전략",
   },
   {
@@ -83,6 +93,7 @@ export const SPEAKER_SESSIONS = [
     dayId: "day2",
     sourceCode: "B4",
     trackLabel: "Track 2 · 402호",
+    time: "10:00 – 11:40",
     title: "의료 데이터 품질과 상호운용성 확대를 통한 진료 품질 향상",
   },
   {
@@ -90,6 +101,7 @@ export const SPEAKER_SESSIONS = [
     dayId: "day2",
     sourceCode: "B5",
     trackLabel: "Track 2 · 402호",
+    time: "13:00 - 14:40",
     title: "AI 시대 신뢰받는 보건의료데이터 활용 방향",
   },
   {
@@ -97,6 +109,7 @@ export const SPEAKER_SESSIONS = [
     dayId: "day2",
     sourceCode: "B6",
     trackLabel: "Track 2 · 402호",
+    time: "15:00 – 16:40",
     title: "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)",
   },
 ] as const;
@@ -925,6 +938,7 @@ export type SpeakerSessionGroup = {
   id: string;
   title: string;
   trackLabel: string;
+  time: string;
   speakers: readonly Speaker[];
 };
 
@@ -1016,6 +1030,7 @@ export function getPublishedSpeakerDays(
           id: speaker.sessionId,
           title: speaker.sessionTitle,
           trackLabel: session.trackLabel,
+          time: session.time,
           speakers: [speaker],
         });
       }
@@ -1023,14 +1038,6 @@ export function getPublishedSpeakerDays(
 
     return { ...day, sessions: [...sessions.values()] };
   });
-}
-
-export function getSpeakerInitials(name: string): string {
-  const words = name.trim().split(/\s+/).filter(Boolean);
-  if (words.length > 1) {
-    return `${Array.from(words[0])[0] ?? ""}${Array.from(words.at(-1) ?? "")[0] ?? ""}`.toUpperCase();
-  }
-  return Array.from(words[0] ?? "").slice(0, 2).join("").toUpperCase();
 }
 
 export const SPEAKERS_VISIBLE = isSpeakerSectionPublished(

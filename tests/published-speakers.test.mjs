@@ -268,18 +268,26 @@ test("published speaker grouping keeps source order within serial DAY 1 and DAY 
   );
 });
 
-test("speaker session IDs, days, rooms, and titles resolve to the current PROGRAM source", () => {
+test("speaker session IDs, days, rooms, titles, and track-specific times resolve to PROGRAM", () => {
   for (const session of speakersData.SPEAKER_SESSIONS) {
     const programDay = constants.PROGRAM.find(({ id }) => id === session.dayId);
     assert.ok(programDay, session.id);
 
-    const matched = programDay.slots.some((slot) => {
+    const matched = programDay.slots.find((slot) => {
       if (session.trackLabel === "공통") return slot.shared?.title === session.title;
       if (session.trackLabel === "Track 1 · 401호") return slot.track1?.title === session.title;
       if (session.trackLabel === "Track 2 · 402호") return slot.track2?.title === session.title;
       return false;
     });
-    assert.equal(matched, true, session.id);
+    assert.ok(matched, session.id);
+
+    const track =
+      session.trackLabel === "Track 1 · 401호"
+        ? matched.track1
+        : session.trackLabel === "Track 2 · 402호"
+          ? matched.track2
+          : undefined;
+    assert.equal(session.time, track?.time ?? matched.time, session.id);
   }
 });
 

@@ -6,7 +6,6 @@ import {
   SPEAKERS,
   SPEAKERS_PUBLISHED,
   getPublishedSpeakerDays,
-  getSpeakerInitials,
   type Speaker,
 } from "@/data/speakers";
 
@@ -16,16 +15,7 @@ type SpeakersProps = {
 };
 
 function SpeakerPortrait({ speaker }: { speaker: Speaker }) {
-  if (!speaker.imageSrc) {
-    return (
-      <div
-        className="flex size-24 shrink-0 items-center justify-center rounded-full bg-[var(--color-surface-2)] text-[22px] font-extrabold tracking-[0.06em] text-[var(--color-blue)] ring-1 ring-[var(--color-line)] sm:size-28"
-        aria-hidden="true"
-      >
-        {getSpeakerInitials(speaker.name)}
-      </div>
-    );
-  }
+  if (!speaker.imageSrc) return null;
 
   return (
     <Image
@@ -105,8 +95,10 @@ export function Speakers({
                     className="min-w-0 rounded-[20px] border border-[var(--color-line)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-card)] sm:p-7"
                   >
                     <Reveal delay={Math.min(sessionIndex, 5) * 60}>
-                      <p className="text-[13px] font-bold tracking-wide text-[var(--color-blue)]">
-                        {session.trackLabel}
+                      <p className="flex flex-wrap items-center gap-x-2 text-[13px] font-bold tracking-wide text-[var(--color-blue)]">
+                        <span>{session.trackLabel}</span>
+                        <span aria-hidden="true">·</span>
+                        <span>{session.time}</span>
                       </p>
                       <h4
                         id={`speakers-${day.id}-${session.id}-heading`}
@@ -127,7 +119,9 @@ export function Speakers({
                         >
                           <article className="flex min-w-0 flex-col items-center rounded-[16px] border border-[var(--color-line)] bg-[var(--color-surface-2)] p-6 text-center">
                             <SpeakerPortrait speaker={speaker} />
-                            <div className="mt-5 min-w-0 max-w-full">
+                            <div
+                              className={`min-w-0 max-w-full${speaker.imageSrc ? " mt-5" : ""}`}
+                            >
                               <span className="inline-flex rounded-full bg-[var(--color-blue)]/10 px-3 py-1 text-[12px] font-bold text-[var(--color-blue)]">
                                 {speaker.role}
                               </span>

@@ -239,6 +239,8 @@ test("speaker hierarchy renders day, session, role, name, affiliation, and title
     speakerFixtures[0].sessionTitle,
     speakerFixtures[3].sessionTitle,
     "Track 1 · 401호",
+    "11:10 – 12:30",
+    "10:00 – 11:40",
     "좌장",
     "연사",
     "패널",
@@ -255,6 +257,11 @@ test("speaker hierarchy renders day, session, role, name, affiliation, and title
   const h5 = markup.indexOf("<h5");
   assert.ok(h2 >= 0 && h2 < h3 && h3 < h4 && h4 < h5);
   assert.match(markup, /alt="Test Speaker 테스트 프로필 이미지"/);
+  assert.equal((markup.match(/<img\b/g) || []).length, 1);
+  assert.doesNotMatch(
+    readSource(path.join("src", "components", "Speakers.tsx")),
+    /getSpeakerInitials|text-\[22px\]/
+  );
 });
 
 test("speaker cards provide no profile, biography, modal, search, or detail controls", () => {
