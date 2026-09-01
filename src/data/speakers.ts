@@ -1,4 +1,4 @@
-export const SPEAKERS_PUBLISHED = true;
+export const SPEAKERS_PUBLISHED = false;
 
 export const SPEAKER_DAYS = [
   { id: "day1", label: "DAY 1", dateLabel: "2026. 09. 10.(목)" },
