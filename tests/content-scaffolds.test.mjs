@@ -334,12 +334,12 @@ test("page order and shared gates keep speaker UI between program and location",
   assert.doesNotMatch(programSource, /DetailedProgram/);
 });
 
-test("committed defaults publish verified speakers but no detailed-program placeholder", () => {
-  assert.equal(speakersData.SPEAKERS_PUBLISHED, true);
+test("committed defaults hide verified speakers and detailed-program placeholders", () => {
+  assert.equal(speakersData.SPEAKERS_PUBLISHED, false);
   assert.equal(speakersData.SPEAKERS.length, 67);
-  assert.equal(speakersData.SPEAKERS_VISIBLE, true);
+  assert.equal(speakersData.SPEAKERS_VISIBLE, false);
   assert.equal(detailedProgramData.DETAILED_PROGRAM_PUBLISHED, false);
   assert.equal(detailedProgramData.DETAILED_PROGRAM_ASSET, null);
-  assert.match(renderSpeakers({}), /id="speakers"/);
+  assert.equal(renderSpeakers({}), "");
   assert.equal(renderDetailedProgram({}), "");
 });
