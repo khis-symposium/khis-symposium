@@ -21,7 +21,9 @@ function getPortraitClassName(speakerId: string) {
     case "speaker-001":
       return `-translate-x-[10%] scale-[2] ${baseClassName}`;
     case "speaker-018":
-      return `origin-top scale-[1.2] ${baseClassName}`;
+      return `origin-top [scale:1.2_1.32] ${baseClassName}`;
+    case "speaker-028":
+      return `scale-[0.9] ${baseClassName}`;
     case "speaker-043":
       return `scale-[1.6] ${baseClassName}`;
     case "speaker-060":
