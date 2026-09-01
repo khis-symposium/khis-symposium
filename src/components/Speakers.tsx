@@ -16,16 +16,16 @@ type SpeakersProps = {
 
 function SpeakerPortrait({ speaker }: { speaker: Speaker }) {
   if (!speaker.imageSrc) {
-    return <div aria-hidden="true" className="size-24 shrink-0 sm:size-28" />;
+    return <div aria-hidden="true" className="size-40 shrink-0 sm:size-52" />;
   }
 
   return (
-    <div className="relative size-24 shrink-0 overflow-hidden rounded-full bg-white ring-1 ring-[var(--color-line)] sm:size-28">
+    <div className="relative size-40 shrink-0 overflow-hidden rounded-full bg-white ring-1 ring-[var(--color-line)] sm:size-52">
       <Image
         src={speaker.imageSrc}
         alt={speaker.imageAlt}
         fill
-        sizes="(min-width: 640px) 112px, 96px"
+        sizes="(min-width: 640px) 208px, 160px"
         className="object-contain object-bottom"
       />
     </div>
@@ -122,17 +122,17 @@ export function Speakers({
                         >
                           <article className="flex h-full min-w-0 flex-col items-center rounded-[16px] border border-[var(--color-line)] bg-[var(--color-surface-2)] p-6 text-center">
                             <SpeakerPortrait speaker={speaker} />
-                            <div className="mt-5 min-w-0 max-w-full">
+                            <div className="mt-3 min-w-0 max-w-full">
                               <span className="inline-flex rounded-full bg-[var(--color-blue)]/10 px-3 py-1 text-[12px] font-bold text-[var(--color-blue)]">
                                 {speaker.role}
                               </span>
-                              <h5 className="mt-3 text-[21px] font-extrabold leading-tight text-[var(--color-ink)] [overflow-wrap:anywhere] [word-break:keep-all]">
+                              <h5 className="mt-2 text-[21px] font-extrabold leading-tight text-[var(--color-ink)] [overflow-wrap:anywhere] [word-break:keep-all]">
                                 {speaker.name}
                               </h5>
-                              <p className="mt-3 text-[14px] font-semibold leading-relaxed text-[var(--color-ink-soft)] [overflow-wrap:anywhere] [word-break:keep-all]">
+                              <p className="mt-2 text-[14px] font-semibold leading-snug text-[var(--color-ink-soft)] [overflow-wrap:anywhere] [word-break:keep-all]">
                                 {speaker.affiliation}
                               </p>
-                              <p className="mt-1 text-[14px] leading-relaxed text-[var(--color-muted)] [overflow-wrap:anywhere] [word-break:keep-all]">
+                              <p className="mt-0.5 text-[14px] leading-snug text-[var(--color-muted)] [overflow-wrap:anywhere] [word-break:keep-all]">
                                 {speaker.title}
                               </p>
                             </div>

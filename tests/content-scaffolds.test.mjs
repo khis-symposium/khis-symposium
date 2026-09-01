@@ -261,19 +261,26 @@ test("speaker hierarchy renders day, session, role, name, affiliation, and title
   assert.equal((markup.match(/<img\b/g) || []).length, 1);
   assert.equal((markup.match(/bg-white/g) || []).length, 1);
   assert.equal(
-    (markup.match(/size-24 shrink-0/g) || []).length,
+    (markup.match(/size-40 shrink-0/g) || []).length,
     speakerFixtures.length,
     "every card reserves the same portrait slot"
   );
-  assert.match(markup, /relative size-24[^\"]*overflow-hidden[^\"]*rounded-full[^\"]*bg-white/);
+  assert.match(markup, /relative size-40[^\"]*overflow-hidden[^\"]*rounded-full[^\"]*bg-white/);
   assert.equal(
-    (markup.match(/aria-hidden="true" class="size-24 shrink-0 sm:size-28"/g) || [])
+    (markup.match(/aria-hidden="true" class="size-40 shrink-0 sm:size-52"/g) || [])
       .length,
     speakerFixtures.filter(({ imageSrc }) => !imageSrc).length,
     "cards without photos reserve an invisible slot without a circle or initials"
   );
   assert.match(markup, /<article class="flex h-full min-w-0/);
-  assert.equal((markup.match(/class="mt-5 min-w-0 max-w-full"/g) || []).length, speakerFixtures.length);
+  assert.equal((markup.match(/class="mt-3 min-w-0 max-w-full"/g) || []).length, speakerFixtures.length);
+  assert.match(
+    readSource(path.join("src", "components", "Speakers.tsx")),
+    /sizes="\(min-width: 640px\) 208px, 160px"/
+  );
+  assert.match(markup, /<h5 class="mt-2 /);
+  assert.match(markup, /<p class="mt-2 [^"]*leading-snug/);
+  assert.match(markup, /<p class="mt-0\.5 [^"]*leading-snug/);
   assert.match(markup, /object-contain object-bottom/);
   assert.doesNotMatch(markup, /object-cover/);
   assert.doesNotMatch(
