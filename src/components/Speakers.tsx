@@ -47,12 +47,17 @@ export function Speakers({
   if (days.length === 0) return null;
 
   return (
-    <section id="speakers" className="on-light section-pad bg-[var(--color-surface-2)]">
+    <section
+      id="speakers"
+      aria-labelledby="speakers-heading"
+      className="on-light section-pad scroll-mt-24 bg-[var(--color-surface-2)]"
+    >
       <Container>
         <SectionHeading
           eyebrow="SPEAKERS"
           title="연사 소개"
-          description="일자와 세션별 좌장, 연사 및 패널을 안내드립니다."
+          description="일자와 세션별 기조연설, 좌장, 발표자 및 토론자를 안내드립니다."
+          titleId="speakers-heading"
         />
 
         <nav className="mt-8 flex flex-wrap gap-2" aria-label="연사 소개 일자 바로가기">
@@ -100,9 +105,12 @@ export function Speakers({
                     className="min-w-0 rounded-[20px] border border-[var(--color-line)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-card)] sm:p-7"
                   >
                     <Reveal delay={Math.min(sessionIndex, 5) * 60}>
+                      <p className="text-[13px] font-bold tracking-wide text-[var(--color-blue)]">
+                        {session.trackLabel}
+                      </p>
                       <h4
                         id={`speakers-${day.id}-${session.id}-heading`}
-                        className="text-[clamp(1.15rem,2.2vw,1.45rem)] font-extrabold leading-snug text-[var(--color-ink)] [overflow-wrap:anywhere] [word-break:keep-all]"
+                        className="mt-2 text-[clamp(1.15rem,2.2vw,1.45rem)] font-extrabold leading-snug text-[var(--color-ink)] [overflow-wrap:anywhere] [word-break:keep-all]"
                       >
                         {session.title}
                       </h4>

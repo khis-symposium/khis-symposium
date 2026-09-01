@@ -47,12 +47,12 @@ function Reveal({ children, className = "", as = "div" }) {
   return React.createElement(as, { className }, children);
 }
 
-function SectionHeading({ eyebrow, title, description }) {
+function SectionHeading({ eyebrow, title, description, titleId }) {
   return React.createElement(
     "div",
     null,
     React.createElement("span", null, eyebrow),
-    React.createElement("h2", null, title),
+    React.createElement("h2", { id: titleId }, title),
     description ? React.createElement("p", null, description) : null
   );
 }
@@ -98,8 +98,8 @@ const speakerFixtures = [
   {
     id: "fixture-day1-chair",
     dayId: "day1",
-    sessionId: "fixture-session-1",
-    sessionTitle: "테스트 세션 1: 데이터 기반 보건의료 혁신",
+    sessionId: "day1-track1-a1",
+    sessionTitle: "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다",
     role: "좌장",
     name: "테스트 좌장",
     affiliation: "테스트용 매우 긴 보건의료 데이터 상호운용성 연구기관",
@@ -110,8 +110,8 @@ const speakerFixtures = [
   {
     id: "fixture-day1-speaker",
     dayId: "day1",
-    sessionId: "fixture-session-1",
-    sessionTitle: "테스트 세션 1: 데이터 기반 보건의료 혁신",
+    sessionId: "day1-track1-a1",
+    sessionTitle: "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다",
     role: "연사",
     name: "Test Speaker",
     affiliation: "테스트 국제 디지털헬스 협력기구",
@@ -122,8 +122,8 @@ const speakerFixtures = [
   {
     id: "fixture-day1-panel",
     dayId: "day1",
-    sessionId: "fixture-session-1",
-    sessionTitle: "테스트 세션 1: 데이터 기반 보건의료 혁신",
+    sessionId: "day1-track1-a1",
+    sessionTitle: "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다",
     role: "패널",
     name: "테스트 패널",
     affiliation: "테스트 의료기관",
@@ -134,8 +134,8 @@ const speakerFixtures = [
   {
     id: "fixture-day2-speaker",
     dayId: "day2",
-    sessionId: "fixture-session-2",
-    sessionTitle: "테스트 세션 2: 신뢰할 수 있는 의료 AI",
+    sessionId: "day2-track1-a4",
+    sessionTitle: "의료데이터 표준의 현장 활용과 확산 (대한의료정보학회 합동세션)",
     role: "연사",
     name: "DAY 2 테스트 연사",
     affiliation: "테스트 공공기관",
@@ -205,6 +205,9 @@ test("valid fixtures expose navigation and the complete speaker section together
 
   const markup = renderSpeakers({ published: true, speakers: speakerFixtures });
   assert.match(markup, /id="speakers"/);
+  assert.match(markup, /aria-labelledby="speakers-heading"/);
+  assert.match(markup, /scroll-mt-24/);
+  assert.match(markup, /id="speakers-heading"/);
   assert.match(markup, />연사 소개</);
 });
 
@@ -235,6 +238,7 @@ test("speaker hierarchy renders day, session, role, name, affiliation, and title
     "DAY 2",
     speakerFixtures[0].sessionTitle,
     speakerFixtures[3].sessionTitle,
+    "Track 1 · 401호",
     "좌장",
     "연사",
     "패널",
@@ -305,12 +309,12 @@ test("page order and shared gates keep speaker UI between program and location",
   assert.doesNotMatch(programSource, /DetailedProgram/);
 });
 
-test("committed defaults publish no speaker or detailed-program placeholders", () => {
-  assert.equal(speakersData.SPEAKERS_PUBLISHED, false);
-  assert.deepEqual(speakersData.SPEAKERS, []);
-  assert.equal(speakersData.SPEAKERS_VISIBLE, false);
+test("committed defaults publish verified speakers but no detailed-program placeholder", () => {
+  assert.equal(speakersData.SPEAKERS_PUBLISHED, true);
+  assert.equal(speakersData.SPEAKERS.length, 67);
+  assert.equal(speakersData.SPEAKERS_VISIBLE, true);
   assert.equal(detailedProgramData.DETAILED_PROGRAM_PUBLISHED, false);
   assert.equal(detailedProgramData.DETAILED_PROGRAM_ASSET, null);
-  assert.equal(renderSpeakers({}), "");
+  assert.match(renderSpeakers({}), /id="speakers"/);
   assert.equal(renderDetailedProgram({}), "");
 });
