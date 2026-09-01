@@ -212,17 +212,21 @@ function imageDimensions(buffer, mime) {
   throw new Error("JPEG dimensions not found");
 }
 
-test("published speaker data exactly matches all 67 HWPX-derived appearances", () => {
-  assert.equal(speakersData.SPEAKERS_PUBLISHED, true);
-  assert.equal(speakersData.SPEAKERS_VISIBLE, true);
+test("verified speaker data remains intact while publication is disabled", () => {
+  assert.equal(speakersData.SPEAKERS_PUBLISHED, false);
+  assert.equal(speakersData.SPEAKERS_VISIBLE, false);
   assert.deepEqual(speakersData.SPEAKERS, expectedAppearances);
   assert.equal(new Set(speakersData.SPEAKERS.map(({ id }) => id)).size, 67);
   assert.equal(new Set(speakersData.SPEAKERS.map(({ name }) => name)).size, 66);
 });
 
 test("published speaker grouping keeps source order within serial DAY 1 and DAY 2 sections", () => {
+  assert.deepEqual(
+    speakersData.getPublishedSpeakerDays(false, speakersData.SPEAKERS),
+    []
+  );
   const groupedDays = speakersData.getPublishedSpeakerDays(
-    speakersData.SPEAKERS_PUBLISHED,
+    true,
     speakersData.SPEAKERS
   );
   assert.deepEqual(groupedDays.map(({ id }) => id), ["day1", "day2"]);
