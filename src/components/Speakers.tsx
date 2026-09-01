@@ -15,7 +15,9 @@ type SpeakersProps = {
 };
 
 function SpeakerPortrait({ speaker }: { speaker: Speaker }) {
-  if (!speaker.imageSrc) return null;
+  if (!speaker.imageSrc) {
+    return <div aria-hidden="true" className="size-24 shrink-0 sm:size-28" />;
+  }
 
   return (
     <div className="relative size-24 shrink-0 overflow-hidden rounded-full bg-white ring-1 ring-[var(--color-line)] sm:size-28">
@@ -118,11 +120,9 @@ export function Speakers({
                           delay={Math.min(speakerIndex, 5) * 50}
                           className="min-w-0"
                         >
-                          <article className="flex min-w-0 flex-col items-center rounded-[16px] border border-[var(--color-line)] bg-[var(--color-surface-2)] p-6 text-center">
+                          <article className="flex h-full min-w-0 flex-col items-center rounded-[16px] border border-[var(--color-line)] bg-[var(--color-surface-2)] p-6 text-center">
                             <SpeakerPortrait speaker={speaker} />
-                            <div
-                              className={`min-w-0 max-w-full${speaker.imageSrc ? " mt-5" : ""}`}
-                            >
+                            <div className="mt-5 min-w-0 max-w-full">
                               <span className="inline-flex rounded-full bg-[var(--color-blue)]/10 px-3 py-1 text-[12px] font-bold text-[var(--color-blue)]">
                                 {speaker.role}
                               </span>

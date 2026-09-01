@@ -260,7 +260,20 @@ test("speaker hierarchy renders day, session, role, name, affiliation, and title
   assert.match(markup, /alt="Test Speaker 테스트 프로필 이미지"/);
   assert.equal((markup.match(/<img\b/g) || []).length, 1);
   assert.equal((markup.match(/bg-white/g) || []).length, 1);
+  assert.equal(
+    (markup.match(/size-24 shrink-0/g) || []).length,
+    speakerFixtures.length,
+    "every card reserves the same portrait slot"
+  );
   assert.match(markup, /relative size-24[^\"]*overflow-hidden[^\"]*rounded-full[^\"]*bg-white/);
+  assert.equal(
+    (markup.match(/aria-hidden="true" class="size-24 shrink-0 sm:size-28"/g) || [])
+      .length,
+    speakerFixtures.filter(({ imageSrc }) => !imageSrc).length,
+    "cards without photos reserve an invisible slot without a circle or initials"
+  );
+  assert.match(markup, /<article class="flex h-full min-w-0/);
+  assert.equal((markup.match(/class="mt-5 min-w-0 max-w-full"/g) || []).length, speakerFixtures.length);
   assert.match(markup, /object-contain object-bottom/);
   assert.doesNotMatch(markup, /object-cover/);
   assert.doesNotMatch(
