@@ -285,7 +285,7 @@ test("speaker hierarchy renders day, session, role, name, affiliation, and title
   assert.doesNotMatch(markup, /object-cover/);
   assert.match(
     readSource(path.join("src", "components", "Speakers.tsx")),
-    /case "speaker-001":[\s\S]*-translate-x-\[4%\] scale-\[2\][\s\S]*case "speaker-028":[\s\S]*scale-\[1\.08\][\s\S]*case "speaker-043":[\s\S]*scale-\[1\.6\][\s\S]*case "speaker-060":[\s\S]*origin-top scale-\[2\.3\][\s\S]*case "speaker-063":[\s\S]*origin-top scale-\[1\.5\]/
+    /case "speaker-001":[\s\S]*-translate-x-\[10%\] scale-\[2\][\s\S]*case "speaker-028":[\s\S]*scale-\[1\.08\][\s\S]*case "speaker-043":[\s\S]*scale-\[1\.6\][\s\S]*case "speaker-060":[\s\S]*origin-top scale-\[2\.3\][\s\S]*case "speaker-063":[\s\S]*origin-top scale-\[1\.5\]/
   );
   assert.doesNotMatch(
     readSource(path.join("src", "components", "Speakers.tsx")),

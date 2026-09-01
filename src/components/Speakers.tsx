@@ -19,7 +19,7 @@ function getPortraitClassName(speakerId: string) {
 
   switch (speakerId) {
     case "speaker-001":
-      return `-translate-x-[4%] scale-[2] ${baseClassName}`;
+      return `-translate-x-[10%] scale-[2] ${baseClassName}`;
     case "speaker-028":
       return `scale-[1.08] ${baseClassName}`;
     case "speaker-043":
