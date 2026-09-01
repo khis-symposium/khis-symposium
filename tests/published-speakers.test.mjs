@@ -8,6 +8,12 @@ import { fileURLToPath } from "node:url";
 import ts from "typescript";
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const expectedTransparentImages = JSON.parse(
+  fs.readFileSync(
+    path.join(repo, "tests", "fixtures", "speaker-transparent-assets.json"),
+    "utf8"
+  )
+);
 
 function loadModule(file) {
   const source = fs.readFileSync(path.join(repo, file), "utf8");
@@ -97,7 +103,7 @@ const expectedAppearances = [
   ["speaker-067", "day2", "day2-track2-b6", "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)", "토론자", "조민규", "지디넷코리아", "팀장", "/images/speakers/speaker-067.jpg", "조민규 연사 사진"],
   ["speaker-068", "day2", "day2-track2-b6", "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)", "토론자", "조동찬", "한양대학교", "교수", "/images/speakers/speaker-068.png", "조동찬 연사 사진"],
 ].map(
-  ([id, dayId, sessionId, sessionTitle, role, name, affiliation, title, imageSrc, imageAlt]) => ({
+  ([id, dayId, sessionId, sessionTitle, role, name, affiliation, title, legacyImageSrc, imageAlt]) => ({
     id,
     dayId,
     sessionId,
@@ -106,12 +112,14 @@ const expectedAppearances = [
     name,
     affiliation,
     title,
-    imageSrc,
+    imageSrc: legacyImageSrc
+      ? `/images/speakers/${id}-removebg-preview.png`
+      : "",
     imageAlt,
   })
 );
 
-const expectedImages = [
+const legacyImages = [
   ["speaker-001.png", "image/png", 800, 1200, 1284781, "e0d93e4feb0e16ad54936abc752cc89a321413c7e29601731c1d04d3c1f9fdc7"],
   ["speaker-002.png", "image/png", 167, 215, 88856, "207f173cbd009231e6a9e9ad4682484d0856c71bfd6af98811bc839e7c7ad572"],
   ["speaker-005.png", "image/png", 860, 1146, 1892373, "2942ab8ab2a07f801c538a76d3029f9d8993e248618fd0ee748983045078472b"],
@@ -291,20 +299,27 @@ test("speaker session IDs, days, rooms, titles, and track-specific times resolve
   }
 });
 
-test("all 49 mapped speaker assets have exact signatures, dimensions, bytes, and hashes", () => {
+test("all 49 transparent speaker assets have exact signatures, dimensions, bytes, hashes, and alpha metadata", () => {
   const targetDir = path.join(repo, "public", "images", "speakers");
   const actualFiles = fs.readdirSync(targetDir).sort();
-  assert.deepEqual(actualFiles, expectedImages.map(({ file }) => file).sort());
+  assert.deepEqual(
+    actualFiles,
+    [...legacyImages, ...expectedTransparentImages].map(({ file }) => file).sort()
+  );
 
-  for (const expected of expectedImages) {
+  for (const expected of expectedTransparentImages) {
     const absolutePath = path.join(targetDir, expected.file);
     const buffer = fs.readFileSync(absolutePath);
     const extension = path.extname(expected.file);
-    assert.equal(extension, expected.mime === "image/png" ? ".png" : ".jpg");
+    assert.equal(extension, ".png");
+    assert.equal(expected.mime, "image/png");
     assert.deepEqual(imageDimensions(buffer, expected.mime), {
       width: expected.width,
       height: expected.height,
     });
+    assert.equal(buffer[25], 6, `${expected.file} must use RGBA PNG color type`);
+    assert.equal(expected.alphaMin, 0);
+    assert.equal(expected.alphaMax, 255);
     assert.equal(buffer.length, expected.size);
     assert.equal(
       crypto.createHash("sha256").update(buffer).digest("hex"),
@@ -318,6 +333,11 @@ test("photo mapping, alt text, fallback count, roles, and day counts remain expl
   const fallbacks = speakersData.SPEAKERS.filter(({ imageSrc }) => !imageSrc);
   assert.equal(withPhotos.length, 49);
   assert.equal(fallbacks.length, 18);
+  assert.ok(
+    withPhotos.every(({ id, imageSrc }) =>
+      imageSrc.endsWith(`/${id}-removebg-preview.png`)
+    )
+  );
   assert.ok(withPhotos.every(({ name, imageAlt }) => imageAlt === `${name} 연사 사진`));
   assert.ok(fallbacks.every(({ imageAlt }) => imageAlt === ""));
 

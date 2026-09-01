@@ -137,7 +137,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "백롱민",
     affiliation: "국가통합바이오빅데이터사업단",
     title: "단장",
-    imageSrc: "/images/speakers/speaker-001.png",
+    imageSrc: "/images/speakers/speaker-001-removebg-preview.png",
     imageAlt: "백롱민 연사 사진",
   },
   {
@@ -149,7 +149,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "양성일",
     affiliation: "분당서울대병원",
     title: "교수",
-    imageSrc: "/images/speakers/speaker-002.png",
+    imageSrc: "/images/speakers/speaker-002-removebg-preview.png",
     imageAlt: "양성일 연사 사진",
   },
   {
@@ -185,7 +185,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "정해영",
     affiliation: "국가생명연구자원정보센터",
     title: "센터장",
-    imageSrc: "/images/speakers/speaker-005.png",
+    imageSrc: "/images/speakers/speaker-005-removebg-preview.png",
     imageAlt: "정해영 연사 사진",
   },
   {
@@ -197,7 +197,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "정윤빈",
     affiliation: "세브란스병원",
     title: "교수",
-    imageSrc: "/images/speakers/speaker-006.jpg",
+    imageSrc: "/images/speakers/speaker-006-removebg-preview.png",
     imageAlt: "정윤빈 연사 사진",
   },
   {
@@ -209,7 +209,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "정재균",
     affiliation: "서울대학교병원",
     title: "교수",
-    imageSrc: "/images/speakers/speaker-007.png",
+    imageSrc: "/images/speakers/speaker-007-removebg-preview.png",
     imageAlt: "정재균 연사 사진",
   },
   {
@@ -233,7 +233,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "이상아",
     affiliation: "강원대학교",
     title: "교수",
-    imageSrc: "/images/speakers/speaker-009.png",
+    imageSrc: "/images/speakers/speaker-009-removebg-preview.png",
     imageAlt: "이상아 연사 사진",
   },
   {
@@ -257,7 +257,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "이승복",
     affiliation: "서울대학교병원",
     title: "교수",
-    imageSrc: "/images/speakers/speaker-011.jpg",
+    imageSrc: "/images/speakers/speaker-011-removebg-preview.png",
     imageAlt: "이승복 연사 사진",
   },
   {
@@ -281,7 +281,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "김미영",
     affiliation: "한국1혈당뇨병환우회",
     title: "대표",
-    imageSrc: "/images/speakers/speaker-013.png",
+    imageSrc: "/images/speakers/speaker-013-removebg-preview.png",
     imageAlt: "김미영 연사 사진",
   },
   {
@@ -305,7 +305,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "조경희",
     affiliation: "국민건강보험 일산병원",
     title: "교수",
-    imageSrc: "/images/speakers/speaker-015.png",
+    imageSrc: "/images/speakers/speaker-015-removebg-preview.png",
     imageAlt: "조경희 연사 사진",
   },
   {
@@ -341,7 +341,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "차원철",
     affiliation: "삼성서울병원/국가AI전략위원회",
     title: "교수",
-    imageSrc: "/images/speakers/speaker-018.png",
+    imageSrc: "/images/speakers/speaker-018-removebg-preview.png",
     imageAlt: "차원철 연사 사진",
   },
   {
@@ -353,7 +353,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "이영희",
     affiliation: "대한의료정보학회/서울대학교",
     title: "부교수",
-    imageSrc: "/images/speakers/speaker-019.jpg",
+    imageSrc: "/images/speakers/speaker-019-removebg-preview.png",
     imageAlt: "이영희 연사 사진",
   },
   {
@@ -365,7 +365,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "윤덕용",
     affiliation: "연세대학교",
     title: "부교수",
-    imageSrc: "/images/speakers/speaker-020.jpg",
+    imageSrc: "/images/speakers/speaker-020-removebg-preview.png",
     imageAlt: "윤덕용 연사 사진",
   },
   {
@@ -377,7 +377,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "이수현",
     affiliation: "가천대학교",
     title: "부교수",
-    imageSrc: "/images/speakers/speaker-021.png",
+    imageSrc: "/images/speakers/speaker-021-removebg-preview.png",
     imageAlt: "이수현 연사 사진",
   },
   {
@@ -401,7 +401,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "정세영",
     affiliation: "분당서울대학교병원",
     title: "정보화실장",
-    imageSrc: "/images/speakers/speaker-023.png",
+    imageSrc: "/images/speakers/speaker-023-removebg-preview.png",
     imageAlt: "정세영 연사 사진",
   },
   {
@@ -413,7 +413,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "박현애",
     affiliation: "헬스오앤티",
     title: "대표",
-    imageSrc: "/images/speakers/speaker-024.png",
+    imageSrc: "/images/speakers/speaker-024-removebg-preview.png",
     imageAlt: "박현애 연사 사진",
   },
   {
@@ -425,7 +425,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "김영학",
     affiliation: "서울아산병원 디지털정보혁신본부",
     title: "교수",
-    imageSrc: "/images/speakers/speaker-025.png",
+    imageSrc: "/images/speakers/speaker-025-removebg-preview.png",
     imageAlt: "김영학 연사 사진",
   },
   {
@@ -437,7 +437,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "양광모",
     affiliation: "삼성서울병원",
     title: "교수",
-    imageSrc: "/images/speakers/speaker-026.jpg",
+    imageSrc: "/images/speakers/speaker-026-removebg-preview.png",
     imageAlt: "양광모 연사 사진",
   },
   {
@@ -449,7 +449,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "Eric Sutherland",
     affiliation: "OECD",
     title: "Senior Health Economist and Digital Health Lead",
-    imageSrc: "/images/speakers/speaker-027.png",
+    imageSrc: "/images/speakers/speaker-027-removebg-preview.png",
     imageAlt: "Eric Sutherland 연사 사진",
   },
   {
@@ -461,7 +461,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "Robert Jakob",
     affiliation: "WHO-FIC",
     title: "Head of Unit",
-    imageSrc: "/images/speakers/speaker-028.png",
+    imageSrc: "/images/speakers/speaker-028-removebg-preview.png",
     imageAlt: "Robert Jakob 연사 사진",
   },
   {
@@ -473,7 +473,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "Rory Davidson",
     affiliation: "SNOMED International",
     title: "Chief Digital Information Officer",
-    imageSrc: "/images/speakers/speaker-029.png",
+    imageSrc: "/images/speakers/speaker-029-removebg-preview.png",
     imageAlt: "Rory Davidson 연사 사진",
   },
   {
@@ -497,7 +497,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "김종엽",
     affiliation: "대한의료정보학회",
     title: "이사장",
-    imageSrc: "/images/speakers/speaker-031.jpg",
+    imageSrc: "/images/speakers/speaker-031-removebg-preview.png",
     imageAlt: "김종엽 연사 사진",
   },
   {
@@ -509,7 +509,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "차동철",
     affiliation: "네이버헬스케어",
     title: "센터장",
-    imageSrc: "/images/speakers/speaker-032.jpg",
+    imageSrc: "/images/speakers/speaker-032-removebg-preview.png",
     imageAlt: "차동철 연사 사진",
   },
   {
@@ -521,7 +521,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "박현선",
     affiliation: "건강보험심사평가원",
     title: "상근위원",
-    imageSrc: "/images/speakers/speaker-033.png",
+    imageSrc: "/images/speakers/speaker-033-removebg-preview.png",
     imageAlt: "박현선 연사 사진",
   },
   {
@@ -533,7 +533,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "최지현",
     affiliation: "한겨례신문",
     title: "기자",
-    imageSrc: "/images/speakers/speaker-034.jpg",
+    imageSrc: "/images/speakers/speaker-034-removebg-preview.png",
     imageAlt: "최지현 연사 사진",
   },
   {
@@ -545,7 +545,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "김일곤",
     affiliation: "대한의료정보학회",
     title: "회장",
-    imageSrc: "/images/speakers/speaker-035.png",
+    imageSrc: "/images/speakers/speaker-035-removebg-preview.png",
     imageAlt: "김일곤 연사 사진",
   },
   {
@@ -557,7 +557,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "박나영",
     affiliation: "한국보건사회연구원",
     title: "부연구위원",
-    imageSrc: "/images/speakers/speaker-036.png",
+    imageSrc: "/images/speakers/speaker-036-removebg-preview.png",
     imageAlt: "박나영 연사 사진",
   },
   {
@@ -569,7 +569,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "강준원",
     affiliation: "대한영상의학회(서울아산병원)",
     title: "교수",
-    imageSrc: "/images/speakers/speaker-037.png",
+    imageSrc: "/images/speakers/speaker-037-removebg-preview.png",
     imageAlt: "강준원 연사 사진",
   },
   {
@@ -581,7 +581,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "방민호",
     affiliation: "한국보건의료정보원",
     title: "단장",
-    imageSrc: "/images/speakers/speaker-038.png",
+    imageSrc: "/images/speakers/speaker-038-removebg-preview.png",
     imageAlt: "방민호 연사 사진",
   },
   {
@@ -605,7 +605,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "김준현",
     affiliation: "레몬헬스케어",
     title: "부사장",
-    imageSrc: "/images/speakers/speaker-040.jpg",
+    imageSrc: "/images/speakers/speaker-040-removebg-preview.png",
     imageAlt: "김준현 연사 사진",
   },
   {
@@ -617,7 +617,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "서영희",
     affiliation: "평화이즈",
     title: "부장",
-    imageSrc: "/images/speakers/speaker-041.png",
+    imageSrc: "/images/speakers/speaker-041-removebg-preview.png",
     imageAlt: "서영희 연사 사진",
   },
   {
@@ -629,7 +629,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "이호영",
     affiliation: "서울대학교병원",
     title: "교수",
-    imageSrc: "/images/speakers/speaker-042.jpg",
+    imageSrc: "/images/speakers/speaker-042-removebg-preview.png",
     imageAlt: "이호영 연사 사진",
   },
   {
@@ -641,7 +641,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "황희",
     affiliation: "카카오헬스케어",
     title: "대표이사",
-    imageSrc: "/images/speakers/speaker-043.jpg",
+    imageSrc: "/images/speakers/speaker-043-removebg-preview.png",
     imageAlt: "황희 연사 사진",
   },
   {
@@ -665,7 +665,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "강미라",
     affiliation: "삼성서울병원",
     title: "교수",
-    imageSrc: "/images/speakers/speaker-045.jpg",
+    imageSrc: "/images/speakers/speaker-045-removebg-preview.png",
     imageAlt: "강미라 연사 사진",
   },
   {
@@ -677,7 +677,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "이상원",
     affiliation: "국제백신연구소",
     title: "근거기반보건전략관",
-    imageSrc: "/images/speakers/speaker-047.png",
+    imageSrc: "/images/speakers/speaker-047-removebg-preview.png",
     imageAlt: "이상원 연사 사진",
   },
   {
@@ -689,7 +689,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "박종현",
     affiliation: "질병관리청",
     title: "사무관",
-    imageSrc: "/images/speakers/speaker-048.png",
+    imageSrc: "/images/speakers/speaker-048-removebg-preview.png",
     imageAlt: "박종현 연사 사진",
   },
   {
@@ -701,7 +701,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "김진명",
     affiliation: "질병관리청",
     title: "사무관",
-    imageSrc: "/images/speakers/speaker-049.png",
+    imageSrc: "/images/speakers/speaker-049-removebg-preview.png",
     imageAlt: "김진명 연사 사진",
   },
   {
@@ -713,7 +713,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "박도현",
     affiliation: "질병관리청",
     title: "사무관",
-    imageSrc: "/images/speakers/speaker-050.png",
+    imageSrc: "/images/speakers/speaker-050-removebg-preview.png",
     imageAlt: "박도현 연사 사진",
   },
   {
@@ -749,7 +749,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "이유라",
     affiliation: "서울아산병원",
     title: "교수",
-    imageSrc: "/images/speakers/speaker-053.png",
+    imageSrc: "/images/speakers/speaker-053-removebg-preview.png",
     imageAlt: "이유라 연사 사진",
   },
   {
@@ -773,7 +773,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "고태훈",
     affiliation: "가톨릭대학교",
     title: "교수",
-    imageSrc: "/images/speakers/speaker-055.png",
+    imageSrc: "/images/speakers/speaker-055-removebg-preview.png",
     imageAlt: "고태훈 연사 사진",
   },
   {
@@ -785,7 +785,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "이영호",
     affiliation: "가천대학교",
     title: "교수",
-    imageSrc: "/images/speakers/speaker-056.png",
+    imageSrc: "/images/speakers/speaker-056-removebg-preview.png",
     imageAlt: "이영호 연사 사진",
   },
   {
@@ -797,7 +797,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "김유진",
     affiliation: "한국보건의료정보원",
     title: "선임",
-    imageSrc: "/images/speakers/speaker-057.png",
+    imageSrc: "/images/speakers/speaker-057-removebg-preview.png",
     imageAlt: "김유진 연사 사진",
   },
   {
@@ -809,7 +809,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "전나경",
     affiliation: "부산대학교",
     title: "조교수",
-    imageSrc: "/images/speakers/speaker-058.jpg",
+    imageSrc: "/images/speakers/speaker-058-removebg-preview.png",
     imageAlt: "전나경 연사 사진",
   },
   {
@@ -821,7 +821,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "정재균",
     affiliation: "서울대학교병원 헬스케어 AI연구소",
     title: "교수",
-    imageSrc: "/images/speakers/speaker-059.png",
+    imageSrc: "/images/speakers/speaker-059-removebg-preview.png",
     imageAlt: "정재균 연사 사진",
   },
   {
@@ -833,7 +833,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "최민성",
     affiliation: "LG AI Research",
     title: "책임",
-    imageSrc: "/images/speakers/speaker-060.jpg",
+    imageSrc: "/images/speakers/speaker-060-removebg-preview.png",
     imageAlt: "최민성 연사 사진",
   },
   {
@@ -869,7 +869,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "이은정",
     affiliation: "KBS",
     title: "회장",
-    imageSrc: "/images/speakers/speaker-063.jpg",
+    imageSrc: "/images/speakers/speaker-063-removebg-preview.png",
     imageAlt: "이은정 연사 사진",
   },
   {
@@ -881,7 +881,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "김재선",
     affiliation: "동국대학교",
     title: "교수",
-    imageSrc: "/images/speakers/speaker-064.png",
+    imageSrc: "/images/speakers/speaker-064-removebg-preview.png",
     imageAlt: "김재선 연사 사진",
   },
   {
@@ -905,7 +905,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "박유랑",
     affiliation: "연세대학교",
     title: "부교수",
-    imageSrc: "/images/speakers/speaker-066.png",
+    imageSrc: "/images/speakers/speaker-066-removebg-preview.png",
     imageAlt: "박유랑 연사 사진",
   },
   {
@@ -917,7 +917,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "조민규",
     affiliation: "지디넷코리아",
     title: "팀장",
-    imageSrc: "/images/speakers/speaker-067.jpg",
+    imageSrc: "/images/speakers/speaker-067-removebg-preview.png",
     imageAlt: "조민규 연사 사진",
   },
   {
@@ -929,7 +929,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "조동찬",
     affiliation: "한양대학교",
     title: "교수",
-    imageSrc: "/images/speakers/speaker-068.png",
+    imageSrc: "/images/speakers/speaker-068-removebg-preview.png",
     imageAlt: "조동찬 연사 사진",
   },
 ];

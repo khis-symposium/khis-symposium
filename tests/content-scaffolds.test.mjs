@@ -60,6 +60,7 @@ function SectionHeading({ eyebrow, title, description, titleId }) {
 function ImageComponent(props) {
   const imageProps = { ...props };
   delete imageProps.sizes;
+  delete imageProps.fill;
   return React.createElement("img", imageProps);
 }
 
@@ -258,6 +259,10 @@ test("speaker hierarchy renders day, session, role, name, affiliation, and title
   assert.ok(h2 >= 0 && h2 < h3 && h3 < h4 && h4 < h5);
   assert.match(markup, /alt="Test Speaker 테스트 프로필 이미지"/);
   assert.equal((markup.match(/<img\b/g) || []).length, 1);
+  assert.equal((markup.match(/bg-white/g) || []).length, 1);
+  assert.match(markup, /relative size-24[^\"]*overflow-hidden[^\"]*rounded-full[^\"]*bg-white/);
+  assert.match(markup, /object-contain object-bottom/);
+  assert.doesNotMatch(markup, /object-cover/);
   assert.doesNotMatch(
     readSource(path.join("src", "components", "Speakers.tsx")),
     /getSpeakerInitials|text-\[22px\]/

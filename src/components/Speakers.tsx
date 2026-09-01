@@ -18,14 +18,15 @@ function SpeakerPortrait({ speaker }: { speaker: Speaker }) {
   if (!speaker.imageSrc) return null;
 
   return (
-    <Image
-      src={speaker.imageSrc}
-      alt={speaker.imageAlt}
-      width={160}
-      height={160}
-      sizes="(min-width: 640px) 112px, 96px"
-      className="size-24 shrink-0 rounded-full object-cover ring-1 ring-[var(--color-line)] sm:size-28"
-    />
+    <div className="relative size-24 shrink-0 overflow-hidden rounded-full bg-white ring-1 ring-[var(--color-line)] sm:size-28">
+      <Image
+        src={speaker.imageSrc}
+        alt={speaker.imageAlt}
+        fill
+        sizes="(min-width: 640px) 112px, 96px"
+        className="object-contain object-bottom"
+      />
+    </div>
   );
 }
 
