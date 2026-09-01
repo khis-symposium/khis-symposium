@@ -6,7 +6,6 @@ import {
   SPEAKERS,
   SPEAKERS_PUBLISHED,
   getPublishedSpeakerDays,
-  getSpeakerInitials,
   type Speaker,
 } from "@/data/speakers";
 
@@ -17,25 +16,19 @@ type SpeakersProps = {
 
 function SpeakerPortrait({ speaker }: { speaker: Speaker }) {
   if (!speaker.imageSrc) {
-    return (
-      <div
-        className="flex size-24 shrink-0 items-center justify-center rounded-full bg-[var(--color-surface-2)] text-[22px] font-extrabold tracking-[0.06em] text-[var(--color-blue)] ring-1 ring-[var(--color-line)] sm:size-28"
-        aria-hidden="true"
-      >
-        {getSpeakerInitials(speaker.name)}
-      </div>
-    );
+    return <div aria-hidden="true" className="size-24 shrink-0 sm:size-28" />;
   }
 
   return (
-    <Image
-      src={speaker.imageSrc}
-      alt={speaker.imageAlt}
-      width={160}
-      height={160}
-      sizes="(min-width: 640px) 112px, 96px"
-      className="size-24 shrink-0 rounded-full object-cover ring-1 ring-[var(--color-line)] sm:size-28"
-    />
+    <div className="relative size-24 shrink-0 overflow-hidden rounded-full bg-white ring-1 ring-[var(--color-line)] sm:size-28">
+      <Image
+        src={speaker.imageSrc}
+        alt={speaker.imageAlt}
+        fill
+        sizes="(min-width: 640px) 112px, 96px"
+        className="object-contain object-bottom"
+      />
+    </div>
   );
 }
 
@@ -105,8 +98,10 @@ export function Speakers({
                     className="min-w-0 rounded-[20px] border border-[var(--color-line)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-card)] sm:p-7"
                   >
                     <Reveal delay={Math.min(sessionIndex, 5) * 60}>
-                      <p className="text-[13px] font-bold tracking-wide text-[var(--color-blue)]">
-                        {session.trackLabel}
+                      <p className="flex flex-wrap items-center gap-x-2 text-[13px] font-bold tracking-wide text-[var(--color-blue)]">
+                        <span>{session.trackLabel}</span>
+                        <span aria-hidden="true">·</span>
+                        <span>{session.time}</span>
                       </p>
                       <h4
                         id={`speakers-${day.id}-${session.id}-heading`}
@@ -125,7 +120,7 @@ export function Speakers({
                           delay={Math.min(speakerIndex, 5) * 50}
                           className="min-w-0"
                         >
-                          <article className="flex min-w-0 flex-col items-center rounded-[16px] border border-[var(--color-line)] bg-[var(--color-surface-2)] p-6 text-center">
+                          <article className="flex h-full min-w-0 flex-col items-center rounded-[16px] border border-[var(--color-line)] bg-[var(--color-surface-2)] p-6 text-center">
                             <SpeakerPortrait speaker={speaker} />
                             <div className="mt-5 min-w-0 max-w-full">
                               <span className="inline-flex rounded-full bg-[var(--color-blue)]/10 px-3 py-1 text-[12px] font-bold text-[var(--color-blue)]">

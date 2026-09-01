@@ -60,6 +60,7 @@ function SectionHeading({ eyebrow, title, description, titleId }) {
 function ImageComponent(props) {
   const imageProps = { ...props };
   delete imageProps.sizes;
+  delete imageProps.fill;
   return React.createElement("img", imageProps);
 }
 
@@ -239,6 +240,8 @@ test("speaker hierarchy renders day, session, role, name, affiliation, and title
     speakerFixtures[0].sessionTitle,
     speakerFixtures[3].sessionTitle,
     "Track 1 · 401호",
+    "11:10 – 12:30",
+    "10:00 – 11:40",
     "좌장",
     "연사",
     "패널",
@@ -255,6 +258,28 @@ test("speaker hierarchy renders day, session, role, name, affiliation, and title
   const h5 = markup.indexOf("<h5");
   assert.ok(h2 >= 0 && h2 < h3 && h3 < h4 && h4 < h5);
   assert.match(markup, /alt="Test Speaker 테스트 프로필 이미지"/);
+  assert.equal((markup.match(/<img\b/g) || []).length, 1);
+  assert.equal((markup.match(/bg-white/g) || []).length, 1);
+  assert.equal(
+    (markup.match(/size-24 shrink-0/g) || []).length,
+    speakerFixtures.length,
+    "every card reserves the same portrait slot"
+  );
+  assert.match(markup, /relative size-24[^\"]*overflow-hidden[^\"]*rounded-full[^\"]*bg-white/);
+  assert.equal(
+    (markup.match(/aria-hidden="true" class="size-24 shrink-0 sm:size-28"/g) || [])
+      .length,
+    speakerFixtures.filter(({ imageSrc }) => !imageSrc).length,
+    "cards without photos reserve an invisible slot without a circle or initials"
+  );
+  assert.match(markup, /<article class="flex h-full min-w-0/);
+  assert.equal((markup.match(/class="mt-5 min-w-0 max-w-full"/g) || []).length, speakerFixtures.length);
+  assert.match(markup, /object-contain object-bottom/);
+  assert.doesNotMatch(markup, /object-cover/);
+  assert.doesNotMatch(
+    readSource(path.join("src", "components", "Speakers.tsx")),
+    /getSpeakerInitials|text-\[22px\]/
+  );
 });
 
 test("speaker cards provide no profile, biography, modal, search, or detail controls", () => {
@@ -309,12 +334,12 @@ test("page order and shared gates keep speaker UI between program and location",
   assert.doesNotMatch(programSource, /DetailedProgram/);
 });
 
-test("committed defaults hide verified speakers and detailed-program placeholders", () => {
-  assert.equal(speakersData.SPEAKERS_PUBLISHED, false);
+test("committed defaults publish verified speakers without detailed-program placeholders", () => {
+  assert.equal(speakersData.SPEAKERS_PUBLISHED, true);
   assert.equal(speakersData.SPEAKERS.length, 67);
-  assert.equal(speakersData.SPEAKERS_VISIBLE, false);
+  assert.equal(speakersData.SPEAKERS_VISIBLE, true);
   assert.equal(detailedProgramData.DETAILED_PROGRAM_PUBLISHED, false);
   assert.equal(detailedProgramData.DETAILED_PROGRAM_ASSET, null);
-  assert.equal(renderSpeakers({}), "");
+  assert.match(renderSpeakers({}), /id="speakers"/);
   assert.equal(renderDetailedProgram({}), "");
 });

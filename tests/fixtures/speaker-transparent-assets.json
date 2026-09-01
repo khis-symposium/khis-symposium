@@ -1,0 +1,492 @@
+[
+  {
+    "file": "speaker-001-removebg-preview.png",
+    "mime": "image/png",
+    "width": 408,
+    "height": 612,
+    "size": 194288,
+    "sha256": "5a0b07741a2282adb13b5a0371b76415c2f6bb55e6d86d6208dcecedda196e00",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-002-removebg-preview.png",
+    "mime": "image/png",
+    "width": 167,
+    "height": 215,
+    "size": 51326,
+    "sha256": "24574f11aeb912d377a4d2b898a540cbca95720db0f72985a1e899cb5b1f1050",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-005-removebg-preview.png",
+    "mime": "image/png",
+    "width": 433,
+    "height": 577,
+    "size": 282862,
+    "sha256": "dd1e620532b51d0dda93a82e087cde3f8694770260fb48d9f77bbad1cfaa2eec",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-006-removebg-preview.png",
+    "mime": "image/png",
+    "width": 413,
+    "height": 531,
+    "size": 291083,
+    "sha256": "e4408003d5b510b4c56a6a24e7cd32d6e40afbcfc6333a591dc07f5b55f3eefe",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-007-removebg-preview.png",
+    "mime": "image/png",
+    "width": 238,
+    "height": 272,
+    "size": 68728,
+    "sha256": "6ba7172ea39a3465ef7dcfc1614a7e1d6b0464026650745287ae1a0aceca7f85",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-009-removebg-preview.png",
+    "mime": "image/png",
+    "width": 247,
+    "height": 275,
+    "size": 73534,
+    "sha256": "62461b696df0ea425d5afd401101f658d31c9695f5fa0f62676a86801fc251d1",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-011-removebg-preview.png",
+    "mime": "image/png",
+    "width": 422,
+    "height": 592,
+    "size": 207378,
+    "sha256": "a40397a3d04c84ce00109b88d59c939cced298f1270d60aac3d0a53811a8d66a",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-013-removebg-preview.png",
+    "mime": "image/png",
+    "width": 444,
+    "height": 562,
+    "size": 300769,
+    "sha256": "ae4a4dce74289447928fbe9a40f61f84bd280933690b9755b76dd8fa37cdb2d3",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-015-removebg-preview.png",
+    "mime": "image/png",
+    "width": 191,
+    "height": 261,
+    "size": 56799,
+    "sha256": "e9441c3da1be0e7f28c20123d48308aa374cff5f2c44d5c510fe83a2db388bdd",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-018-removebg-preview.png",
+    "mime": "image/png",
+    "width": 251,
+    "height": 284,
+    "size": 92828,
+    "sha256": "fa22aa71741816f91d1a394f5c9194018e78f5e74b268fda7c3fbf03423673f1",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-019-removebg-preview.png",
+    "mime": "image/png",
+    "width": 447,
+    "height": 559,
+    "size": 211965,
+    "sha256": "4c83c4d991e4b0c7b9cfe4381bb5f314a3dc9e25c4dd801f8c593dbbeb0c7e05",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-020-removebg-preview.png",
+    "mime": "image/png",
+    "width": 422,
+    "height": 591,
+    "size": 223811,
+    "sha256": "0ca066b547d90f6fdadba59822df21f53ae1af70bdea10d63fe9d01d0498d4e5",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-021-removebg-preview.png",
+    "mime": "image/png",
+    "width": 232,
+    "height": 276,
+    "size": 74842,
+    "sha256": "8eff77eeaa7f05bea97c20e4fdbfdf312710508bcebca66963e737f4f0b61c10",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-023-removebg-preview.png",
+    "mime": "image/png",
+    "width": 467,
+    "height": 535,
+    "size": 211196,
+    "sha256": "bf49959847c535f83f92e0f9652a2c225b27e75068fc8b5dc51a838175cc09fd",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-024-removebg-preview.png",
+    "mime": "image/png",
+    "width": 474,
+    "height": 526,
+    "size": 288515,
+    "sha256": "795206ce40e2e62bd9379cb9b36ff393568d1a79b98ff2ebcd429289cb092da7",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-025-removebg-preview.png",
+    "mime": "image/png",
+    "width": 492,
+    "height": 507,
+    "size": 161903,
+    "sha256": "5c6e9f3495a6023ccd03455f051fb71acc154878f303078b6666710b380327ca",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-026-removebg-preview.png",
+    "mime": "image/png",
+    "width": 413,
+    "height": 531,
+    "size": 283900,
+    "sha256": "388ed9a7eb8561fce453b287ae0c68837c2f01a4479ee78168cccd8c1e7cc6c2",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-027-removebg-preview.png",
+    "mime": "image/png",
+    "width": 470,
+    "height": 428,
+    "size": 168338,
+    "sha256": "6e3c8504b2549be56cecf947971ec0c929890047000f56d68050998468c97843",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-028-removebg-preview.png",
+    "mime": "image/png",
+    "width": 496,
+    "height": 461,
+    "size": 171342,
+    "sha256": "23ae8eeb4c1d90284a56e7c399bdbffe7da35088620b3bab759efa6bcb6e4aed",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-029-removebg-preview.png",
+    "mime": "image/png",
+    "width": 441,
+    "height": 566,
+    "size": 278833,
+    "sha256": "21c16889393342eeb7185060bd45606e225135099e63c5f7fa6e79b257692fa4",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-031-removebg-preview.png",
+    "mime": "image/png",
+    "width": 433,
+    "height": 577,
+    "size": 265151,
+    "sha256": "35ad2bb1892269cc4f16cf5477e15794060ecf153db55c16afdb4ca1c4714b05",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-032-removebg-preview.png",
+    "mime": "image/png",
+    "width": 447,
+    "height": 558,
+    "size": 228316,
+    "sha256": "ff774b943b8190816f761e8ecfe98827cb7a3545c1de2b51f5d1854295230139",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-033-removebg-preview.png",
+    "mime": "image/png",
+    "width": 465,
+    "height": 537,
+    "size": 300362,
+    "sha256": "9cee2fb92792cb3720f3549031d1a6e6340a0cdb1246e9a793160ccf646fa7ff",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-034-removebg-preview.png",
+    "mime": "image/png",
+    "width": 354,
+    "height": 472,
+    "size": 193499,
+    "sha256": "34b1c1a1975abb6ad93ee1f391ad6205eb1e9c13ca16dad8335de81915eac1a0",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-035-removebg-preview.png",
+    "mime": "image/png",
+    "width": 279,
+    "height": 271,
+    "size": 92275,
+    "sha256": "04b4b454a706a5a10eafd80111a70f65f383eac7607d470c80c609f5c6db7290",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-036-removebg-preview.png",
+    "mime": "image/png",
+    "width": 213,
+    "height": 275,
+    "size": 87095,
+    "sha256": "0a2e6534654c9f493980e20bd6d52f6354da689150d3a4b0f759c53c4d263a59",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-037-removebg-preview.png",
+    "mime": "image/png",
+    "width": 440,
+    "height": 567,
+    "size": 258105,
+    "sha256": "d393f15010838de99b246f17d03352b9efe74772005898169e24ddfdd3c2508e",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-038-removebg-preview.png",
+    "mime": "image/png",
+    "width": 173,
+    "height": 228,
+    "size": 48901,
+    "sha256": "627b8b07775dd8bd160279490143d8147cc1ce7370ad0e2c666998c69f7353f2",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-040-removebg-preview.png",
+    "mime": "image/png",
+    "width": 440,
+    "height": 567,
+    "size": 278680,
+    "sha256": "57ff2b574ac2f34a9d98f6f00a547ef5c1cc6f78da7fe8b487f8bc9c3271d416",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-041-removebg-preview.png",
+    "mime": "image/png",
+    "width": 484,
+    "height": 515,
+    "size": 239602,
+    "sha256": "9e8533587d6b2bb7f13405b9a814058ab992d372971818a6aa68aa706ca1f073",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-042-removebg-preview.png",
+    "mime": "image/png",
+    "width": 433,
+    "height": 577,
+    "size": 194054,
+    "sha256": "8f296ded879d5751229fdfd24bb8fcc0b592492a92721c9c96f5c9514ecc871e",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-043-removebg-preview.png",
+    "mime": "image/png",
+    "width": 408,
+    "height": 612,
+    "size": 170782,
+    "sha256": "a3bd4bba9559111d3f605d5c250957d1e4e2d1833596914ada9b23e43c559a00",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-045-removebg-preview.png",
+    "mime": "image/png",
+    "width": 466,
+    "height": 536,
+    "size": 233044,
+    "sha256": "c69ccd6aa99ae98e3f2aefd170e22708e8931a0bdc782165986e9a635229f1f1",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-047-removebg-preview.png",
+    "mime": "image/png",
+    "width": 202,
+    "height": 280,
+    "size": 73812,
+    "sha256": "7a6a40156afb24a99196d8cc4fc25be38544600ea76e82c7c137634086c0f861",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-048-removebg-preview.png",
+    "mime": "image/png",
+    "width": 252,
+    "height": 322,
+    "size": 96850,
+    "sha256": "4e16b4ec9157fd389d60799058c19e2e94240121df82c57d06962a6ac0d81379",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-049-removebg-preview.png",
+    "mime": "image/png",
+    "width": 264,
+    "height": 350,
+    "size": 100160,
+    "sha256": "673e6a7892a692374bfb1a2194ca05245d73e81309126c2fde735389479baf42",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-050-removebg-preview.png",
+    "mime": "image/png",
+    "width": 258,
+    "height": 361,
+    "size": 70619,
+    "sha256": "72a9f7f097ab653ee5d4883422d0ee6ac401832070fed18e5551051d23605f64",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-053-removebg-preview.png",
+    "mime": "image/png",
+    "width": 461,
+    "height": 542,
+    "size": 212358,
+    "sha256": "a4a160568c9e41e80d3c69772f2313e5ab0b52ee75029920bf41882560319c98",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-055-removebg-preview.png",
+    "mime": "image/png",
+    "width": 464,
+    "height": 538,
+    "size": 161337,
+    "sha256": "56926635366ff882bfda23aa4fccd882f48620ce1ee84726312ab94c810e4602",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-056-removebg-preview.png",
+    "mime": "image/png",
+    "width": 354,
+    "height": 472,
+    "size": 244586,
+    "sha256": "addf1cad49604a947198f72d195a2f8631df61004116b2663fdf821dbb9d3665",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-057-removebg-preview.png",
+    "mime": "image/png",
+    "width": 456,
+    "height": 547,
+    "size": 193745,
+    "sha256": "f0ed23de0881cc419fe70797820b1e22d46034f030827bafe74934163bbdea24",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-058-removebg-preview.png",
+    "mime": "image/png",
+    "width": 441,
+    "height": 566,
+    "size": 265930,
+    "sha256": "1c58c07a71c2722f30f774fc143fd9bf00ab4a9d4ddf9000527aa6cf3e482340",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-059-removebg-preview.png",
+    "mime": "image/png",
+    "width": 457,
+    "height": 517,
+    "size": 210558,
+    "sha256": "8be907241b94626ff21c2f5244fde1d8c05beb8315f388623c7370dc04352a46",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-060-removebg-preview.png",
+    "mime": "image/png",
+    "width": 440,
+    "height": 567,
+    "size": 137634,
+    "sha256": "a08bb1af5d7af0f7a9d8b98e858c04bc6257ad421c89ac7761567d66ec0bc075",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-063-removebg-preview.png",
+    "mime": "image/png",
+    "width": 408,
+    "height": 612,
+    "size": 254271,
+    "sha256": "36929b5c46a244eb040911fc3da63922a41bb47edb5548e5d82ea5ccda8b7867",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-064-removebg-preview.png",
+    "mime": "image/png",
+    "width": 163,
+    "height": 211,
+    "size": 50274,
+    "sha256": "e4178337ccff30f9b7e0f0f9dc36b35d6aa8ab4b6a59a0315575c36a98019910",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-066-removebg-preview.png",
+    "mime": "image/png",
+    "width": 180,
+    "height": 232,
+    "size": 56529,
+    "sha256": "0554af0311a2fcc6effbf506ee8a2dcf6ad51a2c7f06126a0852eba6b93fae58",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-067-removebg-preview.png",
+    "mime": "image/png",
+    "width": 467,
+    "height": 534,
+    "size": 313156,
+    "sha256": "5066932921d4b7a94ec319079eccb470acc9b1fa28992d02f702ba6314b95112",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-068-removebg-preview.png",
+    "mime": "image/png",
+    "width": 415,
+    "height": 499,
+    "size": 244910,
+    "sha256": "7a941e7145b752bffeafb0d4a585dcedc2e20030cb5bfac0a776c6bb333c7da1",
+    "alphaMin": 0,
+    "alphaMax": 255
+  }
+]
