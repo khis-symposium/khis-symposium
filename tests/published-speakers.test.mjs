@@ -220,9 +220,9 @@ function imageDimensions(buffer, mime) {
   throw new Error("JPEG dimensions not found");
 }
 
-test("verified speaker data remains intact while publication is disabled", () => {
-  assert.equal(speakersData.SPEAKERS_PUBLISHED, false);
-  assert.equal(speakersData.SPEAKERS_VISIBLE, false);
+test("verified speaker data remains intact while publication is enabled", () => {
+  assert.equal(speakersData.SPEAKERS_PUBLISHED, true);
+  assert.equal(speakersData.SPEAKERS_VISIBLE, true);
   assert.deepEqual(speakersData.SPEAKERS, expectedAppearances);
   assert.equal(new Set(speakersData.SPEAKERS.map(({ id }) => id)).size, 67);
   assert.equal(new Set(speakersData.SPEAKERS.map(({ name }) => name)).size, 66);
