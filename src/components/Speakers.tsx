@@ -14,19 +14,36 @@ type SpeakersProps = {
   speakers?: readonly Speaker[];
 };
 
+function getPortraitClassName(speakerId: string) {
+  const baseClassName = "object-contain object-bottom";
+
+  switch (speakerId) {
+    case "speaker-001":
+      return `scale-[2] ${baseClassName}`;
+    case "speaker-043":
+      return `scale-[1.6] ${baseClassName}`;
+    case "speaker-060":
+      return `origin-top scale-[2] ${baseClassName}`;
+    case "speaker-063":
+      return `origin-top scale-[1.5] ${baseClassName}`;
+    default:
+      return baseClassName;
+  }
+}
+
 function SpeakerPortrait({ speaker }: { speaker: Speaker }) {
   if (!speaker.imageSrc) {
-    return <div aria-hidden="true" className="size-40 shrink-0 sm:size-52" />;
+    return <div aria-hidden="true" className="size-48 shrink-0 sm:size-[250px]" />;
   }
 
   return (
-    <div className="relative size-40 shrink-0 overflow-hidden rounded-full bg-white ring-1 ring-[var(--color-line)] sm:size-52">
+    <div className="relative size-48 shrink-0 overflow-hidden rounded-full bg-white ring-1 ring-[var(--color-line)] sm:size-[250px]">
       <Image
         src={speaker.imageSrc}
         alt={speaker.imageAlt}
         fill
-        sizes="(min-width: 640px) 208px, 160px"
-        className="object-contain object-bottom"
+        sizes="(min-width: 640px) 250px, 192px"
+        className={getPortraitClassName(speaker.id)}
       />
     </div>
   );
