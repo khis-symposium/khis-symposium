@@ -2,10 +2,10 @@
   {
     "file": "speaker-001-removebg-preview.png",
     "mime": "image/png",
-    "width": 408,
-    "height": 612,
-    "size": 194288,
-    "sha256": "5a0b07741a2282adb13b5a0371b76415c2f6bb55e6d86d6208dcecedda196e00",
+    "width": 468,
+    "height": 534,
+    "size": 252232,
+    "sha256": "86b35c8317219052cb99869b6501dbd86ff23a6f8e823825bb001068e4771d59",
     "alphaMin": 0,
     "alphaMax": 255
   },
@@ -432,10 +432,10 @@
   {
     "file": "speaker-060-removebg-preview.png",
     "mime": "image/png",
-    "width": 440,
-    "height": 567,
-    "size": 137634,
-    "sha256": "a08bb1af5d7af0f7a9d8b98e858c04bc6257ad421c89ac7761567d66ec0bc075",
+    "width": 528,
+    "height": 472,
+    "size": 208851,
+    "sha256": "4c8dcdb61f927d357fb8a0467f509c42921c487afe022002f0e193fc1aa43863",
     "alphaMin": 0,
     "alphaMax": 255
   },

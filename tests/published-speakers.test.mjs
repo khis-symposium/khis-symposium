@@ -305,7 +305,16 @@ test("speaker session IDs, days, rooms, titles, and track-specific times resolve
 
 test("all 49 transparent speaker assets have exact signatures, dimensions, bytes, hashes, and alpha metadata", () => {
   const targetDir = path.join(repo, "public", "images", "speakers");
-  const actualFiles = fs.readdirSync(targetDir).sort();
+  const actualFiles = execFileSync(
+    "git",
+    ["ls-files", "--", "public/images/speakers"],
+    { cwd: repo, encoding: "utf8" }
+  )
+    .trim()
+    .split(/\r?\n/)
+    .filter(Boolean)
+    .map((file) => path.basename(file))
+    .sort();
   assert.deepEqual(
     actualFiles,
     [...legacyImages, ...expectedTransparentImages].map(({ file }) => file).sort()
