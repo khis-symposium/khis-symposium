@@ -74,9 +74,17 @@ test("overview and program components render only their supplied section images"
   assert.doesNotMatch(overviewSource, /ROWS\.map|SectionHeading|khis-logo\.png/);
 
   assert.match(programSource, /id="program"/);
-  assert.match(programSource, /src="\/images\/program\/program-schedule-new-new-new\.jpg"/);
-  assert.match(programSource, /width=\{1191\}/);
-  assert.match(programSource, /height=\{5673\}/);
+  assert.match(programSource, /src="\/images\/program\/program-schedule-new-new-new-new\.jpg"/);
+  assert.match(programSource, /width=\{4961\}/);
+  assert.match(programSource, /height=\{29643\}/);
+  for (const source of [overviewSource, programSource]) {
+    assert.match(source, /import \{ Container \} from "\.\/ui\/Container"/);
+    assert.match(source, /<Container>/);
+    assert.match(
+      source,
+      /sizes="\(max-width: 767px\) calc\(100vw - 3rem\), \(max-width: 1199px\) calc\(100vw - 5rem\), 1120px"/
+    );
+  }
   assert.doesNotMatch(programSource, /PROGRAM\.map|TrackBlock|DetailedProgram|symposium-2025/);
 });
 
@@ -147,7 +155,7 @@ test("program registration IDs, display times, tracks, and titles remain exact",
       { id: "day1-09:30 – 10:25-common", dayId: "day1", time: "09:30 – 10:25", slotKey: "day1::09:30 – 10:25", trackLabel: "공통", title: "개회식" },
       { id: "day1-10:50 – 12:30-t1", dayId: "day1", time: "11:10 – 12:30", slotKey: "day1::11:10 – 12:30", trackLabel: "Track 1 · 401호", title: "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다" },
       { id: "day1-10:50 – 12:30-t2", dayId: "day1", time: "11:10 – 12:30", slotKey: "day1::11:10 – 12:30", trackLabel: "Track 2 · 402호", title: "디지털 보건의료정보 플랫폼 국민 중심 의료의 새로운 시작" },
-      { id: "day1-13:50 – 15:30-t1", dayId: "day1", time: "13:50 – 15:30", slotKey: "day1::13:50 – 15:30", trackLabel: "Track 1 · 401호", title: "국가통합바이오빅데이터 데이터 활용으로 국민건강의 미래를 열다" },
+      { id: "day1-13:50 – 15:30-t1", dayId: "day1", time: "13:50 – 15:30", slotKey: "day1::13:50 – 15:30", trackLabel: "Track 1 · 401호", title: "국가통합바이오빅데이터, 데이터 활용으로 국민건강의 미래를 열다" },
       { id: "day1-13:50 – 15:30-t2", dayId: "day1", time: "13:50 – 15:30", slotKey: "day1::13:50 – 15:30", trackLabel: "Track 2 · 402호", title: "보건의료데이터 인프라 혁신" },
       { id: "day1-15:50 – 17:30-t1", dayId: "day1", time: "15:50 – 17:30", slotKey: "day1::15:50 – 17:30", trackLabel: "Track 1 · 401호", title: "의료 AI 생태계 구축" },
       { id: "day1-15:50 – 17:30-t2", dayId: "day1", time: "15:50 – 17:30", slotKey: "day1::15:50 – 17:30", trackLabel: "Track 2 · 402호", title: "빅데이터 기반의 미래 질병 대응 전략" },
@@ -156,7 +164,7 @@ test("program registration IDs, display times, tracks, and titles remain exact",
       { id: "day2-13:00 – 14:40-t1", dayId: "day2", time: "13:00 - 14:20", slotKey: "day2::13:00 - 14:40", trackLabel: "Track 1 · 401호", title: "표준 기반 의료데이터 상호운용성 구현체계" },
       { id: "day2-13:00 – 14:40-t2", dayId: "day2", time: "13:00 - 14:40", slotKey: "day2::13:00 - 14:40", trackLabel: "Track 2 · 402호", title: "AI 시대 신뢰받는 보건의료데이터 활용 방향" },
       { id: "day2-15:00 – 16:40-t1", dayId: "day2", time: "14:30 – 16:40", slotKey: "day2::15:00 – 16:40", trackLabel: "Track 1 · 401호", title: "AI 시대 글로벌 보건의료 표준과 상호운용성 전략" },
-      { id: "day2-15:00 – 16:40-t2", dayId: "day2", time: "15:00 – 16:40", slotKey: "day2::15:00 – 16:40", trackLabel: "Track 2 · 402호", title: "디지털헬스 미래를 위한 정책을 말하다 (미디어·정책 세션)" },
+      { id: "day2-15:00 – 16:40-t2", dayId: "day2", time: "15:00 – 16:40", slotKey: "day2::15:00 – 16:40", trackLabel: "Track 2 · 402호", title: "디지털 헬스, 미래를 위한 정책을 말하다(미디어 정책 세션)" },
     ]
   );
 
@@ -218,8 +226,8 @@ test("confirmed DAY 2 content feeds registration labels while stable payload IDs
       {
         time: "15:00 – 16:40",
         registrationIdTime: "15:00 – 16:40",
-        track1Time: "14:40 ~ 16:40",
-        track1Duration: "(120분)",
+        track1Time: "14:30 – 16:40",
+        track1Duration: "(130분)",
         track2Time: "15:00 – 16:40",
         track2Duration: "(100분)",
         track1: "AI시대 글로벌 보건의료 표준과 상호운용성 전략",
