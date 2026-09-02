@@ -218,8 +218,8 @@ export const PROGRAM: ProgramDay[] = [
         duration: "(100분)",
         track1: {
           title: "AI시대 글로벌 보건의료 표준과 상호운용성 전략",
-          time: "14:40 ~ 16:40",
-          duration: "(120분)",
+          time: "14:30 – 16:40",
+          duration: "(130분)",
           chair: "양광모 교수",
         },
         track2: {
@@ -258,7 +258,7 @@ const REGISTRATION_SESSION_DISPLAY_OVERRIDES: Readonly<
   Record<string, RegistrationSessionDisplayOverride>
 > = {
   "day1-13:50 – 15:30-t1": {
-    title: "국가통합바이오빅데이터 데이터 활용으로 국민건강의 미래를 열다",
+    title: "국가통합바이오빅데이터, 데이터 활용으로 국민건강의 미래를 열다",
   },
   "day2-10:00 – 11:40-t1": {
     title: "의료데이터 표준의 현장 활용과 확산",
@@ -271,7 +271,7 @@ const REGISTRATION_SESSION_DISPLAY_OVERRIDES: Readonly<
     title: "AI 시대 글로벌 보건의료 표준과 상호운용성 전략",
   },
   "day2-15:00 – 16:40-t2": {
-    title: "디지털헬스 미래를 위한 정책을 말하다 (미디어·정책 세션)",
+    title: "디지털 헬스, 미래를 위한 정책을 말하다(미디어 정책 세션)",
   },
 };
 

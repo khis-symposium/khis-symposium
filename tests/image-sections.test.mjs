@@ -19,10 +19,10 @@ const assets = [
     sha256: "fde61235985cd33f8cb8489804888058f20ee1750515bcbeedb01eabe95861c6",
   },
   {
-    file: path.join("public", "images", "program", "program-schedule-new-new-new.jpg"),
-    width: 1191,
-    height: 5673,
-    sha256: "0eefb0f9123baf5f39965a8148ff3d5f47783dac3617567c41995fabea8e7b29",
+    file: path.join("public", "images", "program", "program-schedule-new-new-new-new.jpg"),
+    width: 4961,
+    height: 29643,
+    sha256: "f71d4f6f09b673c00ae77e8e93e414669fffe9b11e859484afd24e0c4d0c7ab2",
   },
 ];
 
@@ -74,7 +74,11 @@ function loadComponent(file) {
   const compiledExports = {};
 
   function Container({ children, className = "" }) {
-    return React.createElement("div", { className }, children);
+    return React.createElement(
+      "div",
+      { className: `container-symposium ${className}`.trim() },
+      children
+    );
   }
 
   function ImageComponent(props) {
@@ -121,9 +125,13 @@ test("overview section renders one complete image and no legacy visible content"
     /alt="2026 한국보건의료정보원 연례 심포지엄\. 연결에서 혁신으로, 보건의료 AI 디지털 전환의 미래\. 2026년 9월 10일 목요일부터 11일 금요일까지 서울 강남 코엑스 컨퍼런스룸 401·402에서 개최\."/
   );
   assert.match(markup, /class="block h-auto w-full object-contain"/);
-  assert.match(markup, /sizes="100vw"/);
+  assert.match(
+    markup,
+    /sizes="\(max-width: 767px\) calc\(100vw - 3rem\), \(max-width: 1199px\) calc\(100vw - 5rem\), 1120px"/
+  );
   assert.match(markup, /<section[^>]*class="m-0 scroll-mt-24 p-0"/);
-  assert.doesNotMatch(markup, /section-pad|container-symposium|grain-overlay|linear-gradient|background|border|shadow|rounded/);
+  assert.match(markup, /<div class="container-symposium">/);
+  assert.doesNotMatch(markup, /section-pad|grain-overlay|linear-gradient|background|border|shadow|rounded/);
   assert.doesNotMatch(markup, /<h3\b|주최‧주관|khis-logo\.png/);
 });
 
@@ -134,24 +142,28 @@ test("program section renders one schedule image and no structured schedule UI",
   assert.match(markup, /<section[^>]*id="program"/);
   assert.match(markup, /<h2[^>]*class="sr-only"[^>]*>프로그램<\/h2>/);
   assert.equal((markup.match(/<img\b/g) || []).length, 1);
-  assert.match(markup, /src="\/images\/program\/program-schedule-new-new-new\.jpg"/);
-  assert.match(markup, /width="1191"/);
-  assert.match(markup, /height="5673"/);
+  assert.match(markup, /src="\/images\/program\/program-schedule-new-new-new-new\.jpg"/);
+  assert.match(markup, /width="4961"/);
+  assert.match(markup, /height="29643"/);
   assert.match(
     markup,
     /alt="2026 한국보건의료정보원 연례 심포지엄 전체 프로그램 일정표\. 9월 10일과 11일, 코엑스 401호·402호의 세션별 시간, 발표와 토론 일정\."/
   );
   assert.match(markup, /class="block h-auto w-full object-contain"/);
-  assert.match(markup, /sizes="100vw"/);
+  assert.match(
+    markup,
+    /sizes="\(max-width: 767px\) calc\(100vw - 3rem\), \(max-width: 1199px\) calc\(100vw - 5rem\), 1120px"/
+  );
   assert.match(markup, /<section[^>]*class="m-0 scroll-mt-24 p-0"/);
-  assert.doesNotMatch(markup, /section-pad|container-symposium|on-light|max-w-|background|border|shadow|rounded/);
+  assert.match(markup, /<div class="container-symposium">/);
+  assert.doesNotMatch(markup, /section-pad|on-light|max-w-|background|border|shadow|rounded/);
   assert.doesNotMatch(
     markup,
     /DAY 1|DAY 2|Track 1|Track 2|상세 프로그램|원본 이미지 크게 보기|리플렛 다운로드/
   );
 });
 
-test("overview and program remain adjacent full-width sections without visible separators", () => {
+test("overview and program remain adjacent navigation-width sections without visible separators", () => {
   const pageSource = fs.readFileSync(path.join(repo, "src", "app", "page.tsx"), "utf8");
   const overviewSource = fs.readFileSync(
     path.join(repo, "src", "components", "EventOverview.tsx"),
@@ -166,8 +178,12 @@ test("overview and program remain adjacent full-width sections without visible s
   for (const source of [overviewSource, programSource]) {
     assert.match(source, /className="m-0 scroll-mt-24 p-0"/);
     assert.match(source, /className="sr-only"/);
-    assert.match(source, /sizes="100vw"/);
+    assert.match(source, /<Container>/);
+    assert.match(
+      source,
+      /sizes="\(max-width: 767px\) calc\(100vw - 3rem\), \(max-width: 1199px\) calc\(100vw - 5rem\), 1120px"/
+    );
     assert.match(source, /className="block h-auto w-full object-contain"/);
-    assert.doesNotMatch(source, /Container|section-pad|on-light|grain-overlay|max-w-|linear-gradient|bg-\[/);
+    assert.doesNotMatch(source, /section-pad|on-light|grain-overlay|max-w-|linear-gradient|bg-\[/);
   }
 });
