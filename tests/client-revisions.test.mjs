@@ -74,7 +74,7 @@ test("overview and program components render only their supplied section images"
   assert.doesNotMatch(overviewSource, /ROWS\.map|SectionHeading|khis-logo\.png/);
 
   assert.match(programSource, /id="program"/);
-  assert.match(programSource, /src="\/images\/program\/program-schedule-new-new-new-new\.jpg"/);
+  assert.match(programSource, /src="\/images\/program\/program-schedule-new-new-new-new-new\.jpg"/);
   assert.match(programSource, /width=\{4961\}/);
   assert.match(programSource, /height=\{29643\}/);
   for (const source of [overviewSource, programSource]) {
