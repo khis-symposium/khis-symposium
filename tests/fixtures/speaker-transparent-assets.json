@@ -60,6 +60,16 @@
     "alphaMax": 255
   },
   {
+    "file": "speaker-010-removebg-preview.png",
+    "mime": "image/png",
+    "width": 448,
+    "height": 461,
+    "size": 194120,
+    "sha256": "62e40bf0a687636056cbfe08ee26dc54096213d2417c16d3ec5bedb74d0bf905",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
     "file": "speaker-011-removebg-preview.png",
     "mime": "image/png",
     "width": 422,
@@ -80,12 +90,32 @@
     "alphaMax": 255
   },
   {
+    "file": "speaker-014-removebg-preview.png",
+    "mime": "image/png",
+    "width": 235,
+    "height": 302,
+    "size": 91435,
+    "sha256": "a493c9ec56c324d35a938914c91d1f334bba3cdfd023a717024fa7b6d092d9a0",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
     "file": "speaker-015-removebg-preview.png",
     "mime": "image/png",
     "width": 191,
     "height": 261,
     "size": 56799,
     "sha256": "e9441c3da1be0e7f28c20123d48308aa374cff5f2c44d5c510fe83a2db388bdd",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-016-removebg-preview.png",
+    "mime": "image/png",
+    "width": 428,
+    "height": 583,
+    "size": 225637,
+    "sha256": "5374b24e2f3cc42a5fef35c9bac12e1d01d5002eeab8895cd83a960430143ec6",
     "alphaMin": 0,
     "alphaMax": 255
   },
@@ -196,6 +226,16 @@
     "height": 566,
     "size": 278833,
     "sha256": "21c16889393342eeb7185060bd45606e225135099e63c5f7fa6e79b257692fa4",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-030-removebg-preview.png",
+    "mime": "image/png",
+    "width": 433,
+    "height": 577,
+    "size": 251441,
+    "sha256": "fa8a7979008f2a57caed2db2c041d0663899eb23d6b1debbe0d693c70856bd7c",
     "alphaMin": 0,
     "alphaMax": 255
   },
@@ -320,6 +360,16 @@
     "alphaMax": 255
   },
   {
+    "file": "speaker-044-removebg-preview.png",
+    "mime": "image/png",
+    "width": 212,
+    "height": 229,
+    "size": 62436,
+    "sha256": "e920f45b2e26f597b6da0c645faef4752c8c05ecdb322d776dba28ed379eada3",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
     "file": "speaker-045-removebg-preview.png",
     "mime": "image/png",
     "width": 466,
@@ -370,12 +420,32 @@
     "alphaMax": 255
   },
   {
+    "file": "speaker-052-removebg-preview.png",
+    "mime": "image/png",
+    "width": 173,
+    "height": 228,
+    "size": 46578,
+    "sha256": "4dd3488eb43f5e9a6fb81a486d0cfc217c4033b05d117a18258d2ba28e65d350",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
     "file": "speaker-053-removebg-preview.png",
     "mime": "image/png",
     "width": 461,
     "height": 542,
     "size": 212358,
     "sha256": "a4a160568c9e41e80d3c69772f2313e5ab0b52ee75029920bf41882560319c98",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-054-removebg-preview.png",
+    "mime": "image/png",
+    "width": 445,
+    "height": 561,
+    "size": 175898,
+    "sha256": "f0ed2b14ef5aae17fc8ed44222c5eef1a588edbf97b8936caef882659167cc1c",
     "alphaMin": 0,
     "alphaMax": 255
   },
@@ -456,6 +526,16 @@
     "height": 211,
     "size": 50274,
     "sha256": "e4178337ccff30f9b7e0f0f9dc36b35d6aa8ab4b6a59a0315575c36a98019910",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-065-removebg-preview.png",
+    "mime": "image/png",
+    "width": 444,
+    "height": 562,
+    "size": 294748,
+    "sha256": "1553ab3ed26c1a8ee4e30ec36e7b0ed37e190e08636f68334c0a0df003fa1036",
     "alphaMin": 0,
     "alphaMax": 255
   },
