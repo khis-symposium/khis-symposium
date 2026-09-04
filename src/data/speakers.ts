@@ -61,7 +61,7 @@ export const SPEAKER_SESSIONS = [
     dayId: "day2",
     sourceCode: "A6",
     trackLabel: "Track 1 · 401호",
-    time: "14:30 – 16:40",
+    time: "14:30 – 15:50",
     title: "AI시대 글로벌 보건의료 표준과 상호운용성 전략",
   },
   {
