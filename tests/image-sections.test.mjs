@@ -19,10 +19,10 @@ const assets = [
     sha256: "fde61235985cd33f8cb8489804888058f20ee1750515bcbeedb01eabe95861c6",
   },
   {
-    file: path.join("public", "images", "program", "program-schedule-brandnew.jpg"),
+    file: path.join("public", "images", "program", "program-schedule-brandnew2.jpg"),
     width: 1191,
     height: 7114,
-    sha256: "f9665da7a71ff155e403d247d33037c3259cf0232ac4abea2aed0af92eef4c84",
+    sha256: "a4e70b67f2ea085050ce9bf64ce4ac163e229da4daee115745fd83870f184209",
   },
 ];
 
@@ -142,7 +142,7 @@ test("program section renders one schedule image and no structured schedule UI",
   assert.match(markup, /<section[^>]*id="program"/);
   assert.match(markup, /<h2[^>]*class="sr-only"[^>]*>프로그램<\/h2>/);
   assert.equal((markup.match(/<img\b/g) || []).length, 1);
-  assert.match(markup, /src="\/images\/program\/program-schedule-brandnew\.jpg"/);
+  assert.match(markup, /src="\/images\/program\/program-schedule-brandnew2\.jpg"/);
   assert.match(markup, /width="1191"/);
   assert.match(markup, /height="7114"/);
   assert.match(
