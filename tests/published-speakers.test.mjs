@@ -44,13 +44,13 @@ const expectedAppearances = [
   ["speaker-007", "day1", "day1-track1-a1", "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다", "토론자", "정재균", "서울대학교병원", "교수", "/images/speakers/speaker-007.png", "정재균 연사 사진"],
   ["speaker-008", "day1", "day1-track1-a2", "국가통합바이오빅데이터, 데이터 활용으로 국민건강의 미래를 열다", "좌장", "이영성", "대한민국의학한림원", "교수", "", ""],
   ["speaker-009", "day1", "day1-track1-a2", "국가통합바이오빅데이터, 데이터 활용으로 국민건강의 미래를 열다", "발표자", "이상아", "강원대학교", "교수", "/images/speakers/speaker-009.png", "이상아 연사 사진"],
-  ["speaker-010", "day1", "day1-track1-a2", "국가통합바이오빅데이터, 데이터 활용으로 국민건강의 미래를 열다", "발표자", "김치경", "고려대학교 구로병원", "교수", "", ""],
+  ["speaker-010", "day1", "day1-track1-a2", "국가통합바이오빅데이터, 데이터 활용으로 국민건강의 미래를 열다", "발표자", "김치경", "고려대학교 구로병원", "교수", "/images/speakers/speaker-010-removebg-preview.png", "김치경 연사 사진"],
   ["speaker-011", "day1", "day1-track1-a2", "국가통합바이오빅데이터, 데이터 활용으로 국민건강의 미래를 열다", "발표자", "이승복", "서울대학교병원", "교수", "/images/speakers/speaker-011.jpg", "이승복 연사 사진"],
   ["speaker-012", "day1", "day1-track1-a2", "국가통합바이오빅데이터, 데이터 활용으로 국민건강의 미래를 열다", "발표자", "Ben Lacey", "UKbioBank", "-", "", ""],
   ["speaker-013", "day1", "day1-track1-a2", "국가통합바이오빅데이터, 데이터 활용으로 국민건강의 미래를 열다", "토론자", "김미영", "한국1혈당뇨병환우회", "대표", "/images/speakers/speaker-013.png", "김미영 연사 사진"],
-  ["speaker-014", "day1", "day1-track1-a2", "국가통합바이오빅데이터, 데이터 활용으로 국민건강의 미래를 열다", "토론자", "김태형", "바이오넥서스", "대표", "", ""],
+  ["speaker-014", "day1", "day1-track1-a2", "국가통합바이오빅데이터, 데이터 활용으로 국민건강의 미래를 열다", "토론자", "김태형", "바이오넥서스", "대표", "/images/speakers/speaker-014-removebg-preview.png", "김태형 연사 사진"],
   ["speaker-015", "day1", "day1-track1-a3", "의료 AI 생태계 구축", "좌장", "조경희", "국민건강보험 일산병원", "교수", "/images/speakers/speaker-015.png", "조경희 연사 사진"],
-  ["speaker-016", "day1", "day1-track1-a3", "의료 AI 생태계 구축", "발표자/토론자", "김태훈", "인프메딕스", "메디컬AI연구소장", "", ""],
+  ["speaker-016", "day1", "day1-track1-a3", "의료 AI 생태계 구축", "발표자/토론자", "김태훈", "인프메딕스", "메디컬AI연구소장", "/images/speakers/speaker-016-removebg-preview.png", "김태훈 연사 사진"],
   ["speaker-017", "day1", "day1-track1-a3", "의료 AI 생태계 구축", "발표자/토론자", "신현웅", "한국보건사회연구원", "실장", "", ""],
   ["speaker-018", "day1", "day1-track1-a3", "의료 AI 생태계 구축", "발표자/토론자", "차원철", "삼성서울병원/국가AI전략위원회", "교수", "/images/speakers/speaker-018.png", "차원철 연사 사진"],
   ["speaker-019", "day2", "day2-track1-a4", "의료데이터 표준의 현장 활용과 확산 (대한의료정보학회 합동세션)", "발표자", "이영희", "대한의료정보학회/서울대학교", "부교수", "/images/speakers/speaker-019.jpg", "이영희 연사 사진"],
@@ -64,7 +64,7 @@ const expectedAppearances = [
   ["speaker-027", "day2", "day2-track1-a6", "AI시대 글로벌 보건의료 표준과 상호운용성 전략", "발표자", "Eric Sutherland", "OECD", "Senior Health Economist and Digital Health Lead", "/images/speakers/speaker-027.png", "Eric Sutherland 연사 사진"],
   ["speaker-028", "day2", "day2-track1-a6", "AI시대 글로벌 보건의료 표준과 상호운용성 전략", "발표자", "Robert Jakob", "WHO-FIC", "Head of Unit", "/images/speakers/speaker-028.png", "Robert Jakob 연사 사진"],
   ["speaker-029", "day2", "day2-track1-a6", "AI시대 글로벌 보건의료 표준과 상호운용성 전략", "발표자", "Rory Davidson", "SNOMED International", "Chief Digital Information Officer", "/images/speakers/speaker-029.png", "Rory Davidson 연사 사진"],
-  ["speaker-030", "day2", "day2-track1-a6", "AI시대 글로벌 보건의료 표준과 상호운용성 전략", "토론자", "권용진", "보건복지부 의료인공지능데이터정책과", "사무관", "", ""],
+  ["speaker-030", "day2", "day2-track1-a6", "AI시대 글로벌 보건의료 표준과 상호운용성 전략", "토론자", "권용진", "보건복지부 의료인공지능데이터정책과", "사무관", "/images/speakers/speaker-030-removebg-preview.png", "권용진 연사 사진"],
   ["speaker-031", "day2", "day2-track1-a6", "AI시대 글로벌 보건의료 표준과 상호운용성 전략", "토론자", "김종엽", "대한의료정보학회", "이사장", "/images/speakers/speaker-031.jpg", "김종엽 연사 사진"],
   ["speaker-032", "day2", "day2-track1-a6", "AI시대 글로벌 보건의료 표준과 상호운용성 전략", "토론자", "차동철", "네이버헬스케어", "센터장", "/images/speakers/speaker-032.jpg", "차동철 연사 사진"],
   ["speaker-033", "day2", "day2-track1-a6", "AI시대 글로벌 보건의료 표준과 상호운용성 전략", "토론자", "박현선", "건강보험심사평가원", "상근위원", "/images/speakers/speaker-033.png", "박현선 연사 사진"],
@@ -78,16 +78,16 @@ const expectedAppearances = [
   ["speaker-041", "day1", "day1-track2-b1", "디지털 보건의료정보 플랫폼 국민 중심 의료의 새로운 시작", "토론자", "서영희", "평화이즈", "부장", "/images/speakers/speaker-041.png", "서영희 연사 사진"],
   ["speaker-042", "day1", "day1-track2-b2", "보건의료데이터 인프라 혁신", "좌장", "이호영", "서울대학교병원", "교수", "/images/speakers/speaker-042.jpg", "이호영 연사 사진"],
   ["speaker-043", "day1", "day1-track2-b2", "보건의료데이터 인프라 혁신", "발표자/토론자", "황희", "카카오헬스케어", "대표이사", "/images/speakers/speaker-043.jpg", "황희 연사 사진"],
-  ["speaker-044", "day1", "day1-track2-b2", "보건의료데이터 인프라 혁신", "발표자/토론자", "최인영", "가톨릭중앙의료원", "교수", "", ""],
+  ["speaker-044", "day1", "day1-track2-b2", "보건의료데이터 인프라 혁신", "발표자/토론자", "최인영", "가톨릭중앙의료원", "교수", "/images/speakers/speaker-044-removebg-preview.png", "최인영 연사 사진"],
   ["speaker-045", "day1", "day1-track2-b2", "보건의료데이터 인프라 혁신", "발표자/토론자", "강미라", "삼성서울병원", "교수", "/images/speakers/speaker-045.jpg", "강미라 연사 사진"],
   ["speaker-047", "day1", "day1-track2-b3", "빅데이터 기반의 미래 질병 대응 전략", "좌장", "이상원", "국제백신연구소", "근거기반보건전략관", "/images/speakers/speaker-047.png", "이상원 연사 사진"],
   ["speaker-048", "day1", "day1-track2-b3", "빅데이터 기반의 미래 질병 대응 전략", "발표자/토론자", "박종현", "질병관리청", "사무관", "/images/speakers/speaker-048.png", "박종현 연사 사진"],
   ["speaker-049", "day1", "day1-track2-b3", "빅데이터 기반의 미래 질병 대응 전략", "발표자/토론자", "김진명", "질병관리청", "사무관", "/images/speakers/speaker-049.png", "김진명 연사 사진"],
   ["speaker-050", "day1", "day1-track2-b3", "빅데이터 기반의 미래 질병 대응 전략", "발표자/토론자", "박도현", "질병관리청", "사무관", "/images/speakers/speaker-050.png", "박도현 연사 사진"],
   ["speaker-051", "day1", "day1-track2-b3", "빅데이터 기반의 미래 질병 대응 전략", "토론자", "여나금", "한국보건사회연구원", "연구위원", "", ""],
-  ["speaker-052", "day1", "day1-track2-b3", "빅데이터 기반의 미래 질병 대응 전략", "토론자", "김주원", "원주세브란스병원", "교수", "", ""],
+  ["speaker-052", "day1", "day1-track2-b3", "빅데이터 기반의 미래 질병 대응 전략", "토론자", "김주원", "원주세브란스병원", "교수", "/images/speakers/speaker-052-removebg-preview.png", "김주원 연사 사진"],
   ["speaker-053", "day2", "day2-track2-b4", "의료 데이터 품질과 상호운용성 확대를 통한 진료 품질 향상", "발표자", "이유라", "서울아산병원", "교수", "/images/speakers/speaker-053.png", "이유라 연사 사진"],
-  ["speaker-054", "day2", "day2-track2-b4", "의료 데이터 품질과 상호운용성 확대를 통한 진료 품질 향상", "발표자", "이의선", "환자안전학회", "이사장", "", ""],
+  ["speaker-054", "day2", "day2-track2-b4", "의료 데이터 품질과 상호운용성 확대를 통한 진료 품질 향상", "발표자", "이의선", "환자안전학회", "이사장", "/images/speakers/speaker-054-removebg-preview.png", "이의선 연사 사진"],
   ["speaker-055", "day2", "day2-track2-b4", "의료 데이터 품질과 상호운용성 확대를 통한 진료 품질 향상", "발표자", "고태훈", "가톨릭대학교", "교수", "/images/speakers/speaker-055.png", "고태훈 연사 사진"],
   ["speaker-056", "day2", "day2-track2-b5", "AI 시대 신뢰받는 보건의료데이터 활용 방향", "좌장", "이영호", "가천대학교", "교수", "/images/speakers/speaker-056.png", "이영호 연사 사진"],
   ["speaker-057", "day2", "day2-track2-b5", "AI 시대 신뢰받는 보건의료데이터 활용 방향", "발표자", "김유진", "한국보건의료정보원", "선임", "/images/speakers/speaker-057.png", "김유진 연사 사진"],
@@ -98,7 +98,7 @@ const expectedAppearances = [
   ["speaker-062", "day2", "day2-track2-b5", "AI 시대 신뢰받는 보건의료데이터 활용 방향", "토론자", "정집민", "한국보건의료정보원", "단장", "", ""],
   ["speaker-063", "day2", "day2-track2-b6", "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)", "좌장", "이은정", "KBS", "회장", "/images/speakers/speaker-063.jpg", "이은정 연사 사진"],
   ["speaker-064", "day2", "day2-track2-b6", "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)", "발표자", "김재선", "동국대학교", "교수", "/images/speakers/speaker-064.png", "김재선 연사 사진"],
-  ["speaker-065", "day2", "day2-track2-b6", "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)", "발표자", "정형선", "연세대학교", "교수", "", ""],
+  ["speaker-065", "day2", "day2-track2-b6", "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)", "발표자", "정형선", "연세대학교", "교수", "/images/speakers/speaker-065-removebg-preview.png", "정형선 연사 사진"],
   ["speaker-066", "day2", "day2-track2-b6", "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)", "발표자", "박유랑", "연세대학교", "부교수", "/images/speakers/speaker-066.png", "박유랑 연사 사진"],
   ["speaker-067", "day2", "day2-track2-b6", "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)", "토론자", "조민규", "지디넷코리아", "팀장", "/images/speakers/speaker-067.jpg", "조민규 연사 사진"],
   ["speaker-068", "day2", "day2-track2-b6", "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)", "토론자", "조동찬", "한양대학교", "교수", "/images/speakers/speaker-068.png", "조동찬 연사 사진"],
@@ -303,7 +303,7 @@ test("speaker session IDs, days, rooms, titles, and track-specific times resolve
   }
 });
 
-test("all 49 transparent speaker assets have exact signatures, dimensions, bytes, hashes, and alpha metadata", () => {
+test("all 57 transparent speaker assets have exact signatures, dimensions, bytes, hashes, and alpha metadata", () => {
   const targetDir = path.join(repo, "public", "images", "speakers");
   const actualFiles = execFileSync(
     "git",
@@ -344,8 +344,8 @@ test("all 49 transparent speaker assets have exact signatures, dimensions, bytes
 test("photo mapping, alt text, fallback count, roles, and day counts remain explicit", () => {
   const withPhotos = speakersData.SPEAKERS.filter(({ imageSrc }) => imageSrc);
   const fallbacks = speakersData.SPEAKERS.filter(({ imageSrc }) => !imageSrc);
-  assert.equal(withPhotos.length, 49);
-  assert.equal(fallbacks.length, 18);
+  assert.equal(withPhotos.length, 57);
+  assert.equal(fallbacks.length, 10);
   assert.ok(
     withPhotos.every(({ id, imageSrc }) =>
       imageSrc.endsWith(`/${id}-removebg-preview.png`)
@@ -418,6 +418,8 @@ test("HWPX and original photo inputs are not tracked by Git", () => {
       "public/연사리스트(홈페이지용)_260831_v1.hwpx",
       "public/images/연사사진_260831_v1",
       "public/images/연사사진_260831_v1.zip",
+      "public/images/홈페이지 연사 추가 사진",
+      "public/images/홈페이지 연사 추가 사진.zip",
     ],
     { cwd: repo, encoding: "utf8" }
   ).trim();
