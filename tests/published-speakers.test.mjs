@@ -395,7 +395,7 @@ test("registration contracts remain unchanged while speakers are published", () 
     { id: finalTrack1?.id, time: finalTrack1?.time, slotKey: finalTrack1?.slotKey },
     {
       id: "day2-15:00 – 16:40-t1",
-      time: "14:30 – 16:40",
+      time: "14:30 – 15:50",
       slotKey: "day2::15:00 – 16:40",
     }
   );

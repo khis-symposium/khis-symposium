@@ -19,10 +19,10 @@ const assets = [
     sha256: "fde61235985cd33f8cb8489804888058f20ee1750515bcbeedb01eabe95861c6",
   },
   {
-    file: path.join("public", "images", "program", "program-schedule-new-new-new-new-new.jpg"),
-    width: 4961,
-    height: 29643,
-    sha256: "ffc67ca2f399fee979fdbb2874451d669f379339a43e5d309f3e894d4f2f9123",
+    file: path.join("public", "images", "program", "program-schedule-brandnew.jpg"),
+    width: 1191,
+    height: 7114,
+    sha256: "f9665da7a71ff155e403d247d33037c3259cf0232ac4abea2aed0af92eef4c84",
   },
 ];
 
@@ -142,9 +142,9 @@ test("program section renders one schedule image and no structured schedule UI",
   assert.match(markup, /<section[^>]*id="program"/);
   assert.match(markup, /<h2[^>]*class="sr-only"[^>]*>프로그램<\/h2>/);
   assert.equal((markup.match(/<img\b/g) || []).length, 1);
-  assert.match(markup, /src="\/images\/program\/program-schedule-new-new-new-new-new\.jpg"/);
-  assert.match(markup, /width="4961"/);
-  assert.match(markup, /height="29643"/);
+  assert.match(markup, /src="\/images\/program\/program-schedule-brandnew\.jpg"/);
+  assert.match(markup, /width="1191"/);
+  assert.match(markup, /height="7114"/);
   assert.match(
     markup,
     /alt="2026 한국보건의료정보원 연례 심포지엄 전체 프로그램 일정표\. 9월 10일과 11일, 코엑스 401호·402호의 세션별 시간, 발표와 토론 일정\."/
