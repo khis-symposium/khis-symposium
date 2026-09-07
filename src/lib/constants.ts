@@ -100,7 +100,7 @@ export type ProgramSlot = {
   time: string;
   /** Keep the deployed Apps Script session ID stable when display times change. */
   registrationIdTime?: string;
-  /** Explicitly include a shared program item in the registration catalog. */
+  /** Explicitly include a shared or single-track program item in the registration catalog. */
   registration?: boolean;
   duration?: string;
   /** Use for rows common to both tracks (registration, lunch, break) */
@@ -228,6 +228,14 @@ export const PROGRAM: ProgramDay[] = [
         },
       },
       {
+        time: "15:50 - 16:40",
+        registration: true,
+        track1: {
+          title: "상호운용성 트랙 종합토론",
+          chair: "양광모 교수",
+        },
+      },
+      {
         time: "16:40 – 17:00",
         duration: "(20분)",
         track1: { title: "폐회식" },
@@ -237,7 +245,7 @@ export const PROGRAM: ProgramDay[] = [
 ];
 
 // 등록 폼 "참여세션" 체크박스 — 두 트랙이 동시 진행되는 슬롯과 명시적으로
-// 등록 대상으로 지정한 공통 슬롯만 PROGRAM에서 생성한다. 총 13개.
+// 등록 대상으로 지정한 공통·단일 트랙 슬롯만 PROGRAM에서 생성한다.
 export type RegistrationSessionOption = {
   id: string;
   dayId: string;
@@ -273,6 +281,9 @@ const REGISTRATION_SESSION_DISPLAY_OVERRIDES: Readonly<
   "day2-15:00 – 16:40-t2": {
     title: "디지털 헬스, 미래를 위한 정책을 말하다(미디어‧정책 세션)",
   },
+  "day2-15:50 - 16:40-t1": {
+    title: "상호운용성 트랙 종합토론\n좌장 | 양광모 교수",
+  },
 };
 
 export const REGISTRATION_SESSIONS: RegistrationSessionOption[] = PROGRAM.flatMap((day) =>
@@ -291,6 +302,27 @@ export const REGISTRATION_SESSIONS: RegistrationSessionOption[] = PROGRAM.flatMa
           kind: "common",
           trackLabel: "공통",
           title: slot.shared.title,
+        },
+      ];
+    }
+
+    if (slot.registration && (slot.track1 || slot.track2) && !(slot.track1 && slot.track2)) {
+      const kind = slot.track1 ? "track1" : "track2";
+      const track = slot[kind];
+      if (!track) return [];
+
+      const id = `${day.id}-${registrationIdTime}-${kind === "track1" ? "t1" : "t2"}`;
+      const display = REGISTRATION_SESSION_DISPLAY_OVERRIDES[id];
+      return [
+        {
+          id,
+          dayId: day.id,
+          dayLabel: day.dayLabel,
+          time: display?.time ?? track.time ?? slot.time,
+          slotKey,
+          kind,
+          trackLabel: TRACK_LABELS[kind],
+          title: display?.title ?? track.title,
         },
       ];
     }
@@ -326,18 +358,39 @@ export const REGISTRATION_SESSIONS: RegistrationSessionOption[] = PROGRAM.flatMa
   })
 );
 
+const ADDITIONAL_REGISTRATION_SESSION_CONFLICTS: Readonly<
+  Record<string, readonly string[]>
+> = {
+  "day2-15:50 - 16:40-t1": ["day2-15:00 – 16:40-t2"],
+};
+
+function registrationSessionsConflict(
+  left: Pick<RegistrationSessionOption, "id" | "dayId" | "slotKey">,
+  right: Pick<RegistrationSessionOption, "id" | "dayId" | "slotKey">
+) {
+  if (left.dayId !== right.dayId) return false;
+  if (left.slotKey === right.slotKey) return true;
+
+  return (
+    ADDITIONAL_REGISTRATION_SESSION_CONFLICTS[left.id]?.includes(right.id) === true ||
+    ADDITIONAL_REGISTRATION_SESSION_CONFLICTS[right.id]?.includes(left.id) === true
+  );
+}
+
 export function hasRegistrationSessionSlotConflict(
   sessionIds: readonly string[],
   sessions: readonly RegistrationSessionOption[] = REGISTRATION_SESSIONS
 ) {
   const sessionsById = new Map(sessions.map((session) => [session.id, session]));
-  const selectedSlots = new Set<string>();
+  const selectedSessions: RegistrationSessionOption[] = [];
 
   for (const sessionId of sessionIds) {
     const session = sessionsById.get(sessionId);
     if (!session) continue;
-    if (selectedSlots.has(session.slotKey)) return true;
-    selectedSlots.add(session.slotKey);
+    if (selectedSessions.some((selected) => registrationSessionsConflict(selected, session))) {
+      return true;
+    }
+    selectedSessions.push(session);
   }
 
   return false;
@@ -358,7 +411,10 @@ export function updateRegistrationSessionSelection(
   return [
     ...selectedIds.filter((sessionId) => {
       const selectedSession = sessionsById.get(sessionId);
-      return sessionId !== toggledId && selectedSession?.slotKey !== toggledSession.slotKey;
+      return (
+        sessionId !== toggledId &&
+        (!selectedSession || !registrationSessionsConflict(selectedSession, toggledSession))
+      );
     }),
     toggledId,
   ];

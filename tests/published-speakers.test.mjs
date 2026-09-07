@@ -381,8 +381,8 @@ test("photo mapping, alt text, fallback count, roles, and day counts remain expl
   );
 });
 
-test("registration contracts remain unchanged while speakers are published", () => {
-  assert.equal(constants.REGISTRATION_SESSIONS.length, 13);
+test("registration contracts include the DAY 2 interoperability panel while speakers are published", () => {
+  assert.equal(constants.REGISTRATION_SESSIONS.length, 14);
   assert.ok(constants.AFFILIATION_TYPES.includes("정부부처"));
 
   const finalTrack1 = constants.REGISTRATION_SESSIONS.find(
@@ -390,6 +390,9 @@ test("registration contracts remain unchanged while speakers are published", () 
   );
   const finalTrack2 = constants.REGISTRATION_SESSIONS.find(
     ({ id }) => id === "day2-15:00 – 16:40-t2"
+  );
+  const interoperabilityPanel = constants.REGISTRATION_SESSIONS.find(
+    ({ id }) => id === "day2-15:50 - 16:40-t1"
   );
   assert.deepEqual(
     { id: finalTrack1?.id, time: finalTrack1?.time, slotKey: finalTrack1?.slotKey },
@@ -405,6 +408,20 @@ test("registration contracts remain unchanged while speakers are published", () 
       id: "day2-15:00 – 16:40-t2",
       time: "15:00 – 16:40",
       slotKey: "day2::15:00 – 16:40",
+    }
+  );
+  assert.deepEqual(
+    {
+      id: interoperabilityPanel?.id,
+      time: interoperabilityPanel?.time,
+      slotKey: interoperabilityPanel?.slotKey,
+      title: interoperabilityPanel?.title,
+    },
+    {
+      id: "day2-15:50 - 16:40-t1",
+      time: "15:50 - 16:40",
+      slotKey: "day2::15:50 - 16:40",
+      title: "상호운용성 트랙 종합토론\n좌장 | 양광모 교수",
     }
   );
 });

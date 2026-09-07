@@ -139,8 +139,8 @@ async function post(postHandler, payload) {
   );
 }
 
-test("registration catalog adds one canonical opening while preserving deployed IDs", () => {
-  assert.equal(sessions.length, 13);
+test("registration catalog adds the DAY 2 Track 1 panel while preserving deployed IDs", () => {
+  assert.equal(sessions.length, 14);
   assert.deepEqual(openingSession, {
     id: "day1-09:30 – 10:25-common",
     dayId: "day1",
@@ -160,6 +160,61 @@ test("registration catalog adds one canonical opening while preserving deployed 
   assert.ok(
     firstParallelSlot.every((session) => session.slotKey === "day1::11:10 – 12:30")
   );
+});
+
+test("the sequential Track 1 panel stays selected with the preceding Track 1 session", () => {
+  const preceding = sessions.find(({ id }) => id === "day2-15:00 – 16:40-t1");
+  const panel = sessions.find(({ id }) => id === "day2-15:50 - 16:40-t1");
+  assert.ok(preceding);
+  assert.ok(panel);
+
+  let selected = constants.updateRegistrationSessionSelection([], preceding.id, true);
+  selected = constants.updateRegistrationSessionSelection(selected, panel.id, true);
+  assert.deepEqual(selected, [preceding.id, panel.id]);
+  assert.equal(constants.hasRegistrationSessionSlotConflict(selected), false);
+});
+
+test("unrelated adjacent track-specific slots keep the existing selection contract", () => {
+  const track2Second = sessions.find(({ id }) => id === "day2-13:00 – 14:40-t2");
+  const track1Third = sessions.find(({ id }) => id === "day2-15:00 – 16:40-t1");
+  assert.ok(track2Second);
+  assert.ok(track1Third);
+
+  let selected = constants.updateRegistrationSessionSelection([], track2Second.id, true);
+  selected = constants.updateRegistrationSessionSelection(selected, track1Third.id, true);
+  assert.deepEqual(selected, [track2Second.id, track1Third.id]);
+  assert.equal(constants.hasRegistrationSessionSlotConflict(selected), false);
+});
+
+test("the overlapping Track 2 session replaces both Track 1 choices", () => {
+  const preceding = sessions.find(({ id }) => id === "day2-15:00 – 16:40-t1");
+  const competing = sessions.find(({ id }) => id === "day2-15:00 – 16:40-t2");
+  const panel = sessions.find(({ id }) => id === "day2-15:50 - 16:40-t1");
+  assert.ok(preceding);
+  assert.ok(competing);
+  assert.ok(panel);
+
+  let selected = constants.updateRegistrationSessionSelection([], preceding.id, true);
+  selected = constants.updateRegistrationSessionSelection(selected, panel.id, true);
+  selected = constants.updateRegistrationSessionSelection(selected, competing.id, true);
+  assert.deepEqual(selected, [competing.id]);
+});
+
+test("route rejects the overlapping Track 1 panel and Track 2 session before upstream fetch", async () => {
+  const competing = sessions.find(({ id }) => id === "day2-15:00 – 16:40-t2");
+  const panel = sessions.find(({ id }) => id === "day2-15:50 - 16:40-t1");
+  assert.ok(competing);
+  assert.ok(panel);
+
+  let upstreamCalls = 0;
+  const route = loadRoute(constants, async () => {
+    upstreamCalls += 1;
+    return new Response('{"result":"success"}', { status: 200 });
+  });
+  const response = await post(route.POST, validPayload([competing.id, panel.id]));
+  assert.equal(response.status, 400);
+  assert.deepEqual(await response.json(), { ok: false });
+  assert.equal(upstreamCalls, 0);
 });
 
 test("registration UI submits the opening canonical value from its single checkbox", () => {

@@ -56,8 +56,12 @@ const ALLOWED_SESSIONS_ = [
   "day2-13:00 – 14:40-t1",
   "day2-13:00 – 14:40-t2",
   "day2-15:00 – 16:40-t1",
-  "day2-15:00 – 16:40-t2"
+  "day2-15:00 – 16:40-t2",
+  "day2-15:50 - 16:40-t1"
 ];
+const ADDITIONAL_SESSION_CONFLICTS_ = {
+  "day2-15:50 - 16:40-t1": ["day2-15:00 – 16:40-t2"]
+};
 const EXPECTED_HEADERS_ = [
   "타임스탬프",
   "성명",
@@ -315,7 +319,14 @@ function isValidPayload_(data) {
 
 function hasSessionSlotConflict_(sessions) {
   const slots = sessions.map((session) => session.replace(/-t[12]$/, ""));
-  return new Set(slots).size !== slots.length;
+  if (new Set(slots).size !== slots.length) {
+    return true;
+  }
+
+  return sessions.some((session) => {
+    const conflicts = ADDITIONAL_SESSION_CONFLICTS_[session] || [];
+    return conflicts.some((conflictingSession) => sessions.indexOf(conflictingSession) !== -1);
+  });
 }
 
 function isRecord_(value) {
