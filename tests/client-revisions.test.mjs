@@ -43,7 +43,7 @@ test("Hero and metadata share the single canonical AI event theme", () => {
   assert.equal(layoutSource.includes("og-image-20260814-v2.png"), false);
 });
 
-test("the confirmed chair catalog contains exactly the eight requested entries", () => {
+test("the confirmed chair catalog contains the nine requested entries", () => {
   const chairs = constants.PROGRAM.flatMap((day) =>
     day.slots.flatMap((slot) =>
       [slot.track1, slot.track2]
@@ -61,6 +61,7 @@ test("the confirmed chair catalog contains exactly the eight requested entries",
     "의료데이터 표준의 현장 활용과 확산 (대한의료정보학회 합동세션)|김종엽 대한의료정보학회 이사장",
     "AI시대 글로벌 보건의료 표준과 상호운용성 전략|양광모 교수",
     "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)|이은정 KBS 기자",
+    "상호운용성 트랙 종합토론|양광모 교수",
   ]);
   assert.equal(constantsSource.includes(["김종", "연"].join("")), false);
   assert.equal(/좌장:\s*미정|\(좌장:\s*미정\)/.test(constantsSource), false);
@@ -138,6 +139,7 @@ test("program registration IDs, display times, tracks, and titles remain exact",
       "day2|DAY 2|2026. 09. 11.(금)|13:00 - 14:40|13:00 – 14:40|(100분)||표준 기반 의료데이터 상호운용성 구현체계|AI 시대 신뢰받는 보건의료데이터 활용 방향",
       "day2|DAY 2|2026. 09. 11.(금)|14:40 – 15:00||(20분)|휴식||",
       "day2|DAY 2|2026. 09. 11.(금)|15:00 – 16:40||(100분)||AI시대 글로벌 보건의료 표준과 상호운용성 전략|디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)",
+      "day2|DAY 2|2026. 09. 11.(금)|15:50 - 16:40||||상호운용성 트랙 종합토론|",
       "day2|DAY 2|2026. 09. 11.(금)|16:40 – 17:00||(20분)||폐회식|",
     ]
   );
@@ -165,13 +167,14 @@ test("program registration IDs, display times, tracks, and titles remain exact",
       { id: "day2-13:00 – 14:40-t2", dayId: "day2", time: "13:00 - 14:40", slotKey: "day2::13:00 - 14:40", trackLabel: "Track 2 · 402호", title: "AI 시대 신뢰받는 보건의료데이터 활용 방향" },
       { id: "day2-15:00 – 16:40-t1", dayId: "day2", time: "14:30 – 15:50", slotKey: "day2::15:00 – 16:40", trackLabel: "Track 1 · 401호", title: "AI 시대 글로벌 보건의료 표준과 상호운용성 전략" },
       { id: "day2-15:00 – 16:40-t2", dayId: "day2", time: "15:00 – 16:40", slotKey: "day2::15:00 – 16:40", trackLabel: "Track 2 · 402호", title: "디지털 헬스, 미래를 위한 정책을 말하다(미디어‧정책 세션)" },
+      { id: "day2-15:50 - 16:40-t1", dayId: "day2", time: "15:50 - 16:40", slotKey: "day2::15:50 - 16:40", trackLabel: "Track 1 · 401호", title: "상호운용성 트랙 종합토론\n좌장 | 양광모 교수" },
     ]
   );
 
   const openingOptions = constants.REGISTRATION_SESSIONS.filter(
     (session) => session.title === "개회식"
   );
-  assert.equal(constants.REGISTRATION_SESSIONS.length, 13);
+  assert.equal(constants.REGISTRATION_SESSIONS.length, 14);
   assert.deepEqual(openingOptions, [
     {
       id: "day1-09:30 – 10:25-common",
@@ -239,7 +242,7 @@ test("confirmed DAY 2 content feeds registration labels while stable payload IDs
   const day2Registration = constants.REGISTRATION_SESSIONS.filter(
     (session) => session.dayId === "day2"
   );
-  assert.equal(constants.REGISTRATION_SESSIONS.length, 13);
+  assert.equal(constants.REGISTRATION_SESSIONS.length, 14);
   assert.deepEqual(
     day2Registration.map(({ id }) => id),
     [
@@ -249,8 +252,23 @@ test("confirmed DAY 2 content feeds registration labels while stable payload IDs
       "day2-13:00 – 14:40-t2",
       "day2-15:00 – 16:40-t1",
       "day2-15:00 – 16:40-t2",
+      "day2-15:50 - 16:40-t1",
     ]
   );
+
+  const interoperabilityPanel = day2Registration.find(
+    ({ id }) => id === "day2-15:50 - 16:40-t1"
+  );
+  assert.deepEqual(interoperabilityPanel, {
+    id: "day2-15:50 - 16:40-t1",
+    dayId: "day2",
+    dayLabel: "DAY 2",
+    time: "15:50 - 16:40",
+    slotKey: "day2::15:50 - 16:40",
+    kind: "track1",
+    trackLabel: "Track 1 · 401호",
+    title: "상호운용성 트랙 종합토론\n좌장 | 양광모 교수",
+  });
 
   const parallelSecondSlot = day2Registration.filter(
     ({ id }) => id === "day2-13:00 – 14:40-t1" || id === "day2-13:00 – 14:40-t2"

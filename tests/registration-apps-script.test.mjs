@@ -424,7 +424,7 @@ test("Apps Script and Next constants use identical affiliations and session IDs"
   assert.equal(siteContract.affiliations[0], "정부부처");
   assert.ok(!siteContract.affiliations.includes("정보부처"));
   assert.deepEqual([...extractArray("ALLOWED_SESSIONS_")], siteContract.sessions);
-  assert.equal(siteContract.sessions.length, 13);
+  assert.equal(siteContract.sessions.length, 14);
   assert.equal(openingSession.id, "day1-09:30 – 10:25-common");
   assert.deepEqual(firstParallelSessionIds, [
     "day1-10:50 – 12:30-t1",
@@ -555,6 +555,38 @@ test("Apps Script accepts opening and stores its canonical ID in Sheet column H"
   assert.deepEqual(harness.invoke(payload), { result: "success", duplicate: false });
   assert.equal(harness.state.writes.length, 1);
   assert.equal(harness.state.writes[0].values[0][7], "day1-09:30 – 10:25-common");
+});
+
+test("Apps Script accepts the DAY 2 Track 1 panel and stores its canonical ID in Sheet column H", () => {
+  const panelId = "day2-15:50 - 16:40-t1";
+  assert.ok(siteContract.sessions.includes(panelId));
+  const payload = validPayload();
+  payload.sessions = [panelId];
+  const harness = createHarness();
+
+  assert.deepEqual(harness.invoke(payload), { result: "success", duplicate: false });
+  assert.equal(harness.state.writes.length, 1);
+  assert.equal(harness.state.writes[0].values[0][7], panelId);
+});
+
+test("Apps Script permits sequential Track 1 choices and rejects the overlapping Track 2 choice", () => {
+  const precedingId = "day2-15:00 – 16:40-t1";
+  const track2Id = "day2-15:00 – 16:40-t2";
+  const panelId = "day2-15:50 - 16:40-t1";
+
+  const sequentialPayload = validPayload();
+  sequentialPayload.sessions = [precedingId, panelId];
+  const sequentialHarness = createHarness();
+  assert.deepEqual(sequentialHarness.invoke(sequentialPayload), {
+    result: "success",
+    duplicate: false,
+  });
+  assert.equal(sequentialHarness.state.writes.length, 1);
+
+  const overlappingPayload = validPayload();
+  overlappingPayload.sessions = [track2Id, panelId];
+  const overlappingHarness = createHarness();
+  assertRejected(overlappingHarness, overlappingPayload);
 });
 
 test("legacy 정보부처 input is normalized before validation and Sheet write", () => {
