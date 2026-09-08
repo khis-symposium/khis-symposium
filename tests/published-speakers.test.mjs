@@ -56,7 +56,7 @@ const expectedAppearances = [
   ["speaker-019", "day2", "day2-track1-a4", "의료데이터 표준의 현장 활용과 확산 (대한의료정보학회 합동세션)", "발표자", "이영희", "대한의료정보학회/서울대학교", "부교수", "/images/speakers/speaker-019.jpg", "이영희 연사 사진"],
   ["speaker-020", "day2", "day2-track1-a4", "의료데이터 표준의 현장 활용과 확산 (대한의료정보학회 합동세션)", "발표자", "윤덕용", "연세대학교", "부교수", "/images/speakers/speaker-020.jpg", "윤덕용 연사 사진"],
   ["speaker-021", "day2", "day2-track1-a4", "의료데이터 표준의 현장 활용과 확산 (대한의료정보학회 합동세션)", "발표자", "이수현", "가천대학교", "부교수", "/images/speakers/speaker-021.png", "이수현 연사 사진"],
-  ["speaker-022", "day2", "day2-track1-a5", "표준 기반 의료데이터 상호운용성 구현체계", "발표자", "권애경", "한국보건의료정보원", "단장", "", ""],
+  ["speaker-022", "day2", "day2-track1-a5", "표준 기반 의료데이터 상호운용성 구현체계", "발표자", "권애경", "한국보건의료정보원", "단장", "/images/speakers/speaker-022-removebg-preview.png", "권애경 연사 사진"],
   ["speaker-023", "day2", "day2-track1-a5", "표준 기반 의료데이터 상호운용성 구현체계", "발표자", "정세영", "분당서울대학교병원", "정보화실장", "/images/speakers/speaker-023.png", "정세영 연사 사진"],
   ["speaker-024", "day2", "day2-track1-a5", "표준 기반 의료데이터 상호운용성 구현체계", "발표자", "박현애", "헬스오앤티", "대표", "/images/speakers/speaker-024.png", "박현애 연사 사진"],
   ["speaker-025", "day2", "day2-track1-a5", "표준 기반 의료데이터 상호운용성 구현체계", "발표자", "김영학", "서울아산병원 디지털정보혁신본부", "교수", "/images/speakers/speaker-025.png", "김영학 연사 사진"],
@@ -95,14 +95,14 @@ const expectedAppearances = [
   ["speaker-059", "day2", "day2-track2-b5", "AI 시대 신뢰받는 보건의료데이터 활용 방향", "발표자/토론자", "정재균", "서울대학교병원 헬스케어 AI연구소", "교수", "/images/speakers/speaker-059.png", "정재균 연사 사진"],
   ["speaker-060", "day2", "day2-track2-b5", "AI 시대 신뢰받는 보건의료데이터 활용 방향", "발표자", "최민성", "LG AI Research", "책임", "/images/speakers/speaker-060.jpg", "최민성 연사 사진"],
   ["speaker-061", "day2", "day2-track2-b5", "AI 시대 신뢰받는 보건의료데이터 활용 방향", "토론자", "윤재성", "보건복지부 의료인공지능데이터정책과", "사무관", "", ""],
-  ["speaker-062", "day2", "day2-track2-b5", "AI 시대 신뢰받는 보건의료데이터 활용 방향", "토론자", "정집민", "한국보건의료정보원", "단장", "", ""],
+  ["speaker-062", "day2", "day2-track2-b5", "AI 시대 신뢰받는 보건의료데이터 활용 방향", "토론자", "정집민", "한국보건의료정보원", "단장", "/images/speakers/speaker-062-removebg-preview.png", "정집민 연사 사진"],
   ["speaker-063", "day2", "day2-track2-b6", "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)", "좌장", "이은정", "KBS", "회장", "/images/speakers/speaker-063.jpg", "이은정 연사 사진"],
   ["speaker-064", "day2", "day2-track2-b6", "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)", "발표자", "김재선", "동국대학교", "교수", "/images/speakers/speaker-064.png", "김재선 연사 사진"],
   ["speaker-065", "day2", "day2-track2-b6", "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)", "발표자", "정형선", "연세대학교", "교수", "/images/speakers/speaker-065-removebg-preview.png", "정형선 연사 사진"],
   ["speaker-066", "day2", "day2-track2-b6", "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)", "발표자", "박유랑", "연세대학교", "부교수", "/images/speakers/speaker-066.png", "박유랑 연사 사진"],
   ["speaker-067", "day2", "day2-track2-b6", "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)", "토론자", "조민규", "지디넷코리아", "팀장", "/images/speakers/speaker-067.jpg", "조민규 연사 사진"],
   ["speaker-068", "day2", "day2-track2-b6", "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)", "토론자", "조동찬", "한양대학교", "교수", "/images/speakers/speaker-068.png", "조동찬 연사 사진"],
-  ["speaker-069", "day2", "day2-track2-b6", "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)", "토론자", "김민정", "보건복지부", "과장", "", ""],
+  ["speaker-069", "day2", "day2-track2-b6", "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)", "토론자", "김민정", "보건복지부", "과장", "/images/speakers/speaker-069-removebg-preview.png", "김민정 연사 사진"],
 ].map(
   ([id, dayId, sessionId, sessionTitle, role, name, affiliation, title, legacyImageSrc, imageAlt]) => ({
     id,
@@ -245,7 +245,7 @@ test("A1 replacement and B6 addition do not reuse another person's photo or remo
   const added = b6.at(-1);
   assert.deepEqual(
     [added.name, added.role, added.affiliation, added.title, added.imageSrc, added.imageAlt],
-    ["김민정", "토론자", "보건복지부", "과장", "", ""]
+    ["김민정", "토론자", "보건복지부", "과장", "/images/speakers/speaker-069-removebg-preview.png", "김민정 연사 사진"]
   );
 });
 
@@ -324,7 +324,7 @@ test("speaker session IDs, days, rooms, titles, and track-specific times resolve
   }
 });
 
-test("all 59 transparent speaker assets have exact signatures, dimensions, bytes, hashes, and alpha metadata", () => {
+test("all 62 transparent speaker assets have exact signatures, dimensions, bytes, hashes, and alpha metadata", () => {
   const targetDir = path.join(repo, "public", "images", "speakers");
   const actualFiles = execFileSync(
     "git",
@@ -369,8 +369,8 @@ test("all 59 transparent speaker assets have exact signatures, dimensions, bytes
 test("photo mapping, alt text, fallback count, roles, and day counts remain explicit", () => {
   const withPhotos = speakersData.SPEAKERS.filter(({ imageSrc }) => imageSrc);
   const fallbacks = speakersData.SPEAKERS.filter(({ imageSrc }) => !imageSrc);
-  assert.equal(withPhotos.length, 58);
-  assert.equal(fallbacks.length, 10);
+  assert.equal(withPhotos.length, 61);
+  assert.equal(fallbacks.length, 7);
   assert.ok(
     withPhotos.every(({ id, imageSrc }) =>
       imageSrc.endsWith(`/${id}-removebg-preview.png`)
@@ -463,6 +463,7 @@ test("HWPX and original photo inputs are not tracked by Git", () => {
       "public/images/홈페이지 연사 추가 사진",
       "public/images/홈페이지 연사 추가 사진.zip",
       "public/images/연사 추가 사진2",
+      "public/images/연사 추가 사진3",
       "public/images/연사 이미지.zip",
     ],
     { cwd: repo, encoding: "utf8" }

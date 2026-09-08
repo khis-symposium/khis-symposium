@@ -389,8 +389,8 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "권애경",
     affiliation: "한국보건의료정보원",
     title: "단장",
-    imageSrc: "",
-    imageAlt: "",
+    imageSrc: "/images/speakers/speaker-022-removebg-preview.png",
+    imageAlt: "권애경 연사 사진",
   },
   {
     id: "speaker-023",
@@ -857,8 +857,8 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "정집민",
     affiliation: "한국보건의료정보원",
     title: "단장",
-    imageSrc: "",
-    imageAlt: "",
+    imageSrc: "/images/speakers/speaker-062-removebg-preview.png",
+    imageAlt: "정집민 연사 사진",
   },
   {
     id: "speaker-063",
@@ -941,8 +941,8 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "김민정",
     affiliation: "보건복지부",
     title: "과장",
-    imageSrc: "",
-    imageAlt: "",
+    imageSrc: "/images/speakers/speaker-069-removebg-preview.png",
+    imageAlt: "김민정 연사 사진",
   },
 ];
 
