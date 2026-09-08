@@ -206,11 +206,11 @@ export const SPEAKERS: readonly Speaker[] = [
     sessionId: "day1-track1-a1",
     sessionTitle: "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다",
     role: "토론자",
-    name: "정재균",
+    name: "이가람",
     affiliation: "서울대학교병원",
     title: "교수",
-    imageSrc: "/images/speakers/speaker-007-removebg-preview.png",
-    imageAlt: "정재균 연사 사진",
+    imageSrc: "",
+    imageAlt: "",
   },
   {
     id: "speaker-008",
@@ -931,6 +931,18 @@ export const SPEAKERS: readonly Speaker[] = [
     title: "교수",
     imageSrc: "/images/speakers/speaker-068-removebg-preview.png",
     imageAlt: "조동찬 연사 사진",
+  },
+  {
+    id: "speaker-069",
+    dayId: "day2",
+    sessionId: "day2-track2-b6",
+    sessionTitle: "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)",
+    role: "토론자",
+    name: "김민정",
+    affiliation: "보건복지부",
+    title: "과장",
+    imageSrc: "",
+    imageAlt: "",
   },
 ];
 
