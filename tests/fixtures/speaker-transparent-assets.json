@@ -12,10 +12,10 @@
   {
     "file": "speaker-002-removebg-preview.png",
     "mime": "image/png",
-    "width": 167,
-    "height": 215,
-    "size": 51326,
-    "sha256": "24574f11aeb912d377a4d2b898a540cbca95720db0f72985a1e899cb5b1f1050",
+    "width": 442,
+    "height": 565,
+    "size": 293036,
+    "sha256": "75faec2d61d762df3a5c2322d0ee2c101befcfe2e52717e23a040d69bd265f7f",
     "alphaMin": 0,
     "alphaMax": 255
   },
@@ -80,6 +80,16 @@
     "alphaMax": 255
   },
   {
+    "file": "speaker-012-removebg-preview.png",
+    "mime": "image/png",
+    "width": 369,
+    "height": 497,
+    "size": 118194,
+    "sha256": "b6952550100ca8c53f464ddd3a860159e74c99efa755247c685749751bb234d5",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
     "file": "speaker-013-removebg-preview.png",
     "mime": "image/png",
     "width": 444,
@@ -116,6 +126,16 @@
     "height": 583,
     "size": 225637,
     "sha256": "5374b24e2f3cc42a5fef35c9bac12e1d01d5002eeab8895cd83a960430143ec6",
+    "alphaMin": 0,
+    "alphaMax": 255
+  },
+  {
+    "file": "speaker-017-removebg-preview.png",
+    "mime": "image/png",
+    "width": 443,
+    "height": 563,
+    "size": 288399,
+    "sha256": "9e9b29132746e96e8b20a314e3d5c4f77d3d580b3ea0bb86f90396e658da75f2",
     "alphaMin": 0,
     "alphaMax": 255
   },
@@ -212,10 +232,10 @@
   {
     "file": "speaker-028-removebg-preview.png",
     "mime": "image/png",
-    "width": 496,
-    "height": 461,
-    "size": 171342,
-    "sha256": "23ae8eeb4c1d90284a56e7c399bdbffe7da35088620b3bab759efa6bcb6e4aed",
+    "width": 412,
+    "height": 606,
+    "size": 303614,
+    "sha256": "71f6a76506f42eacaef2a58cecc4ab8c0e724f6bd24e3d05ac2e62b23f99e573",
     "alphaMin": 0,
     "alphaMax": 255
   },
@@ -362,10 +382,10 @@
   {
     "file": "speaker-044-removebg-preview.png",
     "mime": "image/png",
-    "width": 212,
-    "height": 229,
-    "size": 62436,
-    "sha256": "e920f45b2e26f597b6da0c645faef4752c8c05ecdb322d776dba28ed379eada3",
+    "width": 483,
+    "height": 517,
+    "size": 246926,
+    "sha256": "41be27855d58b847a71cd54edef61b740209820e7827f3a629e97b0086698369",
     "alphaMin": 0,
     "alphaMax": 255
   },

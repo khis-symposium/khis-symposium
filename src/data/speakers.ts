@@ -269,8 +269,8 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "Ben Lacey",
     affiliation: "UKbioBank",
     title: "-",
-    imageSrc: "",
-    imageAlt: "",
+    imageSrc: "/images/speakers/speaker-012-removebg-preview.png",
+    imageAlt: "Ben Lacey 연사 사진",
   },
   {
     id: "speaker-013",
@@ -329,8 +329,8 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "신현웅",
     affiliation: "한국보건사회연구원",
     title: "실장",
-    imageSrc: "",
-    imageAlt: "",
+    imageSrc: "/images/speakers/speaker-017-removebg-preview.png",
+    imageAlt: "신현웅 연사 사진",
   },
   {
     id: "speaker-018",

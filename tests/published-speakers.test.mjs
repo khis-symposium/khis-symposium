@@ -46,12 +46,12 @@ const expectedAppearances = [
   ["speaker-009", "day1", "day1-track1-a2", "국가통합바이오빅데이터, 데이터 활용으로 국민건강의 미래를 열다", "발표자", "이상아", "강원대학교", "교수", "/images/speakers/speaker-009.png", "이상아 연사 사진"],
   ["speaker-010", "day1", "day1-track1-a2", "국가통합바이오빅데이터, 데이터 활용으로 국민건강의 미래를 열다", "발표자", "김치경", "고려대학교 구로병원", "교수", "/images/speakers/speaker-010-removebg-preview.png", "김치경 연사 사진"],
   ["speaker-011", "day1", "day1-track1-a2", "국가통합바이오빅데이터, 데이터 활용으로 국민건강의 미래를 열다", "발표자", "이승복", "서울대학교병원", "교수", "/images/speakers/speaker-011.jpg", "이승복 연사 사진"],
-  ["speaker-012", "day1", "day1-track1-a2", "국가통합바이오빅데이터, 데이터 활용으로 국민건강의 미래를 열다", "발표자", "Ben Lacey", "UKbioBank", "-", "", ""],
+  ["speaker-012", "day1", "day1-track1-a2", "국가통합바이오빅데이터, 데이터 활용으로 국민건강의 미래를 열다", "발표자", "Ben Lacey", "UKbioBank", "-", "/images/speakers/speaker-012-removebg-preview.png", "Ben Lacey 연사 사진"],
   ["speaker-013", "day1", "day1-track1-a2", "국가통합바이오빅데이터, 데이터 활용으로 국민건강의 미래를 열다", "토론자", "김미영", "한국1혈당뇨병환우회", "대표", "/images/speakers/speaker-013.png", "김미영 연사 사진"],
   ["speaker-014", "day1", "day1-track1-a2", "국가통합바이오빅데이터, 데이터 활용으로 국민건강의 미래를 열다", "토론자", "김태형", "바이오넥서스", "대표", "/images/speakers/speaker-014-removebg-preview.png", "김태형 연사 사진"],
   ["speaker-015", "day1", "day1-track1-a3", "의료 AI 생태계 구축", "좌장", "조경희", "국민건강보험 일산병원", "교수", "/images/speakers/speaker-015.png", "조경희 연사 사진"],
   ["speaker-016", "day1", "day1-track1-a3", "의료 AI 생태계 구축", "발표자/토론자", "김태훈", "인프메딕스", "메디컬AI연구소장", "/images/speakers/speaker-016-removebg-preview.png", "김태훈 연사 사진"],
-  ["speaker-017", "day1", "day1-track1-a3", "의료 AI 생태계 구축", "발표자/토론자", "신현웅", "한국보건사회연구원", "실장", "", ""],
+  ["speaker-017", "day1", "day1-track1-a3", "의료 AI 생태계 구축", "발표자/토론자", "신현웅", "한국보건사회연구원", "실장", "/images/speakers/speaker-017-removebg-preview.png", "신현웅 연사 사진"],
   ["speaker-018", "day1", "day1-track1-a3", "의료 AI 생태계 구축", "발표자/토론자", "차원철", "삼성서울병원/국가AI전략위원회", "교수", "/images/speakers/speaker-018.png", "차원철 연사 사진"],
   ["speaker-019", "day2", "day2-track1-a4", "의료데이터 표준의 현장 활용과 확산 (대한의료정보학회 합동세션)", "발표자", "이영희", "대한의료정보학회/서울대학교", "부교수", "/images/speakers/speaker-019.jpg", "이영희 연사 사진"],
   ["speaker-020", "day2", "day2-track1-a4", "의료데이터 표준의 현장 활용과 확산 (대한의료정보학회 합동세션)", "발표자", "윤덕용", "연세대학교", "부교수", "/images/speakers/speaker-020.jpg", "윤덕용 연사 사진"],
@@ -303,7 +303,7 @@ test("speaker session IDs, days, rooms, titles, and track-specific times resolve
   }
 });
 
-test("all 57 transparent speaker assets have exact signatures, dimensions, bytes, hashes, and alpha metadata", () => {
+test("all 59 transparent speaker assets have exact signatures, dimensions, bytes, hashes, and alpha metadata", () => {
   const targetDir = path.join(repo, "public", "images", "speakers");
   const actualFiles = execFileSync(
     "git",
@@ -315,8 +315,12 @@ test("all 57 transparent speaker assets have exact signatures, dimensions, bytes
     .filter(Boolean)
     .map((file) => path.basename(file))
     .sort();
+  // Include referenced assets before staging; their bytes are checked below.
+  const referencedFiles = speakersData.SPEAKERS
+    .filter(({ imageSrc }) => imageSrc)
+    .map(({ imageSrc }) => path.basename(imageSrc));
   assert.deepEqual(
-    actualFiles,
+    [...new Set([...actualFiles, ...referencedFiles])].sort(),
     [...legacyImages, ...expectedTransparentImages].map(({ file }) => file).sort()
   );
 
@@ -344,8 +348,8 @@ test("all 57 transparent speaker assets have exact signatures, dimensions, bytes
 test("photo mapping, alt text, fallback count, roles, and day counts remain explicit", () => {
   const withPhotos = speakersData.SPEAKERS.filter(({ imageSrc }) => imageSrc);
   const fallbacks = speakersData.SPEAKERS.filter(({ imageSrc }) => !imageSrc);
-  assert.equal(withPhotos.length, 57);
-  assert.equal(fallbacks.length, 10);
+  assert.equal(withPhotos.length, 59);
+  assert.equal(fallbacks.length, 8);
   assert.ok(
     withPhotos.every(({ id, imageSrc }) =>
       imageSrc.endsWith(`/${id}-removebg-preview.png`)
@@ -437,6 +441,8 @@ test("HWPX and original photo inputs are not tracked by Git", () => {
       "public/images/연사사진_260831_v1.zip",
       "public/images/홈페이지 연사 추가 사진",
       "public/images/홈페이지 연사 추가 사진.zip",
+      "public/images/연사 추가 사진2",
+      "public/images/연사 이미지.zip",
     ],
     { cwd: repo, encoding: "utf8" }
   ).trim();
