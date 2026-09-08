@@ -38,7 +38,7 @@ const expectedAppearances = [
   ["speaker-001", "day1", "day1-opening", "개회식", "기조연설", "백롱민", "국가통합바이오빅데이터사업단", "단장", "/images/speakers/speaker-001.png", "백롱민 연사 사진"],
   ["speaker-002", "day1", "day1-track1-a1", "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다", "좌장", "양성일", "분당서울대병원", "교수", "/images/speakers/speaker-002.png", "양성일 연사 사진"],
   ["speaker-003", "day1", "day1-track1-a1", "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다", "발표자", "박정환", "보건복지부", "과장", "", ""],
-  ["speaker-004", "day1", "day1-track1-a1", "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다", "발표자", "김종덕", "한국보건의료정보원", "센터장", "", ""],
+  ["speaker-004", "day1", "day1-track1-a1", "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다", "발표자", "김종덕", "한국보건의료정보원", "센터장", "/images/speakers/speaker-004-removebg-preview.png", "김종덕 연사 사진"],
   ["speaker-005", "day1", "day1-track1-a1", "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다", "발표자", "정해영", "국가생명연구자원정보센터", "센터장", "/images/speakers/speaker-005.png", "정해영 연사 사진"],
   ["speaker-006", "day1", "day1-track1-a1", "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다", "토론자", "정윤빈", "세브란스병원", "교수", "/images/speakers/speaker-006.jpg", "정윤빈 연사 사진"],
   ["speaker-007", "day1", "day1-track1-a1", "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다", "토론자", "이가람", "서울대학교병원", "교수", "", ""],
@@ -80,12 +80,14 @@ const expectedAppearances = [
   ["speaker-043", "day1", "day1-track2-b2", "보건의료데이터 인프라 혁신", "발표자/토론자", "황희", "카카오헬스케어", "대표이사", "/images/speakers/speaker-043.jpg", "황희 연사 사진"],
   ["speaker-044", "day1", "day1-track2-b2", "보건의료데이터 인프라 혁신", "발표자/토론자", "최인영", "가톨릭중앙의료원", "교수", "/images/speakers/speaker-044-removebg-preview.png", "최인영 연사 사진"],
   ["speaker-045", "day1", "day1-track2-b2", "보건의료데이터 인프라 혁신", "발표자/토론자", "강미라", "삼성서울병원", "교수", "/images/speakers/speaker-045.jpg", "강미라 연사 사진"],
+  ["speaker-070", "day1", "day1-track2-b2", "보건의료데이터 인프라 혁신", "토론자", "김준태", "한국보건의료정보원", "단장", "/images/speakers/speaker-070-removebg-preview.png", "김준태 연사 사진"],
   ["speaker-047", "day1", "day1-track2-b3", "빅데이터 기반의 미래 질병 대응 전략", "좌장", "이상원", "국제백신연구소", "근거기반보건전략관", "/images/speakers/speaker-047.png", "이상원 연사 사진"],
   ["speaker-048", "day1", "day1-track2-b3", "빅데이터 기반의 미래 질병 대응 전략", "발표자/토론자", "박종현", "질병관리청", "사무관", "/images/speakers/speaker-048.png", "박종현 연사 사진"],
   ["speaker-049", "day1", "day1-track2-b3", "빅데이터 기반의 미래 질병 대응 전략", "발표자/토론자", "김진명", "질병관리청", "사무관", "/images/speakers/speaker-049.png", "김진명 연사 사진"],
   ["speaker-050", "day1", "day1-track2-b3", "빅데이터 기반의 미래 질병 대응 전략", "발표자/토론자", "박도현", "질병관리청", "사무관", "/images/speakers/speaker-050.png", "박도현 연사 사진"],
   ["speaker-051", "day1", "day1-track2-b3", "빅데이터 기반의 미래 질병 대응 전략", "토론자", "여나금", "한국보건사회연구원", "연구위원", "", ""],
   ["speaker-052", "day1", "day1-track2-b3", "빅데이터 기반의 미래 질병 대응 전략", "토론자", "김주원", "원주세브란스병원", "교수", "/images/speakers/speaker-052-removebg-preview.png", "김주원 연사 사진"],
+  ["speaker-071", "day2", "day2-track2-b4", "의료 데이터 품질과 상호운용성 확대를 통한 진료 품질 향상", "좌장", "이재호", "서울아산병원", "교수", "/images/speakers/speaker-071-removebg-preview.png", "이재호 연사 사진"],
   ["speaker-053", "day2", "day2-track2-b4", "의료 데이터 품질과 상호운용성 확대를 통한 진료 품질 향상", "발표자", "이유라", "서울아산병원", "교수", "/images/speakers/speaker-053.png", "이유라 연사 사진"],
   ["speaker-054", "day2", "day2-track2-b4", "의료 데이터 품질과 상호운용성 확대를 통한 진료 품질 향상", "발표자", "이의선", "환자안전학회", "이사장", "/images/speakers/speaker-054-removebg-preview.png", "이의선 연사 사진"],
   ["speaker-055", "day2", "day2-track2-b4", "의료 데이터 품질과 상호운용성 확대를 통한 진료 품질 향상", "발표자", "고태훈", "가톨릭대학교", "교수", "/images/speakers/speaker-055.png", "고태훈 연사 사진"],
@@ -225,8 +227,8 @@ test("verified speaker data remains intact while publication is enabled", () => 
   assert.equal(speakersData.SPEAKERS_PUBLISHED, true);
   assert.equal(speakersData.SPEAKERS_VISIBLE, true);
   assert.deepEqual(speakersData.SPEAKERS, expectedAppearances);
-  assert.equal(new Set(speakersData.SPEAKERS.map(({ id }) => id)).size, 68);
-  assert.equal(new Set(speakersData.SPEAKERS.map(({ name }) => name)).size, 68);
+  assert.equal(new Set(speakersData.SPEAKERS.map(({ id }) => id)).size, 70);
+  assert.equal(new Set(speakersData.SPEAKERS.map(({ name }) => name)).size, 70);
 });
 
 test("A1 replacement and B6 addition do not reuse another person's photo or remove the B5 appearance", () => {
@@ -247,6 +249,23 @@ test("A1 replacement and B6 addition do not reuse another person's photo or remo
     [added.name, added.role, added.affiliation, added.title, added.imageSrc, added.imageAlt],
     ["김민정", "토론자", "보건복지부", "과장", "/images/speakers/speaker-069-removebg-preview.png", "김민정 연사 사진"]
   );
+});
+
+test("confirmed A1 photo, B2 discussant, and B4 chair retain unique cards and intended order", () => {
+  for (const [name, sessionId, role, affiliation, title] of [
+    ["김종덕", "day1-track1-a1", "발표자", "한국보건의료정보원", "센터장"],
+    ["김준태", "day1-track2-b2", "토론자", "한국보건의료정보원", "단장"],
+    ["이재호", "day2-track2-b4", "좌장", "서울아산병원", "교수"],
+  ]) {
+    const matches = speakersData.SPEAKERS.filter((speaker) => speaker.name === name);
+    assert.equal(matches.length, 1);
+    const speaker = matches[0];
+    assert.deepEqual([speaker.sessionId, speaker.role, speaker.affiliation, speaker.title], [sessionId, role, affiliation, title]);
+    assert.equal(speaker.imageAlt, `${name} 연사 사진`);
+    assert.ok(fs.existsSync(path.join(repo, "public", speaker.imageSrc)));
+  }
+  assert.equal(speakersData.SPEAKERS.filter(({ sessionId }) => sessionId === "day1-track2-b2").at(-1).name, "김준태");
+  assert.equal(speakersData.SPEAKERS.find(({ sessionId }) => sessionId === "day2-track2-b4").name, "이재호");
 });
 
 test("published speaker grouping keeps source order within serial DAY 1 and DAY 2 sections", () => {
@@ -324,7 +343,7 @@ test("speaker session IDs, days, rooms, titles, and track-specific times resolve
   }
 });
 
-test("all 62 transparent speaker assets have exact signatures, dimensions, bytes, hashes, and alpha metadata", () => {
+test("all 65 transparent speaker assets have exact signatures, dimensions, bytes, hashes, and alpha metadata", () => {
   const targetDir = path.join(repo, "public", "images", "speakers");
   const actualFiles = execFileSync(
     "git",
@@ -369,8 +388,8 @@ test("all 62 transparent speaker assets have exact signatures, dimensions, bytes
 test("photo mapping, alt text, fallback count, roles, and day counts remain explicit", () => {
   const withPhotos = speakersData.SPEAKERS.filter(({ imageSrc }) => imageSrc);
   const fallbacks = speakersData.SPEAKERS.filter(({ imageSrc }) => !imageSrc);
-  assert.equal(withPhotos.length, 61);
-  assert.equal(fallbacks.length, 7);
+  assert.equal(withPhotos.length, 64);
+  assert.equal(fallbacks.length, 6);
   assert.ok(
     withPhotos.every(({ id, imageSrc }) =>
       imageSrc.endsWith(`/${id}-removebg-preview.png`)
@@ -386,7 +405,7 @@ test("photo mapping, alt text, fallback count, roles, and day counts remain expl
         speakersData.SPEAKERS.filter((speaker) => speaker.dayId === dayId).length,
       ])
     ),
-    { day1: 35, day2: 33 }
+    { day1: 36, day2: 34 }
   );
 
   assert.deepEqual(
@@ -398,9 +417,9 @@ test("photo mapping, alt text, fallback count, roles, and day counts remain expl
     ),
     {
       "기조연설": 1,
-      "좌장": 9,
+      "좌장": 10,
       "발표자": 25,
-      "토론자": 19,
+      "토론자": 20,
       "발표자/토론자": 14,
     }
   );
