@@ -19,10 +19,10 @@ const assets = [
     sha256: "fde61235985cd33f8cb8489804888058f20ee1750515bcbeedb01eabe95861c6",
   },
   {
-    file: path.join("public", "images", "program", "program-schedule-brandnew2.jpg"),
-    width: 1191,
-    height: 7114,
-    sha256: "a4e70b67f2ea085050ce9bf64ce4ac163e229da4daee115745fd83870f184209",
+    file: path.join("public", "images", "program", "program-schedule-brandnew2.jpeg"),
+    width: 4961,
+    height: 29720,
+    sha256: "2978a45fc23f4ee609fd2d59f30f7417bfdadb50efe738ea43a9be985b69e1fb",
   },
 ];
 
@@ -99,7 +99,7 @@ test("section image files remain byte-identical JPEG assets with exact dimension
   for (const asset of assets) {
     const absolutePath = path.join(repo, asset.file);
     const buffer = fs.readFileSync(absolutePath);
-    assert.equal(path.extname(absolutePath), ".jpg");
+    assert.match(path.extname(absolutePath), /^\.jpe?g$/);
     assert.deepEqual(jpegDimensions(buffer), {
       width: asset.width,
       height: asset.height,
@@ -142,9 +142,9 @@ test("program section renders one schedule image and no structured schedule UI",
   assert.match(markup, /<section[^>]*id="program"/);
   assert.match(markup, /<h2[^>]*class="sr-only"[^>]*>프로그램<\/h2>/);
   assert.equal((markup.match(/<img\b/g) || []).length, 1);
-  assert.match(markup, /src="\/images\/program\/program-schedule-brandnew2\.jpg"/);
-  assert.match(markup, /width="1191"/);
-  assert.match(markup, /height="7114"/);
+  assert.match(markup, /src="\/images\/program\/program-schedule-brandnew2\.jpeg"/);
+  assert.match(markup, /width="4961"/);
+  assert.match(markup, /height="29720"/);
   assert.match(
     markup,
     /alt="2026 한국보건의료정보원 연례 심포지엄 전체 프로그램 일정표\. 9월 10일과 11일, 코엑스 401호·402호의 세션별 시간, 발표와 토론 일정\."/
