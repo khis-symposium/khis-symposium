@@ -41,7 +41,7 @@ const expectedAppearances = [
   ["speaker-004", "day1", "day1-track1-a1", "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다", "발표자", "김종덕", "한국보건의료정보원", "센터장", "", ""],
   ["speaker-005", "day1", "day1-track1-a1", "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다", "발표자", "정해영", "국가생명연구자원정보센터", "센터장", "/images/speakers/speaker-005.png", "정해영 연사 사진"],
   ["speaker-006", "day1", "day1-track1-a1", "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다", "토론자", "정윤빈", "세브란스병원", "교수", "/images/speakers/speaker-006.jpg", "정윤빈 연사 사진"],
-  ["speaker-007", "day1", "day1-track1-a1", "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다", "토론자", "정재균", "서울대학교병원", "교수", "/images/speakers/speaker-007.png", "정재균 연사 사진"],
+  ["speaker-007", "day1", "day1-track1-a1", "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다", "토론자", "이가람", "서울대학교병원", "교수", "", ""],
   ["speaker-008", "day1", "day1-track1-a2", "국가통합바이오빅데이터, 데이터 활용으로 국민건강의 미래를 열다", "좌장", "이영성", "대한민국의학한림원", "교수", "", ""],
   ["speaker-009", "day1", "day1-track1-a2", "국가통합바이오빅데이터, 데이터 활용으로 국민건강의 미래를 열다", "발표자", "이상아", "강원대학교", "교수", "/images/speakers/speaker-009.png", "이상아 연사 사진"],
   ["speaker-010", "day1", "day1-track1-a2", "국가통합바이오빅데이터, 데이터 활용으로 국민건강의 미래를 열다", "발표자", "김치경", "고려대학교 구로병원", "교수", "/images/speakers/speaker-010-removebg-preview.png", "김치경 연사 사진"],
@@ -102,6 +102,7 @@ const expectedAppearances = [
   ["speaker-066", "day2", "day2-track2-b6", "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)", "발표자", "박유랑", "연세대학교", "부교수", "/images/speakers/speaker-066.png", "박유랑 연사 사진"],
   ["speaker-067", "day2", "day2-track2-b6", "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)", "토론자", "조민규", "지디넷코리아", "팀장", "/images/speakers/speaker-067.jpg", "조민규 연사 사진"],
   ["speaker-068", "day2", "day2-track2-b6", "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)", "토론자", "조동찬", "한양대학교", "교수", "/images/speakers/speaker-068.png", "조동찬 연사 사진"],
+  ["speaker-069", "day2", "day2-track2-b6", "디지털헬스, 미래를 위한 정책을 말하다 (미디어‧정책 세션)", "토론자", "김민정", "보건복지부", "과장", "", ""],
 ].map(
   ([id, dayId, sessionId, sessionTitle, role, name, affiliation, title, legacyImageSrc, imageAlt]) => ({
     id,
@@ -224,8 +225,28 @@ test("verified speaker data remains intact while publication is enabled", () => 
   assert.equal(speakersData.SPEAKERS_PUBLISHED, true);
   assert.equal(speakersData.SPEAKERS_VISIBLE, true);
   assert.deepEqual(speakersData.SPEAKERS, expectedAppearances);
-  assert.equal(new Set(speakersData.SPEAKERS.map(({ id }) => id)).size, 67);
-  assert.equal(new Set(speakersData.SPEAKERS.map(({ name }) => name)).size, 66);
+  assert.equal(new Set(speakersData.SPEAKERS.map(({ id }) => id)).size, 68);
+  assert.equal(new Set(speakersData.SPEAKERS.map(({ name }) => name)).size, 68);
+});
+
+test("A1 replacement and B6 addition do not reuse another person's photo or remove the B5 appearance", () => {
+  const a1 = speakersData.SPEAKERS.filter(({ sessionId }) => sessionId === "day1-track1-a1");
+  assert.equal(a1.some(({ name }) => name === "정재균"), false);
+  const replacement = a1.find(({ name }) => name === "이가람");
+  assert.ok(replacement);
+  assert.deepEqual(
+    [replacement.role, replacement.affiliation, replacement.title, replacement.imageSrc, replacement.imageAlt],
+    ["토론자", "서울대학교병원", "교수", "", ""]
+  );
+  assert.ok(speakersData.SPEAKERS.some(
+    ({ sessionId, name, imageSrc }) => sessionId === "day2-track2-b5" && name === "정재균" && imageSrc
+  ));
+  const b6 = speakersData.SPEAKERS.filter(({ sessionId }) => sessionId === "day2-track2-b6");
+  const added = b6.at(-1);
+  assert.deepEqual(
+    [added.name, added.role, added.affiliation, added.title, added.imageSrc, added.imageAlt],
+    ["김민정", "토론자", "보건복지부", "과장", "", ""]
+  );
 });
 
 test("published speaker grouping keeps source order within serial DAY 1 and DAY 2 sections", () => {
@@ -348,8 +369,8 @@ test("all 59 transparent speaker assets have exact signatures, dimensions, bytes
 test("photo mapping, alt text, fallback count, roles, and day counts remain explicit", () => {
   const withPhotos = speakersData.SPEAKERS.filter(({ imageSrc }) => imageSrc);
   const fallbacks = speakersData.SPEAKERS.filter(({ imageSrc }) => !imageSrc);
-  assert.equal(withPhotos.length, 59);
-  assert.equal(fallbacks.length, 8);
+  assert.equal(withPhotos.length, 58);
+  assert.equal(fallbacks.length, 10);
   assert.ok(
     withPhotos.every(({ id, imageSrc }) =>
       imageSrc.endsWith(`/${id}-removebg-preview.png`)
@@ -365,7 +386,7 @@ test("photo mapping, alt text, fallback count, roles, and day counts remain expl
         speakersData.SPEAKERS.filter((speaker) => speaker.dayId === dayId).length,
       ])
     ),
-    { day1: 35, day2: 32 }
+    { day1: 35, day2: 33 }
   );
 
   assert.deepEqual(
@@ -379,7 +400,7 @@ test("photo mapping, alt text, fallback count, roles, and day counts remain expl
       "기조연설": 1,
       "좌장": 9,
       "발표자": 25,
-      "토론자": 18,
+      "토론자": 19,
       "발표자/토론자": 14,
     }
   );
