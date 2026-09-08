@@ -16,10 +16,10 @@ export function Program() {
       </h2>
       <Container>
         <Image
-          src="/images/program/program-schedule-brandnew2.jpg"
+          src="/images/program/program-schedule-brandnew2.jpeg"
           alt={PROGRAM_ALT}
-          width={1191}
-          height={7114}
+          width={4961}
+          height={29720}
           sizes="(max-width: 767px) calc(100vw - 3rem), (max-width: 1199px) calc(100vw - 5rem), 1120px"
           className="block h-auto w-full object-contain"
         />
