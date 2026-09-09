@@ -169,7 +169,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "박정환",
     affiliation: "보건복지부",
     title: "과장",
-    imageSrc: "/images/speakers/speaker-003.jpg",
+    imageSrc: "/images/speakers/speaker-003-removebg-preview.png",
     imageAlt: "박정환 연사 사진",
   },
   {
@@ -349,7 +349,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "차원철",
     affiliation: "삼성서울병원/국가AI전략위원회",
     title: "교수",
-    imageSrc: "/images/speakers/speaker-018-v2.jpg",
+    imageSrc: "/images/speakers/speaker-018-v3-removebg-preview.png",
     imageAlt: "차원철 연사 사진",
   },
   {
@@ -733,8 +733,8 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "여나금",
     affiliation: "한국보건사회연구원",
     title: "연구위원",
-    imageSrc: "",
-    imageAlt: "",
+    imageSrc: "/images/speakers/speaker-051-removebg-preview.png",
+    imageAlt: "여나금 연사 사진",
   },
   {
     id: "speaker-052",
