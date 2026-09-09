@@ -617,6 +617,18 @@ export const SPEAKERS: readonly Speaker[] = [
     imageAlt: "서영희 연사 사진",
   },
   {
+    id: "speaker-072",
+    dayId: "day1",
+    sessionId: "day1-track2-b1",
+    sessionTitle: "디지털 보건의료정보 플랫폼 국민 중심 의료의 새로운 시작",
+    role: "토론자",
+    name: "도경현",
+    affiliation: "서울아산병원",
+    title: "교수",
+    imageSrc: "/images/speakers/speaker-072-removebg-preview.png",
+    imageAlt: "도경현 연사 사진",
+  },
+  {
     id: "speaker-042",
     dayId: "day1",
     sessionId: "day1-track2-b2",

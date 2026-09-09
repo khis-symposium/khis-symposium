@@ -75,6 +75,7 @@ const expectedAppearances = [
   ["speaker-038", "day1", "day1-track2-b1", "디지털 보건의료정보 플랫폼 국민 중심 의료의 새로운 시작", "발표자/토론자", "방민호", "한국보건의료정보원", "단장", "/images/speakers/speaker-038.png", "방민호 연사 사진"],
   ["speaker-039", "day1", "day1-track2-b1", "디지털 보건의료정보 플랫폼 국민 중심 의료의 새로운 시작", "토론자", "최병관", "부산대학교병원", "교수", "", ""],
   ["speaker-041", "day1", "day1-track2-b1", "디지털 보건의료정보 플랫폼 국민 중심 의료의 새로운 시작", "토론자", "서영희", "평화이즈", "부장", "/images/speakers/speaker-041.png", "서영희 연사 사진"],
+  ["speaker-072", "day1", "day1-track2-b1", "디지털 보건의료정보 플랫폼 국민 중심 의료의 새로운 시작", "토론자", "도경현", "서울아산병원", "교수", "/images/speakers/speaker-072-removebg-preview.png", "도경현 연사 사진"],
   ["speaker-042", "day1", "day1-track2-b2", "보건의료데이터 인프라 혁신", "좌장", "이호영", "서울대학교병원", "교수", "/images/speakers/speaker-042.jpg", "이호영 연사 사진"],
   ["speaker-043", "day1", "day1-track2-b2", "보건의료데이터 인프라 혁신", "발표자/토론자", "황희", "카카오헬스케어", "대표이사", "/images/speakers/speaker-043.jpg", "황희 연사 사진"],
   ["speaker-044", "day1", "day1-track2-b2", "보건의료데이터 인프라 혁신", "발표자/토론자", "최인영", "가톨릭중앙의료원", "교수", "/images/speakers/speaker-044-removebg-preview.png", "최인영 연사 사진"],
@@ -246,8 +247,8 @@ test("verified speaker data remains intact while publication is enabled", () => 
   assert.equal(speakersData.SPEAKERS_PUBLISHED, true);
   assert.equal(speakersData.SPEAKERS_VISIBLE, true);
   assert.deepEqual(speakersData.SPEAKERS, expectedAppearances);
-  assert.equal(new Set(speakersData.SPEAKERS.map(({ id }) => id)).size, 69);
-  assert.equal(new Set(speakersData.SPEAKERS.map(({ name }) => name)).size, 69);
+  assert.equal(new Set(speakersData.SPEAKERS.map(({ id }) => id)).size, 70);
+  assert.equal(new Set(speakersData.SPEAKERS.map(({ name }) => name)).size, 70);
 });
 
 test("A1 replacement and B6 addition do not reuse another person's photo or remove the B5 appearance", () => {
@@ -363,7 +364,7 @@ test("speaker session IDs, days, rooms, titles, and track-specific times resolve
   }
 });
 
-test("all 68 transparent speaker assets have exact signatures, dimensions, bytes, hashes, and alpha metadata", () => {
+test("all 69 transparent speaker assets have exact signatures, dimensions, bytes, hashes, and alpha metadata", () => {
   const targetDir = path.join(repo, "public", "images", "speakers");
   const actualFiles = execFileSync(
     "git",
@@ -408,7 +409,7 @@ test("all 68 transparent speaker assets have exact signatures, dimensions, bytes
 test("photo mapping, alt text, fallback count, roles, and day counts remain explicit", () => {
   const withPhotos = speakersData.SPEAKERS.filter(({ imageSrc }) => imageSrc);
   const fallbacks = speakersData.SPEAKERS.filter(({ imageSrc }) => !imageSrc);
-  assert.equal(withPhotos.length, 65);
+  assert.equal(withPhotos.length, 66);
   assert.equal(fallbacks.length, 4);
   assert.ok(
     withPhotos.every(({ id, imageSrc }) =>
@@ -427,7 +428,7 @@ test("photo mapping, alt text, fallback count, roles, and day counts remain expl
         speakersData.SPEAKERS.filter((speaker) => speaker.dayId === dayId).length,
       ])
     ),
-    { day1: 35, day2: 34 }
+    { day1: 36, day2: 34 }
   );
 
   assert.deepEqual(
@@ -441,7 +442,7 @@ test("photo mapping, alt text, fallback count, roles, and day counts remain expl
       "기조연설": 1,
       "좌장": 10,
       "발표자": 25,
-      "토론자": 19,
+      "토론자": 20,
       "발표자/토론자": 14,
     }
   );

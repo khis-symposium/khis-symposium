@@ -678,5 +678,15 @@
     "sha256": "dc9e6f0a39307ea593b44d391907e92d11e688ae12d66d7c766ef0a178939210",
     "alphaMin": 0,
     "alphaMax": 255
+  },
+  {
+    "file": "speaker-072-removebg-preview.png",
+    "mime": "image/png",
+    "width": 325,
+    "height": 374,
+    "size": 155972,
+    "sha256": "6f70863618b604508430303a95d767ba0779485718ad5fffe62b800c406fe7e7",
+    "alphaMin": 0,
+    "alphaMax": 255
   }
 ]
