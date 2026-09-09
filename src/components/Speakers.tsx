@@ -22,7 +22,7 @@ function getPortraitClassName(speakerId: string) {
     case "speaker-018":
       return "object-cover object-[50%_25%]";
     case "speaker-028":
-      return `scale-[0.9] ${baseClassName}`;
+      return `scale-[1.1] ${baseClassName}`;
     case "speaker-043":
       return `scale-[1.6] ${baseClassName}`;
     case "speaker-063":
