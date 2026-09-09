@@ -37,7 +37,7 @@ const constants = loadModule(path.join("src", "lib", "constants.ts"));
 const expectedAppearances = [
   ["speaker-001", "day1", "day1-opening", "개회식", "기조연설", "백롱민", "국가통합바이오빅데이터사업단", "단장", "/images/speakers/speaker-001.png", "백롱민 연사 사진"],
   ["speaker-002", "day1", "day1-track1-a1", "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다", "좌장", "양성일", "분당서울대병원", "교수", "/images/speakers/speaker-002.png", "양성일 연사 사진"],
-  ["speaker-003", "day1", "day1-track1-a1", "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다", "발표자", "박정환", "보건복지부", "과장", "", ""],
+  ["speaker-003", "day1", "day1-track1-a1", "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다", "발표자", "박정환", "보건복지부", "과장", "/images/speakers/speaker-003.jpg", "박정환 연사 사진"],
   ["speaker-004", "day1", "day1-track1-a1", "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다", "발표자", "김종덕", "한국보건의료정보원", "센터장", "/images/speakers/speaker-004-removebg-preview.png", "김종덕 연사 사진"],
   ["speaker-005", "day1", "day1-track1-a1", "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다", "발표자", "정해영", "국가생명연구자원정보센터", "센터장", "/images/speakers/speaker-005.png", "정해영 연사 사진"],
   ["speaker-006", "day1", "day1-track1-a1", "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다", "토론자", "정윤빈", "세브란스병원", "교수", "/images/speakers/speaker-006.jpg", "정윤빈 연사 사진"],
@@ -114,7 +114,9 @@ const expectedAppearances = [
     name,
     affiliation,
     title,
-    imageSrc: legacyImageSrc
+    imageSrc: id === "speaker-003" ? "/images/speakers/speaker-003.jpg"
+      : id === "speaker-018" ? "/images/speakers/speaker-018-v2.jpg"
+      : legacyImageSrc
       ? `/images/speakers/${id}-removebg-preview.png`
       : "",
     imageAlt,
@@ -122,6 +124,8 @@ const expectedAppearances = [
 );
 
 const legacyImages = [
+  ["speaker-003.jpg", "image/jpeg", 715, 750, 121896, "4a7ea7ab333e2711068c06cd8d08da709e85c507662ed5244c9e4e7d6e1c9084"],
+  ["speaker-018-v2.jpg", "image/jpeg", 2000, 3000, 341400, "9d662a8679019c6e95cc38f7928d9b013838efc31daad00b640d37d5ad1e2ab6"],
   ["speaker-001.png", "image/png", 800, 1200, 1284781, "e0d93e4feb0e16ad54936abc752cc89a321413c7e29601731c1d04d3c1f9fdc7"],
   ["speaker-002.png", "image/png", 167, 215, 88856, "207f173cbd009231e6a9e9ad4682484d0856c71bfd6af98811bc839e7c7ad572"],
   ["speaker-005.png", "image/png", 860, 1146, 1892373, "2942ab8ab2a07f801c538a76d3029f9d8993e248618fd0ee748983045078472b"],
@@ -221,6 +225,23 @@ function imageDimensions(buffer, mime) {
 
   throw new Error("JPEG dimensions not found");
 }
+
+test("September 9 JPEG portraits preserve original bytes and map to the confirmed speakers", () => {
+  for (const [id, name, file] of [
+    ["speaker-003", "박정환", "speaker-003.jpg"],
+    ["speaker-018", "차원철", "speaker-018-v2.jpg"],
+  ]) {
+    const speaker = speakersData.SPEAKERS.find((entry) => entry.id === id);
+    assert.equal(speaker.name, name);
+    assert.equal(speaker.imageSrc, `/images/speakers/${file}`);
+    assert.equal(speaker.imageAlt, `${name} 연사 사진`);
+    const expected = legacyImages.find((entry) => entry.file === file);
+    const bytes = fs.readFileSync(path.join(repo, "public", "images", "speakers", file));
+    assert.deepEqual(imageDimensions(bytes, expected.mime), { width: expected.width, height: expected.height });
+    assert.equal(bytes.length, expected.size);
+    assert.equal(crypto.createHash("sha256").update(bytes).digest("hex"), expected.sha256);
+  }
+});
 
 test("verified speaker data remains intact while publication is enabled", () => {
   assert.equal(speakersData.SPEAKERS_PUBLISHED, true);
@@ -388,11 +409,13 @@ test("all 65 transparent speaker assets have exact signatures, dimensions, bytes
 test("photo mapping, alt text, fallback count, roles, and day counts remain explicit", () => {
   const withPhotos = speakersData.SPEAKERS.filter(({ imageSrc }) => imageSrc);
   const fallbacks = speakersData.SPEAKERS.filter(({ imageSrc }) => !imageSrc);
-  assert.equal(withPhotos.length, 63);
-  assert.equal(fallbacks.length, 6);
+  assert.equal(withPhotos.length, 64);
+  assert.equal(fallbacks.length, 5);
   assert.ok(
     withPhotos.every(({ id, imageSrc }) =>
-      imageSrc.endsWith(`/${id}-removebg-preview.png`)
+      imageSrc === (id === "speaker-003" ? "/images/speakers/speaker-003.jpg"
+        : id === "speaker-018" ? "/images/speakers/speaker-018-v2.jpg"
+        : `/images/speakers/${id}-removebg-preview.png`)
     )
   );
   assert.ok(withPhotos.every(({ name, imageAlt }) => imageAlt === `${name} 연사 사진`));

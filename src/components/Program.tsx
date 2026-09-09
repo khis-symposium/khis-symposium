@@ -16,7 +16,7 @@ export function Program() {
       </h2>
       <Container>
         <Image
-          src="/images/program/program-schedule-brandnew3.jpg"
+          src="/images/program/program-schedule-brandnew4.jpg"
           alt={PROGRAM_ALT}
           width={4961}
           height={29644}
