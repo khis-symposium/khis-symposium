@@ -169,8 +169,8 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "박정환",
     affiliation: "보건복지부",
     title: "과장",
-    imageSrc: "",
-    imageAlt: "",
+    imageSrc: "/images/speakers/speaker-003.jpg",
+    imageAlt: "박정환 연사 사진",
   },
   {
     id: "speaker-004",
@@ -349,7 +349,7 @@ export const SPEAKERS: readonly Speaker[] = [
     name: "차원철",
     affiliation: "삼성서울병원/국가AI전략위원회",
     title: "교수",
-    imageSrc: "/images/speakers/speaker-018-removebg-preview.png",
+    imageSrc: "/images/speakers/speaker-018-v2.jpg",
     imageAlt: "차원철 연사 사진",
   },
   {

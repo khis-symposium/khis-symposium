@@ -18,8 +18,9 @@ function getPortraitClassName(speakerId: string) {
   const baseClassName = "object-contain object-bottom";
 
   switch (speakerId) {
+    case "speaker-003":
     case "speaker-018":
-      return `origin-top [scale:1.2_1.32] ${baseClassName}`;
+      return "object-cover object-[50%_25%]";
     case "speaker-028":
       return `scale-[0.9] ${baseClassName}`;
     case "speaker-043":
