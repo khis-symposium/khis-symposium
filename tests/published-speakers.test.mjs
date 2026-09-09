@@ -37,7 +37,7 @@ const constants = loadModule(path.join("src", "lib", "constants.ts"));
 const expectedAppearances = [
   ["speaker-001", "day1", "day1-opening", "개회식", "기조연설", "백롱민", "국가통합바이오빅데이터사업단", "단장", "/images/speakers/speaker-001.png", "백롱민 연사 사진"],
   ["speaker-002", "day1", "day1-track1-a1", "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다", "좌장", "양성일", "분당서울대병원", "교수", "/images/speakers/speaker-002.png", "양성일 연사 사진"],
-  ["speaker-003", "day1", "day1-track1-a1", "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다", "발표자", "박정환", "보건복지부", "과장", "/images/speakers/speaker-003.jpg", "박정환 연사 사진"],
+  ["speaker-003", "day1", "day1-track1-a1", "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다", "발표자", "박정환", "보건복지부", "과장", "/images/speakers/speaker-003-removebg-preview.png", "박정환 연사 사진"],
   ["speaker-004", "day1", "day1-track1-a1", "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다", "발표자", "김종덕", "한국보건의료정보원", "센터장", "/images/speakers/speaker-004-removebg-preview.png", "김종덕 연사 사진"],
   ["speaker-005", "day1", "day1-track1-a1", "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다", "발표자", "정해영", "국가생명연구자원정보센터", "센터장", "/images/speakers/speaker-005.png", "정해영 연사 사진"],
   ["speaker-006", "day1", "day1-track1-a1", "국가통합바이오빅데이터, 국민건강을 위한 데이터 기반을 만들다", "토론자", "정윤빈", "세브란스병원", "교수", "/images/speakers/speaker-006.jpg", "정윤빈 연사 사진"],
@@ -84,7 +84,7 @@ const expectedAppearances = [
   ["speaker-048", "day1", "day1-track2-b3", "빅데이터 기반의 미래 질병 대응 전략", "발표자/토론자", "박종현", "질병관리청", "사무관", "/images/speakers/speaker-048.png", "박종현 연사 사진"],
   ["speaker-049", "day1", "day1-track2-b3", "빅데이터 기반의 미래 질병 대응 전략", "발표자/토론자", "김진명", "질병관리청", "사무관", "/images/speakers/speaker-049.png", "김진명 연사 사진"],
   ["speaker-050", "day1", "day1-track2-b3", "빅데이터 기반의 미래 질병 대응 전략", "발표자/토론자", "박도현", "질병관리청", "사무관", "/images/speakers/speaker-050.png", "박도현 연사 사진"],
-  ["speaker-051", "day1", "day1-track2-b3", "빅데이터 기반의 미래 질병 대응 전략", "토론자", "여나금", "한국보건사회연구원", "연구위원", "", ""],
+  ["speaker-051", "day1", "day1-track2-b3", "빅데이터 기반의 미래 질병 대응 전략", "토론자", "여나금", "한국보건사회연구원", "연구위원", "/images/speakers/speaker-051-removebg-preview.png", "여나금 연사 사진"],
   ["speaker-052", "day1", "day1-track2-b3", "빅데이터 기반의 미래 질병 대응 전략", "토론자", "김주원", "원주세브란스병원", "교수", "/images/speakers/speaker-052-removebg-preview.png", "김주원 연사 사진"],
   ["speaker-071", "day2", "day2-track2-b4", "의료 데이터 품질과 상호운용성 확대를 통한 진료 품질 향상", "좌장", "이재호", "서울아산병원", "교수", "/images/speakers/speaker-071-removebg-preview.png", "이재호 연사 사진"],
   ["speaker-053", "day2", "day2-track2-b4", "의료 데이터 품질과 상호운용성 확대를 통한 진료 품질 향상", "발표자", "이유라", "서울아산병원", "교수", "/images/speakers/speaker-053.png", "이유라 연사 사진"],
@@ -114,8 +114,8 @@ const expectedAppearances = [
     name,
     affiliation,
     title,
-    imageSrc: id === "speaker-003" ? "/images/speakers/speaker-003.jpg"
-      : id === "speaker-018" ? "/images/speakers/speaker-018-v2.jpg"
+    imageSrc: id === "speaker-003" ? "/images/speakers/speaker-003-removebg-preview.png"
+      : id === "speaker-018" ? "/images/speakers/speaker-018-v3-removebg-preview.png"
       : legacyImageSrc
       ? `/images/speakers/${id}-removebg-preview.png`
       : "",
@@ -226,14 +226,13 @@ function imageDimensions(buffer, mime) {
   throw new Error("JPEG dimensions not found");
 }
 
-test("September 9 JPEG portraits preserve original bytes and map to the confirmed speakers", () => {
+test("superseded JPEG portraits remain byte-identical after transparent replacements", () => {
   for (const [id, name, file] of [
     ["speaker-003", "박정환", "speaker-003.jpg"],
     ["speaker-018", "차원철", "speaker-018-v2.jpg"],
   ]) {
     const speaker = speakersData.SPEAKERS.find((entry) => entry.id === id);
     assert.equal(speaker.name, name);
-    assert.equal(speaker.imageSrc, `/images/speakers/${file}`);
     assert.equal(speaker.imageAlt, `${name} 연사 사진`);
     const expected = legacyImages.find((entry) => entry.file === file);
     const bytes = fs.readFileSync(path.join(repo, "public", "images", "speakers", file));
@@ -364,7 +363,7 @@ test("speaker session IDs, days, rooms, titles, and track-specific times resolve
   }
 });
 
-test("all 65 transparent speaker assets have exact signatures, dimensions, bytes, hashes, and alpha metadata", () => {
+test("all 68 transparent speaker assets have exact signatures, dimensions, bytes, hashes, and alpha metadata", () => {
   const targetDir = path.join(repo, "public", "images", "speakers");
   const actualFiles = execFileSync(
     "git",
@@ -409,12 +408,12 @@ test("all 65 transparent speaker assets have exact signatures, dimensions, bytes
 test("photo mapping, alt text, fallback count, roles, and day counts remain explicit", () => {
   const withPhotos = speakersData.SPEAKERS.filter(({ imageSrc }) => imageSrc);
   const fallbacks = speakersData.SPEAKERS.filter(({ imageSrc }) => !imageSrc);
-  assert.equal(withPhotos.length, 64);
-  assert.equal(fallbacks.length, 5);
+  assert.equal(withPhotos.length, 65);
+  assert.equal(fallbacks.length, 4);
   assert.ok(
     withPhotos.every(({ id, imageSrc }) =>
-      imageSrc === (id === "speaker-003" ? "/images/speakers/speaker-003.jpg"
-        : id === "speaker-018" ? "/images/speakers/speaker-018-v2.jpg"
+      imageSrc === (id === "speaker-003" ? "/images/speakers/speaker-003-removebg-preview.png"
+        : id === "speaker-018" ? "/images/speakers/speaker-018-v3-removebg-preview.png"
         : `/images/speakers/${id}-removebg-preview.png`)
     )
   );
