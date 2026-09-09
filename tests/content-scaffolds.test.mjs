@@ -384,7 +384,7 @@ test("A6 presentations and panel render as separate initial-DOM groups without K
 
 test("committed defaults publish verified speakers without detailed-program placeholders", () => {
   assert.equal(speakersData.SPEAKERS_PUBLISHED, true);
-  assert.equal(speakersData.SPEAKERS.length, 69);
+  assert.equal(speakersData.SPEAKERS.length, 70);
   assert.equal(speakersData.SPEAKERS_VISIBLE, true);
   assert.equal(detailedProgramData.DETAILED_PROGRAM_PUBLISHED, false);
   assert.equal(detailedProgramData.DETAILED_PROGRAM_ASSET, null);
