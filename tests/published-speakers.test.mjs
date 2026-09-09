@@ -60,21 +60,20 @@ const expectedAppearances = [
   ["speaker-023", "day2", "day2-track1-a5", "표준 기반 의료데이터 상호운용성 구현체계", "발표자", "정세영", "분당서울대학교병원", "정보화실장", "/images/speakers/speaker-023.png", "정세영 연사 사진"],
   ["speaker-024", "day2", "day2-track1-a5", "표준 기반 의료데이터 상호운용성 구현체계", "발표자", "박현애", "헬스오앤티", "대표", "/images/speakers/speaker-024.png", "박현애 연사 사진"],
   ["speaker-025", "day2", "day2-track1-a5", "표준 기반 의료데이터 상호운용성 구현체계", "발표자", "김영학", "서울아산병원 디지털정보혁신본부", "교수", "/images/speakers/speaker-025.png", "김영학 연사 사진"],
-  ["speaker-026", "day2", "day2-track1-a6", "AI시대 글로벌 보건의료 표준과 상호운용성 전략", "좌장", "양광모", "삼성서울병원", "교수", "/images/speakers/speaker-026.jpg", "양광모 연사 사진"],
   ["speaker-027", "day2", "day2-track1-a6", "AI시대 글로벌 보건의료 표준과 상호운용성 전략", "발표자", "Eric Sutherland", "OECD", "Senior Health Economist and Digital Health Lead", "/images/speakers/speaker-027.png", "Eric Sutherland 연사 사진"],
   ["speaker-028", "day2", "day2-track1-a6", "AI시대 글로벌 보건의료 표준과 상호운용성 전략", "발표자", "Robert Jakob", "WHO-FIC", "Head of Unit", "/images/speakers/speaker-028.png", "Robert Jakob 연사 사진"],
   ["speaker-029", "day2", "day2-track1-a6", "AI시대 글로벌 보건의료 표준과 상호운용성 전략", "발표자", "Rory Davidson", "SNOMED International", "Chief Digital Information Officer", "/images/speakers/speaker-029.png", "Rory Davidson 연사 사진"],
-  ["speaker-030", "day2", "day2-track1-a6", "AI시대 글로벌 보건의료 표준과 상호운용성 전략", "토론자", "권용진", "보건복지부 의료인공지능데이터정책과", "사무관", "/images/speakers/speaker-030-removebg-preview.png", "권용진 연사 사진"],
-  ["speaker-031", "day2", "day2-track1-a6", "AI시대 글로벌 보건의료 표준과 상호운용성 전략", "토론자", "김종엽", "대한의료정보학회", "이사장", "/images/speakers/speaker-031.jpg", "김종엽 연사 사진"],
-  ["speaker-032", "day2", "day2-track1-a6", "AI시대 글로벌 보건의료 표준과 상호운용성 전략", "토론자", "차동철", "네이버헬스케어", "센터장", "/images/speakers/speaker-032.jpg", "차동철 연사 사진"],
-  ["speaker-033", "day2", "day2-track1-a6", "AI시대 글로벌 보건의료 표준과 상호운용성 전략", "토론자", "박현선", "건강보험심사평가원", "상근위원", "/images/speakers/speaker-033.png", "박현선 연사 사진"],
-  ["speaker-034", "day2", "day2-track1-a6", "AI시대 글로벌 보건의료 표준과 상호운용성 전략", "토론자", "최지현", "한겨례신문", "기자", "/images/speakers/speaker-034.jpg", "최지현 연사 사진"],
+  ["speaker-026", "day2", "day2-track1-discussion", "상호운용성 트랙 종합토론", "좌장", "양광모", "삼성서울병원", "교수", "/images/speakers/speaker-026.jpg", "양광모 연사 사진"],
+  ["speaker-030", "day2", "day2-track1-discussion", "상호운용성 트랙 종합토론", "토론자", "권용진", "보건복지부 의료인공지능데이터정책과", "사무관", "/images/speakers/speaker-030-removebg-preview.png", "권용진 연사 사진"],
+  ["speaker-031", "day2", "day2-track1-discussion", "상호운용성 트랙 종합토론", "토론자", "김종엽", "대한의료정보학회", "이사장", "/images/speakers/speaker-031.jpg", "김종엽 연사 사진"],
+  ["speaker-032", "day2", "day2-track1-discussion", "상호운용성 트랙 종합토론", "토론자", "차동철", "네이버헬스케어", "센터장", "/images/speakers/speaker-032.jpg", "차동철 연사 사진"],
+  ["speaker-033", "day2", "day2-track1-discussion", "상호운용성 트랙 종합토론", "토론자", "박현선", "건강보험심사평가원", "상근위원", "/images/speakers/speaker-033.png", "박현선 연사 사진"],
+  ["speaker-034", "day2", "day2-track1-discussion", "상호운용성 트랙 종합토론", "토론자", "최지현", "한겨례신문", "기자", "/images/speakers/speaker-034.jpg", "최지현 연사 사진"],
   ["speaker-035", "day1", "day1-track2-b1", "디지털 보건의료정보 플랫폼 국민 중심 의료의 새로운 시작", "좌장", "김일곤", "대한의료정보학회", "회장", "/images/speakers/speaker-035.png", "김일곤 연사 사진"],
   ["speaker-036", "day1", "day1-track2-b1", "디지털 보건의료정보 플랫폼 국민 중심 의료의 새로운 시작", "발표자/토론자", "박나영", "한국보건사회연구원", "부연구위원", "/images/speakers/speaker-036.png", "박나영 연사 사진"],
   ["speaker-037", "day1", "day1-track2-b1", "디지털 보건의료정보 플랫폼 국민 중심 의료의 새로운 시작", "발표자/토론자", "강준원", "대한영상의학회(서울아산병원)", "교수", "/images/speakers/speaker-037.png", "강준원 연사 사진"],
   ["speaker-038", "day1", "day1-track2-b1", "디지털 보건의료정보 플랫폼 국민 중심 의료의 새로운 시작", "발표자/토론자", "방민호", "한국보건의료정보원", "단장", "/images/speakers/speaker-038.png", "방민호 연사 사진"],
   ["speaker-039", "day1", "day1-track2-b1", "디지털 보건의료정보 플랫폼 국민 중심 의료의 새로운 시작", "토론자", "최병관", "부산대학교병원", "교수", "", ""],
-  ["speaker-040", "day1", "day1-track2-b1", "디지털 보건의료정보 플랫폼 국민 중심 의료의 새로운 시작", "토론자", "김준현", "레몬헬스케어", "부사장", "/images/speakers/speaker-040.jpg", "김준현 연사 사진"],
   ["speaker-041", "day1", "day1-track2-b1", "디지털 보건의료정보 플랫폼 국민 중심 의료의 새로운 시작", "토론자", "서영희", "평화이즈", "부장", "/images/speakers/speaker-041.png", "서영희 연사 사진"],
   ["speaker-042", "day1", "day1-track2-b2", "보건의료데이터 인프라 혁신", "좌장", "이호영", "서울대학교병원", "교수", "/images/speakers/speaker-042.jpg", "이호영 연사 사진"],
   ["speaker-043", "day1", "day1-track2-b2", "보건의료데이터 인프라 혁신", "발표자/토론자", "황희", "카카오헬스케어", "대표이사", "/images/speakers/speaker-043.jpg", "황희 연사 사진"],
@@ -227,8 +226,8 @@ test("verified speaker data remains intact while publication is enabled", () => 
   assert.equal(speakersData.SPEAKERS_PUBLISHED, true);
   assert.equal(speakersData.SPEAKERS_VISIBLE, true);
   assert.deepEqual(speakersData.SPEAKERS, expectedAppearances);
-  assert.equal(new Set(speakersData.SPEAKERS.map(({ id }) => id)).size, 70);
-  assert.equal(new Set(speakersData.SPEAKERS.map(({ name }) => name)).size, 70);
+  assert.equal(new Set(speakersData.SPEAKERS.map(({ id }) => id)).size, 69);
+  assert.equal(new Set(speakersData.SPEAKERS.map(({ name }) => name)).size, 69);
 });
 
 test("A1 replacement and B6 addition do not reuse another person's photo or remove the B5 appearance", () => {
@@ -311,6 +310,7 @@ test("published speaker grouping keeps source order within serial DAY 1 and DAY 
           "day2-track1-a4",
           "day2-track1-a5",
           "day2-track1-a6",
+          "day2-track1-discussion",
           "day2-track2-b4",
           "day2-track2-b5",
           "day2-track2-b6",
@@ -388,7 +388,7 @@ test("all 65 transparent speaker assets have exact signatures, dimensions, bytes
 test("photo mapping, alt text, fallback count, roles, and day counts remain explicit", () => {
   const withPhotos = speakersData.SPEAKERS.filter(({ imageSrc }) => imageSrc);
   const fallbacks = speakersData.SPEAKERS.filter(({ imageSrc }) => !imageSrc);
-  assert.equal(withPhotos.length, 64);
+  assert.equal(withPhotos.length, 63);
   assert.equal(fallbacks.length, 6);
   assert.ok(
     withPhotos.every(({ id, imageSrc }) =>
@@ -405,7 +405,7 @@ test("photo mapping, alt text, fallback count, roles, and day counts remain expl
         speakersData.SPEAKERS.filter((speaker) => speaker.dayId === dayId).length,
       ])
     ),
-    { day1: 36, day2: 34 }
+    { day1: 35, day2: 34 }
   );
 
   assert.deepEqual(
@@ -419,7 +419,7 @@ test("photo mapping, alt text, fallback count, roles, and day counts remain expl
       "기조연설": 1,
       "좌장": 10,
       "발표자": 25,
-      "토론자": 20,
+      "토론자": 19,
       "발표자/토론자": 14,
     }
   );

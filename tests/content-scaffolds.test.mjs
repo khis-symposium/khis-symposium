@@ -349,9 +349,42 @@ test("page order and shared gates keep speaker UI between program and location",
   assert.doesNotMatch(programSource, /DetailedProgram/);
 });
 
+test("A6 presentations and panel render as separate initial-DOM groups without Kim Jun-hyeon", () => {
+  const markup = renderSpeakers({});
+  assert.doesNotMatch(markup, /김준현|speaker-040/);
+  const days = speakersData.getPublishedSpeakerDays(true, speakersData.SPEAKERS);
+  const sessions = days.find(({ id }) => id === "day2").sessions;
+  const presentation = sessions.find(({ id }) => id === "day2-track1-a6");
+  const panel = sessions.find(({ id }) => id === "day2-track1-discussion");
+  assert.equal(sessions.indexOf(panel), sessions.indexOf(presentation) + 1);
+  assert.equal(presentation.time, "14:30 – 15:50");
+  assert.equal(panel.time, "15:50 - 16:40");
+  assert.equal(panel.title, "상호운용성 트랙 종합토론");
+  assert.deepEqual(presentation.speakers.map(({ name, role }) => [name, role]), [
+    ["Eric Sutherland", "발표자"], ["Robert Jakob", "발표자"], ["Rory Davidson", "발표자"],
+  ]);
+  assert.deepEqual(panel.speakers.map(({ name, role }) => [name, role]), [
+    ["양광모", "좌장"], ["권용진", "토론자"], ["김종엽", "토론자"],
+    ["차동철", "토론자"], ["박현선", "토론자"], ["최지현", "토론자"],
+  ]);
+  const groupMarkup = (id) => markup.match(new RegExp(`<section aria-labelledby="speakers-day2-${id}-heading"[^>]*>([\\s\\S]*?)</section>`))?.[1];
+  const presentationMarkup = groupMarkup(presentation.id);
+  const panelMarkup = groupMarkup(panel.id);
+  assert.ok(presentationMarkup);
+  assert.ok(panelMarkup);
+  for (const { name } of presentation.speakers) {
+    assert.ok(presentationMarkup.includes(name));
+    assert.ok(!panelMarkup.includes(name));
+  }
+  for (const { name } of panel.speakers) {
+    assert.ok(panelMarkup.includes(name));
+    assert.ok(!presentationMarkup.includes(name));
+  }
+});
+
 test("committed defaults publish verified speakers without detailed-program placeholders", () => {
   assert.equal(speakersData.SPEAKERS_PUBLISHED, true);
-  assert.equal(speakersData.SPEAKERS.length, 70);
+  assert.equal(speakersData.SPEAKERS.length, 69);
   assert.equal(speakersData.SPEAKERS_VISIBLE, true);
   assert.equal(detailedProgramData.DETAILED_PROGRAM_PUBLISHED, false);
   assert.equal(detailedProgramData.DETAILED_PROGRAM_ASSET, null);
