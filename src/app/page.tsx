@@ -7,7 +7,6 @@ import { Speakers } from "@/components/Speakers";
 import { Location } from "@/components/Location";
 import { Registration } from "@/components/Registration";
 import { Footer } from "@/components/Footer";
-import { MaterialsPopup } from "@/components/MaterialsPopup";
 import {
   SPEAKERS,
   SPEAKERS_PUBLISHED,
@@ -28,7 +27,6 @@ export default function Home() {
         <Registration />
       </main>
       <Footer />
-      <MaterialsPopup />
     </>
   );
 }

@@ -34,5 +34,5 @@ test("popup uses a native modal with two dismiss controls and scroll cleanup", (
   assert.match(source, /last.focus\(\)/);
   assert.match(source, /first.focus\(\)/);
   const page = fs.readFileSync(new URL("../src/app/page.tsx", import.meta.url), "utf8");
-  assert.equal((page.match(/<MaterialsPopup \/>/g) || []).length, 1);
+  assert.doesNotMatch(page, /MaterialsPopup|popup\.jpg/);
 });
